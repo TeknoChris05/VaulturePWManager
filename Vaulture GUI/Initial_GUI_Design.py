@@ -24,7 +24,7 @@ login_frame.pack_propagate(False)
 
 
 vulture = customtkinter.CTkImage(
-    Image.open("C:/Users/romay/Downloads/imageedit_11_2501753302.png"),
+    Image.open("C:/Users/ChristopherGatie/Downloads/imageedit_11_2501753302.png"),
     size = (200,200)
 )
 
