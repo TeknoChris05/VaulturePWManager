@@ -1,6 +1,7 @@
 import customtkinter
 from PIL import Image
 import tkinter
+from pathlib import Path
 import os
 from account import Account_Frame
 
@@ -34,10 +35,29 @@ class Login_Page(customtkinter.CTk):
         
         self.account_frame.pack_propagate(False)
 
+        script_dir = Path(__file__).parent
+        project_root = script_dir.parent 
+        image_path = project_root / "images" / "imageedit_11_2501753302.png"
+
+        if image_path.exists():
+            self.vulture = customtkinter.CTkImage(
+                Image.open(image_path),
+                size=(200, 200)
+            )
+        else:
+            print(f"⚠️ Image not found: {image_path}")
+            self.vulture = None
+
+        if self.vulture:
+            vulture_label = customtkinter.CTkLabel(self.login_frame, text="", image=self.vulture)
+            vulture_label.pack(pady=5)
+        else:
+            vulture_label = customtkinter.CTkLabel(self.login_frame, text="⚠️ Image not found", text_color="red")
+            vulture_label.pack(pady=5)
 
         self.vulture = customtkinter.CTkImage(
-            Image.open("C:/Users/romay/Downloads/imageedit_11_2501753302.png"),
-            size = (200,200)
+            Image.open(image_path),
+            size=(200, 200)
         )
 
         vulture_label = customtkinter.CTkLabel(self.login_frame, text = "", image=self.vulture)
