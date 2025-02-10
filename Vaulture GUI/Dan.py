@@ -1,0 +1,42 @@
+import customtkinter
+from PIL import Image
+import tkinter
+
+window = customtkinter.CTk()
+
+window.title("Vaulture")
+
+# Screen width and height 
+screen_dimension_width = window.winfo_screenwidth()
+screen_dimension_height = window.winfo_screenheight()
+
+window.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
+
+# Left side bar
+sidebar = customtkinter.CTkFrame(window, width=300, height=screen_dimension_height, corner_radius=0, fg_color="#B8860B", border_width=8, border_color="black")
+sidebar.grid(row=0, column=0, sticky="ns")  # "ns" means the sidebar will stretch vertically
+
+# Search bar at top
+search_frame = customtkinter.CTkFrame(window)
+search_frame.place(x=700, y=5)  # Place the search bar in the top section
+
+# Entry field
+search_entry = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=300)
+search_entry.grid(row=0, column=0, padx=10)
+
+# Fram for top 
+frame = customtkinter.CTkFrame(window)
+frame.grid(row=1, column=1, padx=20, pady=20)
+
+screen_dimension_width = window.winfo_screenwidth()
+screen_dimension_height = window.winfo_screenheight()
+
+
+# white bar at bottom
+bottom_bar_height = 50  
+bottom_bar = customtkinter.CTkFrame(window, height=bottom_bar_height, corner_radius=0, fg_color="gray")
+bottom_bar.place(x=300, rely=1, relwidth=1, y=-bottom_bar_height)  
+
+window.mainloop()
+
+
