@@ -37,7 +37,7 @@ bottom_bar_height = 50
 bottom_bar = customtkinter.CTkFrame(window, height=bottom_bar_height, corner_radius=0, fg_color="gray")
 bottom_bar.place(x=300, rely=1, relwidth=1, y=-bottom_bar_height)  
 
-#settings button in the top right corner to get you to the settings page. (Marteno)
+#settings button in the top right corner to get you to the settings page. (Marteno R)
 settings_button = customtkinter.CTkButton(window, text="⚙️", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="black", command=lambda: print("Go to settings"))
 settings_button.place(x=screen_dimension_width - 75, y=10)  
 
