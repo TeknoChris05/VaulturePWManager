@@ -1,19 +1,19 @@
-import random  # Importing the random module for random selection of characters
-import string  # Importing the string module to get predefined character sets
+import random
+import string
 
 def generate_password(length=12, use_uppercase=True, use_lowercase=True, use_digits=True, use_symbols=True):
     """Function to generate a random password based on user preferences."""
     char_pool = ''  # Initializing an empty string to store selected character sets
     
-    # Adding selected character sets to the character pool
+    # Adding selected character sets to the character pool, asks if use uppercase/lowercase letters, how many numbers, and what symbols.
     if use_uppercase:
-        char_pool += string.ascii_uppercase  # Uppercase letters A-Z
+        char_pool += string.ascii_uppercase  
     if use_lowercase:
-        char_pool += string.ascii_lowercase  # Lowercase letters a-z
+        char_pool += string.ascii_lowercase  
     if use_digits:
-        char_pool += string.digits  # Numbers 0-9
+        char_pool += string.digits  
     if use_symbols:
-        char_pool += string.punctuation  # Special characters
+        char_pool += string.punctuation 
     
     if not char_pool:  # If no character set is selected, display an error message
         print("Error: No character set selected. Please enable at least one option.")
