@@ -42,27 +42,27 @@ bottom_bar.place(relx=0.104, rely=1, relwidth=1, y=-bottom_bar_height)
 
 
 #settings button in the top right corner to get you to the settings page. (Marteno R)
-Vsettings_button = customtkinter.CTkButton(window, text="⚙️", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="black", command=lambda: print("Go to settings"))
+Vsettings_button = customtkinter.CTkButton(window, text="⚙️", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="black")
 Vsettings_button.place(x=screen_dimension_width - 75, y=10)  
 
 #Bottom line buttons. This will allow you to have the buttons to access all passwords, favorites, search , and profile.
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="🐦", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray", command=lambda: print("All passwords!"))
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text="🐦", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
 ValtureP_button.pack(side="left", padx=90, pady=5)
 
 #Favorite
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="⭐", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray", command=lambda: print("Favorite passwords!"))
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text="⭐", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
 ValtureP_button.pack(side="left", padx=210, pady=5)
 
 #Search button
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="🔍", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray", command=lambda: print("Search!"))
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text="🔍", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
 ValtureP_button.pack(side="left", padx=260, pady=5)
 
 #Profile Button
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text=" 👥 ", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray", command=lambda: print("Profile click"))
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text=" 👥 ", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
 ValtureP_button.pack(side="left", padx=255, pady=5)
 
 #Create Button
-Vsettings_button = customtkinter.CTkButton(window, text=" ➕ ", width=53, height=55, corner_radius=1000, fg_color="#B8860B", border_width=2, border_color="black", command=lambda: print("Create Card"))
+Vsettings_button = customtkinter.CTkButton(window, text=" ➕ ", width=53, height=55, corner_radius=1000, fg_color="#B8860B", border_width=2, border_color="black")
 Vsettings_button.place(x=1830, y=screen_dimension_height - 190)
 
 window.mainloop()
