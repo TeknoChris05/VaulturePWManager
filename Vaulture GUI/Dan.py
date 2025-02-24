@@ -65,6 +65,9 @@ ValtureP_button.pack(side="left", padx=255, pady=5)
 Vsettings_button = customtkinter.CTkButton(window, text=" ➕ ", width=53, height=55, corner_radius=1000, fg_color="#B8860B", border_width=2, border_color="black")
 Vsettings_button.place(x=1830, y=screen_dimension_height - 190)
 
+#make it not change size
+window.root.resizable(False, False)
+
 window.mainloop()
 
 
