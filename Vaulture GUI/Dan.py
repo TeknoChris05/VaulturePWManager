@@ -36,7 +36,7 @@ screen_dimension_height = window.winfo_screenheight()
 
 
 # white bar at bottom
-bottom_bar_height = 50  
+bottom_bar_height = 90  
 bottom_bar = customtkinter.CTkFrame(window, height=bottom_bar_height, corner_radius=0, fg_color="gray")
 bottom_bar.place(relx=0.104, rely=1, relwidth=1, y=-bottom_bar_height)
 
@@ -66,7 +66,7 @@ Vsettings_button = customtkinter.CTkButton(window, text=" ➕ ", width=53, heigh
 Vsettings_button.place(x=1830, y=screen_dimension_height - 190)
 
 #make it not change size
-window.root.resizable(False, False)
+window.resizable(False, False)
 
 window.mainloop()
 
