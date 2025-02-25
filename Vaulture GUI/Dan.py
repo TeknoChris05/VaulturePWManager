@@ -16,8 +16,6 @@ window.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
 sidebar = customtkinter.CTkFrame(window, width=200, height=screen_dimension_height, corner_radius=0, fg_color="#B8860B", border_width=8, border_color="black")
 sidebar.grid(row=0, column=0, sticky="ns")  # "ns" means the sidebar will stretch vertically
 
-#text in sidebar
-
 
 # Search bar at top
 search_frame = customtkinter.CTkFrame(window)
