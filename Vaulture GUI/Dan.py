@@ -11,11 +11,16 @@ screen_dimension_height = window.winfo_screenheight()
 window.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
 
 # Configure grid weights
-window.columnconfigure(0, weight=0)  # Sidebar
-window.columnconfigure(1, weight=5)  # MainStuff
-window.rowconfigure(0, weight=0)  # SearchBar
-window.rowconfigure(1, weight=1)  # Content
-window.rowconfigure(2, weight=0)  # BottomBar
+# Sidebar
+window.columnconfigure(0, weight=0)  
+# MainStuff
+window.columnconfigure(1, weight=5)  
+# SearchBar
+window.rowconfigure(0, weight=0)  
+# Content
+window.rowconfigure(1, weight=1)  
+# BottomBar
+window.rowconfigure(2, weight=0)  
 
 
 # Left sidebar 
@@ -29,23 +34,27 @@ main_frame.grid(row=1, column=1, padx= 10, pady=5, sticky="nsew")
 # Search bar and settings button within the main frame
 search_frame = customtkinter.CTkFrame(main_frame)
 search_frame.grid(row=0, column=3, sticky="n" , pady=20)
-search_entry = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
-search_entry.grid(row=0, column=0, padx=250)
+searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
+searching.grid(row=0, column=0, padx=250)
 
 # White bottom bar 
 bottom_bar = customtkinter.CTkFrame(window, height=90, corner_radius=0, fg_color="gray")
-bottom_bar.grid(row=2, column=1, columnspan=2, sticky="ew", pady=30)  
-bottom_bar.columnconfigure(0, weight=1)  # Passwords
-bottom_bar.columnconfigure(1, weight=1)  # Favorites
-bottom_bar.columnconfigure(2, weight=1)  # Search
-bottom_bar.columnconfigure(3, weight=1)  # Profile
+bottom_bar.grid(row=2, column=1, columnspan=2, sticky="ew", pady=30) 
+# Passwords
+bottom_bar.columnconfigure(0, weight=1)  
+# Favorites
+bottom_bar.columnconfigure(1, weight=1)  
+# Search
+bottom_bar.columnconfigure(2, weight=1)  
+# Profile
+bottom_bar.columnconfigure(3, weight=1)  
 
 # Bottom bar buttons 
 ValtureP_button = customtkinter.CTkButton(bottom_bar, text="🐦", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
 ValtureP_button.grid(row=0, column=0, pady=5)
 
 # Settings button 
-Vsettings_button = customtkinter.CTkButton(main_frame, text="⚙️", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="black")
+Vsettings_button = customtkinter.CTkButton(main_frame, text="⚙️", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
 Vsettings_button.grid(row=0, column=5, sticky="ne", padx=10, pady=5)
 
 Favorite_button = customtkinter.CTkButton(bottom_bar, text="⭐", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
