@@ -3,71 +3,65 @@ from PIL import Image
 import tkinter
 
 window = customtkinter.CTk()
-
 window.title("Vaulture")
 
 # Screen width and height 
 screen_dimension_width = window.winfo_screenwidth()
 screen_dimension_height = window.winfo_screenheight()
-
 window.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
 
-# Left side bar
-sidebar = customtkinter.CTkFrame(window, width=200, height=screen_dimension_height, corner_radius=0, fg_color="#B8860B", border_width=8, border_color="black")
-sidebar.grid(row=0, column=0, sticky="ns")  # "ns" means the sidebar will stretch vertically
+# Configure grid weights
+window.columnconfigure(0, weight=0)  # Sidebar
+window.columnconfigure(1, weight=5)  # MainStuff
+window.rowconfigure(0, weight=0)  # SearchBar
+window.rowconfigure(1, weight=1)  # Content
+window.rowconfigure(2, weight=0)  # BottomBar
 
 
-# Search bar at top
-search_frame = customtkinter.CTkFrame(window)
-search_frame.place(x=800, y=5)  # Place the search bar in the top section
+# Left sidebar 
+sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=0, fg_color="#B8860B", border_width=8, border_color="black")
+sidebar.grid(row=0, column=0, rowspan=3, sticky="nsw")  
 
-# Entry field
-search_entry = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=300)
-search_entry.grid(row=0, column=0, padx=10)
+# Main content frame 
+main_frame = customtkinter.CTkFrame(window)
+main_frame.grid(row=1, column=1, padx= 10, pady=5, sticky="nsew")  
 
-# Frame for top 
-frame = customtkinter.CTkFrame(window)
-frame.grid(row=1, column=1, padx=20, pady=20)
+# Search bar and settings button within the main frame
+search_frame = customtkinter.CTkFrame(main_frame)
+search_frame.grid(row=0, column=3, sticky="n" , pady=20)
+search_entry = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
+search_entry.grid(row=0, column=0, padx=250)
 
-screen_dimension_width = window.winfo_screenwidth()
-screen_dimension_height = window.winfo_screenheight()
+# White bottom bar 
+bottom_bar = customtkinter.CTkFrame(window, height=90, corner_radius=0, fg_color="gray")
+bottom_bar.grid(row=2, column=1, columnspan=2, sticky="ew", pady=30)  
+bottom_bar.columnconfigure(0, weight=1)  # Passwords
+bottom_bar.columnconfigure(1, weight=1)  # Favorites
+bottom_bar.columnconfigure(2, weight=1)  # Search
+bottom_bar.columnconfigure(3, weight=1)  # Profile
 
-
-# white bar at bottom
-bottom_bar_height = 90  
-bottom_bar = customtkinter.CTkFrame(window, height=bottom_bar_height, corner_radius=0, fg_color="gray")
-bottom_bar.place(relx=0.104, rely=1, relwidth=1, y=-bottom_bar_height)
-
-
-#settings button in the top right corner to get you to the settings page. (Marteno R)
-Vsettings_button = customtkinter.CTkButton(window, text="⚙️", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="black")
-Vsettings_button.place(x=screen_dimension_width - 75, y=10)  
-
-#Bottom line buttons. This will allow you to have the buttons to access all passwords, favorites, search , and profile.
+# Bottom bar buttons 
 ValtureP_button = customtkinter.CTkButton(bottom_bar, text="🐦", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
-ValtureP_button.pack(side="left", padx=90, pady=5)
+ValtureP_button.grid(row=0, column=0, pady=5)
 
-#Favorite
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="⭐", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
-ValtureP_button.pack(side="left", padx=210, pady=5)
+# Settings button 
+Vsettings_button = customtkinter.CTkButton(main_frame, text="⚙️", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="black")
+Vsettings_button.grid(row=0, column=5, sticky="ne", padx=10, pady=5)
 
-#Search button
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="🔍", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
-ValtureP_button.pack(side="left", padx=260, pady=5)
+Favorite_button = customtkinter.CTkButton(bottom_bar, text="⭐", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
+Favorite_button.grid(row=0, column=1, pady=5)
 
-#Profile Button
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text=" 👥 ", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
-ValtureP_button.pack(side="left", padx=255, pady=5)
+Search_button = customtkinter.CTkButton(bottom_bar, text="🔍", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
+Search_button.grid(row=0, column=2, pady=5)
 
-#Create Button
-Vsettings_button = customtkinter.CTkButton(window, text=" ➕ ", width=53, height=55, corner_radius=1000, fg_color="#B8860B", border_width=2, border_color="black")
-Vsettings_button.place(x=1830, y=screen_dimension_height - 190)
+Profile_button = customtkinter.CTkButton(bottom_bar, text="👥", width=50, height=50, corner_radius=25, fg_color="#B8860B", border_width=2, border_color="gray")
+Profile_button.grid(row=0, column=3, pady=5)
 
-#make it not change size
+# Create Button (Same size, but moved down into the proper corner)
+Create_button = customtkinter.CTkButton(window, text="➕", width=45, height=45, corner_radius=1000, fg_color="#B8860B", border_width=2, border_color="black")
+Create_button.grid(row=1, column=1, sticky="se", padx=20, pady=30)  
+
+# Make it not change size
 window.resizable(False, False)
 
 window.mainloop()
-
-
-
-
