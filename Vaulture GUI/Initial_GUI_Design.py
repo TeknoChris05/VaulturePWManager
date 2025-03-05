@@ -1,8 +1,7 @@
 import customtkinter
 from PIL import Image
 import tkinter
-import os
-from account import Account_Frame
+
 
 class Login_Page(customtkinter.CTk):
     def __init__(self):
@@ -10,19 +9,25 @@ class Login_Page(customtkinter.CTk):
 
 
         self.title("Vaulture")
+        self.configure(fg_color="#100c08")
 
 
         #Retrieve screen width and height
         screen_dimension_width = self.winfo_screenwidth()
         screen_dimension_height = self.winfo_screenheight()
 
-        self.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
+        x_pos = ((screen_dimension_width-self.winfo_screenwidth()) // 2) -10
+        y_pos = ((screen_dimension_height-self.winfo_screenheight()) // 2) -1
+
+        self.geometry(f"{screen_dimension_width}x{screen_dimension_height}+{x_pos}+{y_pos}")
+        self.pack_propagate(False)
 
         self.login_frame = customtkinter.CTkFrame(master=self,
                                      width = screen_dimension_width/2,
                                      height = screen_dimension_height/1.5,
-                                     corner_radius= 15,
-                                     bg_color= "yellow")
+                                     border_width= 10,
+                                     border_color ="#efcc00",
+                                     fg_color = "#080808")
 
         self.login_frame.pack(padx = 20, pady = 20)
         self.login_frame.pack_propagate(False)
@@ -37,17 +42,17 @@ class Login_Page(customtkinter.CTk):
 
         self.vulture = customtkinter.CTkImage(
             Image.open("C:/Users/romay/Downloads/imageedit_11_2501753302.png"),
-            size = (200,200)
+            size = (185,185)
         )
 
         vulture_label = customtkinter.CTkLabel(self.login_frame, text = "", image=self.vulture)
-        vulture_label.pack(pady=5)
+        vulture_label.pack(pady=10)
 
-        title_label = customtkinter.CTkLabel(self.login_frame, text= "VAULTURE", text_color="yellow", font= ("Arial", 22))
+        title_label = customtkinter.CTkLabel(self.login_frame, text= "VAULTURE", text_color="yellow", font= ("Arial", 22, "bold"))
         title_label.place(relx= 0.5, rely= 0.35, anchor= tkinter.CENTER)
 
 
-        username_label = customtkinter.CTkLabel(self.login_frame, text= "Username", font=("Courier", 16), text_color="yellow")
+        username_label = customtkinter.CTkLabel(self.login_frame, text= "Username", font=("Courier", 16, "bold"), text_color="yellow")
         username_label.place(relx= 0.5, rely= 0.4, anchor= tkinter.CENTER)
 
         username_entry = customtkinter.CTkEntry(self.login_frame, placeholder_text= "Enter Username",
@@ -58,7 +63,7 @@ class Login_Page(customtkinter.CTk):
         username_entry.place(relx = 0.5, rely = 0.45, anchor = tkinter.CENTER)
 
 
-        password_label = customtkinter.CTkLabel(self.login_frame, text= "Password", font=("Courier", 16), text_color="yellow")
+        password_label = customtkinter.CTkLabel(self.login_frame, text= "Password", font=("Courier", 16, "bold"), text_color="yellow")
         password_label.place(relx= 0.5, rely= 0.5, anchor= tkinter.CENTER)
 
         password_entry = customtkinter.CTkEntry(self.login_frame, placeholder_text="Enter Password",
@@ -68,7 +73,7 @@ class Login_Page(customtkinter.CTk):
                                         corner_radius= 10)
         password_entry.place(relx= 0.5, rely= 0.55, anchor= tkinter.CENTER)
 
-        account_label = customtkinter.CTkLabel(self.login_frame, text="Don't have an account? Create one by clicking the 'Sign Up' button", font= ("Courier", 12), text_color="yellow")
+        account_label = customtkinter.CTkLabel(self.login_frame, text="Don't have an account? Create one by clicking the 'Sign Up' button", font= ("Courier", 12, "bold"), text_color="yellow")
         account_label.place(relx= 0.5, rely= 0.6, anchor= tkinter.CENTER)
 
         login_button = customtkinter.CTkButton(self.login_frame, text="Login", fg_color="yellow", text_color="black")

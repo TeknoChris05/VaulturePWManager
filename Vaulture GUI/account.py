@@ -1,4 +1,5 @@
 import customtkinter
+from Initial_GUI_Design import Login_Page
 
 
 class Account_Frame(customtkinter.CTkFrame):
@@ -9,7 +10,7 @@ class Account_Frame(customtkinter.CTkFrame):
         screen_dimension_width = self.winfo_screenwidth()
         screen_dimension_height = self.winfo_screenheight()
 
-        self.configure(width= screen_dimension_width/2,
+        self.account_frame.configure(width= screen_dimension_width/2,
                         height= screen_dimension_height / 1.5,
                         corner_radius=15,
                         bg_color="yellow")
