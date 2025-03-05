@@ -34,7 +34,7 @@ searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here..
 searching.grid(row=0, column=0, padx=550)
 
 # Left sidebar 
-sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=0, fg_color="#0e3161", border_width=8, border_color="black")
+sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color="#0e3161", border_width=8, border_color="black")
 sidebar.grid(row=0, column=0, rowspan=3, sticky="nsw")  
 
 # White bottom bar 
