@@ -74,7 +74,7 @@ Search_button = customtkinter.CTkButton(bottom_bar, text="🔍", width=60, heigh
 Search_button.grid(row=0, column=1, pady=5)
 
 # Profile button in bottom bar
-Profile_button = customtkinter.CTkButton(bottom_bar, text="👥", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command= ProfileP)
+Profile_button = customtkinter.CTkButton(bottom_bar, text="👥", width=60, height=70, corner_radius=900, fg_color="#282929",border_width=2, border_color="gray",  command=lambda: ProfileP())
 Profile_button.grid(row=0, column=2, pady=5)
 
 Sort_button = customtkinter.CTkButton(bottom_bar, text="Sort", width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray")
