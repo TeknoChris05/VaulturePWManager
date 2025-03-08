@@ -58,6 +58,9 @@ Archive_button.grid(row=5, column=0, padx=10, pady=5, sticky="nsew")
 Trash_button = customtkinter.CTkButton(sidebar, text="Trash 🗑️", width=40, height=70, corner_radius=30, fg_color="#282929", border_width=2, border_color="gray")
 Trash_button.grid(row=6, column=0, padx=10, pady=5, sticky="nsew")
 
+# Settings button 
+Vsettings_button = customtkinter.CTkButton(main_frame, text="⚙️", width=60, height=70, corner_radius= 900, fg_color="#282929", border_width=2, border_color="gray")
+Vsettings_button.grid(row=0, column=4, sticky="ne", padx=70, pady=5)
 
 # White bottom bar
 bottom_bar = customtkinter.CTkFrame(window, height=90, corner_radius=0, fg_color="#133f61")
@@ -153,7 +156,7 @@ def open_one_time_password_page():
 #This will open up the profile page 
 def ProfileP():
     otp_window = customtkinter.CTkToplevel(window, fg_color="#60728a")
-    otp_window.title("One-Time Password Page")
+    otp_window.title("Profile Page")
     otp_window.geometry("600x600")
     otp_window.attributes("-topmost", True)
 
