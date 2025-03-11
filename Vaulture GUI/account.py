@@ -1,6 +1,8 @@
 import customtkinter
 from tkinter import colorchooser
 from PIL import Image, ImageTk
+import pyotp
+import qrcode
 
 
 class SettingsApp(customtkinter.CTk):
@@ -152,6 +154,27 @@ class ThemesFrame(customtkinter.CTkFrame):
         if color_code:
             self.master.update_theme(color_code)
 
+ # Generate a secret key (store securely)
+    secret_key = pyotp.random_base32()
+
+    # Create a TOTP object
+    totp = pyotp.TOTP(secret_key)
+
+    # Generate the provisioning URI for the QR code
+    provisioning_uri = totp.provisioning_uri(name='user@example.com', issuer_name='YourAppName')
+
+    # Generate QR code
+    img = qrcode.make(provisioning_uri)
+    img.save('qrcode.png')
+
+    # To verify OTP
+    otp = input("Enter the OTP from the Google Authenticator app: ")
+    if totp.verify(otp):
+        print("OTP is valid")
+    else:
+        print("OTP is invalid")
+
 if __name__ == "__main__":
     app = SettingsApp()
     app.mainloop()
+
