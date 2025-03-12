@@ -32,6 +32,8 @@ class SettingsApp(customtkinter.CTk):
             ("⚙ Settings", self.show_settings_page),
             ("🔒 Security", self.show_security_page),
             ("🎨 Themes", self.show_themes_page),
+            ("❓Help",self.show_Help_page),
+            ("✉️ Contact Us", self.show_Contact_page)
         ]
 
         for text, command in buttons:
@@ -51,6 +53,15 @@ class SettingsApp(customtkinter.CTk):
     def show_themes_page(self):
         """Displays the themes page."""
         self._switch_frame(ThemesFrame)
+
+    def show_Help_page(self):
+        """Displays the Help page."""
+        self._switch_frame(HelpFrame)
+
+    def show_Contact_page(self):
+        """Displays the Contact us page."""
+        self._switch_frame(ContactFrame)
+
 
     def _switch_frame(self, frame_class):
         """Helper method to switch frames dynamically."""
@@ -151,6 +162,40 @@ class ThemesFrame(customtkinter.CTkFrame):
         color_code = colorchooser.askcolor(title="Choose Theme Color")[1]
         if color_code:
             self.master.update_theme(color_code)
+
+    
+class HelpFrame(customtkinter.CTkFrame):
+    """Help page with general information."""
+    def __init__(self, master):
+        super().__init__(master)
+        self.configure(fg_color="#2C2F33", border_width=0, border_color="#7289DA")
+
+        title = customtkinter.CTkLabel(self, text="Help", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60) 
+        title.pack(fill="x")
+
+        label = customtkinter.CTkLabel(self, text="", text_color="white", justify="left", font=("Segoe UI", 16), wraplength=600) 
+        label.pack(pady=20, padx=20)     
+
+class ContactFrame(customtkinter.CTkFrame):
+    """Contact page with support details."""
+    def __init__(self, master):
+        super().__init__(master)
+        self.configure(fg_color="#2C2F33", border_width=0, border_color="#7289DA")
+        
+        title = customtkinter.CTkLabel(self, text="Contact Us", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
+        title.pack(fill="x")
+
+        contact_text = """Here is how you contact us!
+
+        Emails: 
+        - Martenoromaya@oakland.edu
+        - dromaya@oakland.edu
+        - danieltrpevski@oakland.edu
+        - cgatie@oakland.edu
+        """
+
+        label = customtkinter.CTkLabel(self, text=contact_text, text_color="white",  justify="left", font=("Segoe UI", 16), wraplength=600)
+        label.pack(pady=20, padx=20)       
 
 if __name__ == "__main__":
     app = SettingsApp()
