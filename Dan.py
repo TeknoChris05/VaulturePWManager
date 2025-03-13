@@ -54,6 +54,14 @@ filter4_button.grid(row=3, column=0, padx=10, pady=60, sticky="nsew")
 filter5_button = customtkinter.CTkButton(sidebar, text="One-Time Password", width=150, height=50, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_one_time_password_page())
 filter5_button.grid(row=4, column=0, padx=10, pady=60, sticky="nsew")
 
+filter6_button = customtkinter.CTkButton(sidebar, text="Archived", width=150, height=50, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_one_time_password_page())
+filter6_button.grid(row=5, column=0, padx=10, pady=60, sticky="nsew")
+
+filter7_button = customtkinter.CTkButton(sidebar, text="Trasj", width=150, height=50, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_one_time_password_page())
+filter7_button.grid(row=6, column=0, padx=10, pady=60, sticky="nsew")
+
+
+
 # Hamburger Button (Toggle Sidebar)
 hamburger_button = customtkinter.CTkButton(window, text="☰", width=60, height=60, corner_radius=10, fg_color="#0e3161", border_width=2, border_color="gray", command=lambda: toggle_sidebar())
 hamburger_button.grid(row=0, column=0, padx=10, pady=10)
@@ -131,19 +139,16 @@ def open_settings_page():
     back_button = customtkinter.CTkButton(settings_window, text="Back", command=settings_window.destroy)
     back_button.pack(pady=20)
 
-# Open Functions page used chat gpt for -topmost function
+# Open Functions page 
 def open_passwords_page():
     passwords_window = customtkinter.CTkToplevel(window)
     passwords_window.title("Passwords Page")
     passwords_window.geometry("600x400")
-    passwords_window.attributes("-topmost", True)  # Looked up how to keep window on top of desktop on chat gpt
+    passwords_window.attributes("-topmost", True)  
 
-    label = customtkinter.CTkLabel(passwords_window, text="Your Passwords", font=("Arial", 18))
+    label = customtkinter.CTkLabel(passwords_window, text="Passwords", font=("Verdana", 20))
     label.pack(pady=20)
 
-    # Add other elements for your passwords page, such as a list of passwords
-    password_example = customtkinter.CTkLabel(passwords_window, text="Example: Test Password 1")
-    password_example.pack(pady=10)
 
     back_button = customtkinter.CTkButton(passwords_window, text="Back", command=passwords_window.destroy)
     back_button.pack(pady=20)
@@ -155,7 +160,7 @@ def open_favorites_page():
     favorites_window.geometry("600x400")
     favorites_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(favorites_window, text="Your Favorites", font=("Arial", 18))
+    label = customtkinter.CTkLabel(favorites_window, text="Favorites", font=("Verdana", 20))
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(favorites_window, text="Back", command=favorites_window.destroy)
@@ -168,7 +173,7 @@ def open_notes_page():
     notes_window.geometry("600x400")
     notes_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(notes_window, text="Your Notes", font=("Arial", 18))
+    label = customtkinter.CTkLabel(notes_window, text="Notes", font=("Verdana", 20))
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(notes_window, text="Back", command=notes_window.destroy)
@@ -181,7 +186,7 @@ def open_banking_cards_page():
     banking_window.geometry("600x400")
     banking_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(banking_window, text="Your Banking Cards", font=("Arial", 18))
+    label = customtkinter.CTkLabel(banking_window, text="Banking Cards", font=("Verdana", 20))
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(banking_window, text="Back", command=banking_window.destroy)
@@ -194,7 +199,7 @@ def open_one_time_password_page():
     otp_window.geometry("600x400")
     otp_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(otp_window, text="Your One-Time Passwords", font=("Arial", 18))
+    label = customtkinter.CTkLabel(otp_window, text="One-Time Passwords", font=("Verdana", 20))
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(otp_window, text="Back", command=otp_window.destroy)
