@@ -66,6 +66,8 @@ class SettingsApp(customtkinter.CTk):
             for widget in self.current_frame.winfo_children():
                 if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkSwitch, customtkinter.CTkFrame)):
                     widget.configure(fg_color=new_color, text_color="black" if new_color == "#FFFFFF" else "white")
+        if isinstance(self.current_frame, SecurityFrame):
+                    self.current_frame.twofa_frame.configure(fg_color=new_color)                    
         
         self.refresh_current_frame()  
     
@@ -92,12 +94,13 @@ class SettingsApp(customtkinter.CTk):
             self.current_frame.destroy()        
             
         self.current_frame = frame_class(self)
+        self.current_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
         #Theme Color Update
         self.current_frame.configure(fg_color=self.theme_color)
         for widget in self.current_frame.winfo_children():
             if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkFrame)):
                 widget.configure(fg_color=self.theme_color, text_color="black" if self.theme_color == "#FFFFFF" else "white")
-        self.current_frame.pack(fill="both", expand=True, padx=20, pady=20)
             
 class SettingsFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -127,25 +130,25 @@ class SettingsFrame(customtkinter.CTkFrame):
 class SecurityFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
-        self.configure(fg_color="#2C2F33", border_width=0, border_color="#7289DA")
-        self.configure(fg_color=master.theme_color)
+        self.configure(fg_color=master.theme_color, border_width=0, border_color="#7289DA")
 
         title = customtkinter.CTkLabel(self, text="Security Settings", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
         title.pack(fill="x")
         label = customtkinter.CTkLabel(self, text="Enable Two-Factor Authentication (2FA)", font=("Segoe UI", 18), text_color="white")
         label.pack(pady=20)
         
-        self.twofac_frame = customtkinter.CTkFrame(self, fg_color="#23272A", border_width=2, border_color="#7289DA", corner_radius=10)
-        self.twofac_frame.pack(pady=10, padx=20, fill="x")
-        self.twofac_switch = customtkinter.CTkSwitch(self.twofac_frame, text="Enable 2FA", fg_color=master.theme_color, text_color=master.text_color)
-        self.twofac_switch.pack(pady=10, padx=10)
+        self.twofa_frame = customtkinter.CTkFrame(self, fg_color=master.theme_color, border_width=2, border_color="#7289DA", corner_radius=10)
+        self.twofa_frame.pack(pady=10, padx=20, fill="x")
+        
+        self.twofa_switch = customtkinter.CTkSwitch(self.twofa_frame, text="Enable 2FA", fg_color=master.theme_color, text_color=master.text_color)
+        self.twofa_switch.pack(pady=10, padx=10)
 
         self.recovery_code_button = customtkinter.CTkButton(self, text="Generate Recovery Codes", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color,corner_radius=10, border_width=2, border_color="#7289DA")
         self.recovery_code_button.pack(pady=10)
 
         back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_settings_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=20)
-
+        
 
 class ThemesFrame(customtkinter.CTkFrame):
     def __init__(self, master):
