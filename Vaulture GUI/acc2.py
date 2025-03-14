@@ -17,6 +17,8 @@ class SettingsApp(customtkinter.CTk):
             self.current_frame = None
             self._create_sidebar()
             self.show_settings_page()
+            back_button = customtkinter.CTkButton(self, text="Back", command=self.destroy)
+            back_button.pack(pady=20)
             
     def _create_sidebar(self):
         self.sidebar = customtkinter.CTkFrame(self, fg_color="#23272A", width=200, corner_radius=10)
@@ -31,7 +33,7 @@ class SettingsApp(customtkinter.CTk):
             ("ℹ️ Help", self.show_Help_page),
             ("✉️ Contact", self.show_Contact_page),
         ]
-
+     
         for text, command in buttons:
             button = customtkinter.CTkButton(self.sidebar, text=text, font=("Segoe UI", 18), fg_color="#2C2F33", hover_color="#7289DA", text_color="#FFFFFF", command=command, corner_radius=10, border_width=2, border_color="#7289DA")
             button.pack(fill="x", padx=10, pady=10)
@@ -132,7 +134,9 @@ class SettingsFrame(customtkinter.CTkFrame):
             btn = customtkinter.CTkButton(self, text=option, text_color=master.text_color,
                                           font=("Segoe UI", 18), fg_color=master.theme_color,
                                           hover_color="#d4af37", corner_radius=10, border_width=2, border_color="#7289DA")
-            btn.pack(fill="x", padx=20, pady=5)        
+            btn.pack(fill="x", padx=20, pady=0)    
+
+        
         
  
 class SecurityFrame(customtkinter.CTkFrame):
@@ -184,8 +188,6 @@ class HelpFrame(customtkinter.CTkFrame):
         title = customtkinter.CTkLabel(self, text="Help", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
         title.pack(fill="x")
 
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_settings_page, corner_radius=10, border_width=2, border_color="#7289DA")
-        back_button.pack(pady=20)
     
 
 class ContactFrame(customtkinter.CTkFrame):
@@ -209,9 +211,8 @@ class ContactFrame(customtkinter.CTkFrame):
         label = customtkinter.CTkLabel(self, text=contact_text, text_color="white",  justify="left", font=("Segoe UI", 16), wraplength=600)
         label.pack(pady=20, padx=20)
 
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_settings_page, corner_radius=10, border_width=2, border_color="#7289DA")
-        back_button.pack(pady=20)
 
-if __name__ == "__main__":
+
+def opening_settings():
     app = SettingsApp()
-    app.mainloop() 
+    app.mainloop()

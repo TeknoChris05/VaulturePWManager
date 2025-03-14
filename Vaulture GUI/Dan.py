@@ -1,6 +1,7 @@
 import customtkinter
 from PIL import Image
 import tkinter
+import acc2 
 
 window = customtkinter.CTk()
 window.title("Vaulture")
@@ -122,8 +123,13 @@ Create_button = customtkinter.CTkButton(main_frame, text="➕", width=70, height
 Create_button.place(relx=0.99, rely=0.99, anchor="se")
 
 # New Settings Button at top-right
-Settings_button = customtkinter.CTkButton(main_frame, text="⚙️", width=70, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_settings_page())
+def open_settings_page():
+    settings_window = customtkinter.CTkToplevel(main_frame)
+    settings_window = acc2.SettingsApp() 
+    
+Settings_button = customtkinter.CTkButton(window, text="⚙️", width=70, height=70, corner_radius=900, bg_color="#A9A9A9" ,fg_color="#282929", border_width=2, border_color="gray", command=open_settings_page)
 Settings_button.place(relx=0.99, rely=0.01, anchor="ne")  
+
 
 # Bottom Bar Setup
 bottom_bar.columnconfigure(0, weight=1)    
@@ -142,7 +148,7 @@ def open_passwords_page():
     favorites_window.geometry("600x400")
     favorites_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(favorites_window, text="Favorites", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(favorites_window, text="Create Passwords", font=("Verdana", 20))
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(favorites_window, text="Back", command=favorites_window.destroy)
@@ -163,11 +169,11 @@ def open_favorites_page():
 # Open Notes page
 def open_notes_page():
     notes_window = customtkinter.CTkToplevel(window)
-    notes_window.title("Notes Page")
+    notes_window.title("Create Notes Page")
     notes_window.geometry("600x400")
     notes_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(notes_window, text="Notes", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(notes_window, text="Create Notes", font=("Verdana", 20))
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(notes_window, text="Back", command=notes_window.destroy)
@@ -176,11 +182,11 @@ def open_notes_page():
 # Open Banking Cards page
 def open_banking_cards_page():
     banking_window = customtkinter.CTkToplevel(window)
-    banking_window.title("Banking Cards Page")
+    banking_window.title("Create Banking Cards Page")
     banking_window.geometry("600x400")
     banking_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(banking_window, text="Banking Cards", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(banking_window, text="Create Banking Cards", font=("Verdana", 20))
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(banking_window, text="Back", command=banking_window.destroy)
@@ -193,7 +199,7 @@ def open_one_time_password_page():
     otp_window.geometry("600x400")
     otp_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(otp_window, text="One-Time Passwords", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(otp_window, text="Create One-Time Passwords", font=("Verdana", 20))
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(otp_window, text="Back", command=otp_window.destroy)
@@ -218,5 +224,4 @@ def open_Profile_Page():
 
 # Make it not change size
 window.resizable(False, False)
-
 window.mainloop()
