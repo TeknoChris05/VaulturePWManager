@@ -9,7 +9,6 @@ customtkinter.set_default_color_theme("dark-blue")
 class SettingsApp(customtkinter.CTk):
     def __init__(self):
             super().__init__()
-            self.geometry("1200x700")
             self.state("zoomed")
             self.configure(fg_color="#2C2F33")
         #Default theme 
