@@ -28,10 +28,10 @@ main_frame = customtkinter.CTkFrame(window, fg_color="#A9A9A9")
 main_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")  
 
 # Search bar and settings button within the main frame
-search_frame = customtkinter.CTkFrame(main_frame, fg_color="#A9A9A9")
-search_frame.grid(row=0, column=3, sticky="n", pady=20)
+search_frame = customtkinter.CTkFrame(main_frame, fg_color="#A9A9A9", height=50, width=480)  
+search_frame.place(relx=0.5, rely=0.05, anchor="center")
 searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
-searching.grid(row=0, column=0, padx=550)
+searching.place(relx=0.5, rely=0.5, anchor="center") 
 
 # Left sidebar 
 sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color="#0e3161", border_width=8, border_color="black")
