@@ -9,7 +9,8 @@ window.title("Vaulture")
 screen_dimension_width = window.winfo_screenwidth()
 screen_dimension_height = window.winfo_screenheight()
 window.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
-
+window.minsize(800, 600)  
+window.maxsize(1920, 1080)
 
 # Sidebar
 window.columnconfigure(0, weight=0)  
@@ -104,65 +105,6 @@ Create_button.place(relx=0.99, rely=0.99, anchor="se")
 # New Settings Button at top-right
 Settings_button = customtkinter.CTkButton(main_frame, text="⚙️", width=70, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_settings_page())
 Settings_button.place(relx=0.99, rely=0.01, anchor="ne")  
-
-# Open settings button
-def open_settings_page():
-    settings_window = customtkinter.CTkToplevel(window)
-    settings_window.title("Settings Page")
-    settings_window.geometry("600x600")
-    settings_window.attributes("-topmost", True)
-
-    label = customtkinter.CTkLabel(settings_window, text="Settings", font=("Arial", 18))
-    label.pack(pady=20)
-
-    # Create a frame to display the buttons
-    options_frame = customtkinter.CTkFrame(settings_window)
-    options_frame.pack(pady=20)
-
-    # Security Button
-    security_button = customtkinter.CTkButton(options_frame, text="Security", width=200, height=50, corner_radius=20)
-    security_button.grid(row=0, column=0, pady=10)
-
-    # Account Change Button 
-    account_button = customtkinter.CTkButton(options_frame, text="Account Change", width=200, height=50, corner_radius=20)
-    account_button.grid(row=1, column=0, pady=10)
-
-    # Themes Button 
-    themes_button = customtkinter.CTkButton(options_frame, text="Themes", width=200, height=50, corner_radius=20)
-    themes_button.grid(row=2, column=0, pady=10)
-
-    # Help
-    help_button = customtkinter.CTkButton(options_frame, text="Help", width=200, height=50, corner_radius=20)
-    help_button.grid(row=3, column=0, pady=10)
-
-  # Contact Button 
-    Contact_button = customtkinter.CTkButton(options_frame, text="Contact", width=200, height=50, corner_radius=20, command=lambda: Contact_Page(settings_window))
-    Contact_button.grid(row=4, column=0, pady=10)
-
-def Contact_Page(settings_window):
-    contact_window = customtkinter.CTkToplevel(settings_window)
-    contact_window.title("Contact Page")
-    contact_window.geometry("600x600")
-    contact_window.attributes("-topmost", True)  
-  
-
-    title = customtkinter.CTkLabel(contact_window, text="Contact Us", font=("Segoe UI", 20, "bold"))
-    title.pack(pady=20)
-
-    contact_text = """Here is how you contact us!
-
-Emails: 
-- Martenoromaya@oakland.edu
-- dromaya@oakland.edu
-- danieltrpevski@oakland.edu
-- cgatie@oakland.edu
-"""
-
-    label = customtkinter.CTkLabel(contact_window, text=contact_text, justify="left", font=("Segoe UI", 14), wraplength=500)
-    label.pack(pady=20, padx=20)
-
-    back_button = customtkinter.CTkButton(contact_window, text="Back", command=contact_window.destroy)
-    back_button.pack(pady=20)
 
 
 # Open Favorites page
