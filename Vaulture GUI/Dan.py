@@ -1,14 +1,17 @@
 import customtkinter
 from PIL import Image
 import tkinter
+import acc2
 
 window = customtkinter.CTk()
 window.title("Vaulture")
 
-# Screen width and height 
+# Screen width and height
 screen_dimension_width = window.winfo_screenwidth()
 screen_dimension_height = window.winfo_screenheight()
 window.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
+window.minsize(800, 600)
+window.maxsize(1920, 1080)
 
 # Sidebar
 window.columnconfigure(0, weight=0)
@@ -26,55 +29,73 @@ main_frame = customtkinter.CTkFrame(window, fg_color="#A9A9A9")
 main_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
 
 # Search bar and settings button within the main frame
-search_frame = customtkinter.CTkFrame(main_frame, fg_color="#A9A9A9")
-search_frame.grid(row=0, column=3, sticky="n", pady=20)
+search_frame = customtkinter.CTkFrame(main_frame, fg_color="#A9A9A9", height=50, width=480)
+search_frame.place(relx=0.5, rely=0.05, anchor="center")
 searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
-searching.grid(row=0, column=0, padx=550)
+searching.place(relx=0.5, rely=0.5, anchor="center")
 
 # Left sidebar
 sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color="#0e3161", border_width=8,
                                  border_color="black")
-sidebar.grid(row=0, column=0, rowspan=3, sticky="nsw")
+sidebar.grid(row=0, column=0, rowspan=2, sticky="nsw")
 sidebar.grid_forget()
 
 # Sidebar buttons (These will appear when the sidebar is toggled)
-filter1_button = customtkinter.CTkButton(sidebar, text="Passwords", width=150, height=50, corner_radius=5,
+hamburger_button = customtkinter.CTkButton(main_frame, text="☰", width=60, height=60, corner_radius=10,
+                                           fg_color="#0e3161", border_width=2, border_color="gray",
+                                           command=lambda: toggle_sidebar())
+hamburger_button.grid(row=0, column=0, padx=20, pady=30)
+
+filter1_button = customtkinter.CTkButton(sidebar, text="Passwords", width=150, height=20, corner_radius=5,
                                          fg_color="#282929", border_width=2, border_color="gray",
                                          command=lambda: open_passwords_page())
-filter1_button.grid(row=0, column=0, padx=10, pady=80, sticky="nsew")
+filter1_button.grid(row=0, column=0, padx=30, pady=10, sticky="nsew")
 
-filter2_button = customtkinter.CTkButton(sidebar, text="Favorites", width=150, height=50, corner_radius=5,
+filter2_button = customtkinter.CTkButton(sidebar, text="Favorites", width=150, height=0, corner_radius=5,
                                          fg_color="#282929", border_width=2, border_color="gray",
                                          command=lambda: open_favorites_page())
-filter2_button.grid(row=1, column=0, padx=10, pady=60, sticky="nsew")
+filter2_button.grid(row=1, column=0, padx=30, pady=10, sticky="nsew")
 
-filter3_button = customtkinter.CTkButton(sidebar, text="Notes", width=150, height=50, corner_radius=5,
+filter3_button = customtkinter.CTkButton(sidebar, text="Notes", width=150, height=20, corner_radius=5,
                                          fg_color="#282929", border_width=2, border_color="gray",
                                          command=lambda: open_notes_page())
-filter3_button.grid(row=2, column=0, padx=10, pady=60, sticky="nsew")
+filter3_button.grid(row=2, column=0, padx=30, pady=10, sticky="nsew")
 
-filter4_button = customtkinter.CTkButton(sidebar, text="Banking Cards", width=150, height=50, corner_radius=5,
+filter4_button = customtkinter.CTkButton(sidebar, text="Banking Cards", width=150, height=20, corner_radius=5,
                                          fg_color="#282929", border_width=2, border_color="gray",
                                          command=lambda: open_banking_cards_page())
-filter4_button.grid(row=3, column=0, padx=10, pady=60, sticky="nsew")
+filter4_button.grid(row=3, column=0, padx=30, pady=10, sticky="nsew")
 
-filter5_button = customtkinter.CTkButton(sidebar, text="One-Time Password", width=150, height=50, corner_radius=5,
+filter5_button = customtkinter.CTkButton(sidebar, text="One-Time Password", width=150, height=20, corner_radius=5,
                                          fg_color="#282929", border_width=2, border_color="gray",
                                          command=lambda: open_one_time_password_page())
-filter5_button.grid(row=4, column=0, padx=10, pady=70, sticky="nsew")
+filter5_button.grid(row=4, column=0, padx=30, pady=10, sticky="nsew")
 
-Archive_button = customtkinter.CTkButton(sidebar, text="Archived 📦", width=40, height=50, corner_radius=5,
+Archive_button = customtkinter.CTkButton(sidebar, text="Archived 📦", width=40, height=20, corner_radius=5,
                                          fg_color="#282929", border_width=2, border_color="gray")
-Archive_button.grid(row=5, column=0, padx=10, pady=5, sticky="nsew")
+Archive_button.grid(row=5, column=0, padx=30, pady=20, sticky="nsew")
 
-Trash_button = customtkinter.CTkButton(sidebar, text="Trash 🗑️", width=40, height=50, corner_radius=5,
+Trash_button = customtkinter.CTkButton(sidebar, text="Trash 🗑️", width=40, height=20, corner_radius=5,
                                        fg_color="#282929", border_width=2, border_color="gray")
-Trash_button.grid(row=6, column=0, padx=10, pady=5, sticky="nsew")
+Trash_button.grid(row=6, column=0, padx=30, pady=20, sticky="nsew")
 
-# Hamburger Button (Toggle Sidebar)
-hamburger_button = customtkinter.CTkButton(window, text="☰", width=60, height=60, corner_radius=10, fg_color="#0e3161",
-                                           border_width=2, border_color="gray", command=lambda: toggle_sidebar())
-hamburger_button.grid(row=0, column=0, padx=10, pady=10)
+# Assigning weights so that these buttons wont go offscreen
+# Hamburger Button
+sidebar.rowconfigure(0, weight=2)
+# Passwords
+sidebar.rowconfigure(1, weight=2)
+# Favorites
+sidebar.rowconfigure(2, weight=2)
+# Notes
+sidebar.rowconfigure(3, weight=2)
+# Banking Cards
+sidebar.rowconfigure(4, weight=2)
+# One-Time Password
+sidebar.rowconfigure(5, weight=2)
+# Archived
+sidebar.rowconfigure(6, weight=2)
+# Trash
+sidebar.rowconfigure(7, weight=2)
 
 # global sidebar
 sidebar_open = False
@@ -126,73 +147,39 @@ Create_button = customtkinter.CTkButton(main_frame, text="➕", width=70, height
                                         fg_color="#282929", border_width=2, border_color="gray")
 Create_button.place(relx=0.99, rely=0.99, anchor="se")
 
+
 # New Settings Button at top-right
-Settings_button = customtkinter.CTkButton(main_frame, text="⚙️", width=70, height=70, corner_radius=900,
+def open_settings_page():
+    settings_window = customtkinter.CTkToplevel(main_frame)
+    settings_window = acc2.SettingsApp()
+
+
+Settings_button = customtkinter.CTkButton(window, text="⚙️", width=70, height=70, corner_radius=900, bg_color="#A9A9A9",
                                           fg_color="#282929", border_width=2, border_color="gray",
-                                          command=lambda: open_settings_page())
+                                          command=open_settings_page)
 Settings_button.place(relx=0.99, rely=0.01, anchor="ne")
 
+# Bottom Bar Setup
+bottom_bar.columnconfigure(0, weight=1)
+# Search
+bottom_bar.columnconfigure(1, weight=1)
+# Profile
+bottom_bar.columnconfigure(2, weight=1)
+# Sort
+bottom_bar.columnconfigure(3, weight=1)
 
-# Open settings button
-def open_settings_page():
-    settings_window = customtkinter.CTkToplevel(window)
-    settings_window.title("Settings Page")
-    settings_window.geometry("600x600")
-    settings_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(settings_window, text="Settings", font=("Arial", 18))
+# Open passwords page
+def open_passwords_page():
+    favorites_window = customtkinter.CTkToplevel(window)
+    favorites_window.title("Passwords Page")
+    favorites_window.geometry("600x400")
+    favorites_window.attributes("-topmost", True)
+
+    label = customtkinter.CTkLabel(favorites_window, text="Create Passwords", font=("Verdana", 20))
     label.pack(pady=20)
 
-    # Create a frame to display the buttons
-    options_frame = customtkinter.CTkFrame(settings_window)
-    options_frame.pack(pady=20)
-
-    # Security Button
-    security_button = customtkinter.CTkButton(options_frame, text="Security", width=200, height=50, corner_radius=20)
-    security_button.grid(row=0, column=0, pady=10)
-
-    # Account Change Button
-    account_button = customtkinter.CTkButton(options_frame, text="Account Change", width=200, height=50,
-                                             corner_radius=20)
-    account_button.grid(row=1, column=0, pady=10)
-
-    # Themes Button
-    themes_button = customtkinter.CTkButton(options_frame, text="Themes", width=200, height=50, corner_radius=20)
-    themes_button.grid(row=2, column=0, pady=10)
-
-    # Help
-    help_button = customtkinter.CTkButton(options_frame, text="Help", width=200, height=50, corner_radius=20)
-    help_button.grid(row=3, column=0, pady=10)
-
-    # Contact Button
-    Contact_button = customtkinter.CTkButton(options_frame, text="Contact", width=200, height=50, corner_radius=20,
-                                             command=lambda: Contact_Page(settings_window))
-    Contact_button.grid(row=4, column=0, pady=10)
-
-
-def Contact_Page(settings_window):
-    contact_window = customtkinter.CTkToplevel(settings_window)
-    contact_window.title("Contact Page")
-    contact_window.geometry("600x600")
-    contact_window.attributes("-topmost", True)
-
-    title = customtkinter.CTkLabel(contact_window, text="Contact Us", font=("Segoe UI", 20, "bold"))
-    title.pack(pady=20)
-
-    contact_text = """Here is how you contact us!
-
-Emails: 
-- Martenoromaya@oakland.edu
-- dromaya@oakland.edu
-- danieltrpevski@oakland.edu
-- cgatie@oakland.edu
-"""
-
-    label = customtkinter.CTkLabel(contact_window, text=contact_text, justify="left", font=("Segoe UI", 14),
-                                   wraplength=500)
-    label.pack(pady=20, padx=20)
-
-    back_button = customtkinter.CTkButton(contact_window, text="Back", command=contact_window.destroy)
+    back_button = customtkinter.CTkButton(favorites_window, text="Back", command=favorites_window.destroy)
     back_button.pack(pady=20)
 
 
@@ -213,11 +200,11 @@ def open_favorites_page():
 # Open Notes page
 def open_notes_page():
     notes_window = customtkinter.CTkToplevel(window)
-    notes_window.title("Notes Page")
+    notes_window.title("Create Notes Page")
     notes_window.geometry("600x400")
     notes_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(notes_window, text="Notes", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(notes_window, text="Create Notes", font=("Verdana", 20))
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(notes_window, text="Back", command=notes_window.destroy)
@@ -227,11 +214,11 @@ def open_notes_page():
 # Open Banking Cards page
 def open_banking_cards_page():
     banking_window = customtkinter.CTkToplevel(window)
-    banking_window.title("Banking Cards Page")
+    banking_window.title("Create Banking Cards Page")
     banking_window.geometry("600x400")
     banking_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(banking_window, text="Banking Cards", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(banking_window, text="Create Banking Cards", font=("Verdana", 20))
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(banking_window, text="Back", command=banking_window.destroy)
@@ -245,7 +232,7 @@ def open_one_time_password_page():
     otp_window.geometry("600x400")
     otp_window.attributes("-topmost", True)
 
-    label = customtkinter.CTkLabel(otp_window, text="One-Time Passwords", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(otp_window, text="Create One-Time Passwords", font=("Verdana", 20))
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(otp_window, text="Back", command=otp_window.destroy)
@@ -269,16 +256,6 @@ def open_Profile_Page():
     back_button.pack(pady=20)
 
 
-# Bottom Bar Setup
-bottom_bar.columnconfigure(0, weight=1)
-# Search
-bottom_bar.columnconfigure(1, weight=1)
-# Profile
-bottom_bar.columnconfigure(2, weight=1)
-# Sort
-bottom_bar.columnconfigure(3, weight=1)
-
 # Make it not change size
 window.resizable(False, False)
-
 window.mainloop()
