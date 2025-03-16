@@ -16,9 +16,9 @@ class SettingsApp(customtkinter.CTk):
             self.text_color = "white"
             self.current_frame = None
             self._create_sidebar()
-            self.show_settings_page()
-            back_button = customtkinter.CTkButton(self, text="Back", command=self.destroy)
-            back_button.pack(pady=20)
+            self.show_Intro_page()
+            Exit_button = customtkinter.CTkButton(self, text="Exit", command=self.destroy)
+            Exit_button.pack(side="bottom", pady=20)
             
     def _create_sidebar(self):
         self.sidebar = customtkinter.CTkFrame(self, fg_color="#23272A", width=200, corner_radius=10)
@@ -83,6 +83,8 @@ class SettingsApp(customtkinter.CTk):
         self.current_frame = frame_class(self)
         self.current_frame.pack(fill="both", expand=True, padx=20, pady=20)
             
+    def show_Intro_page(self):
+        self._switch_frame(IntroFrame)
 
     def show_settings_page(self):
         self._switch_frame(SettingsFrame)
@@ -111,6 +113,22 @@ class SettingsApp(customtkinter.CTk):
         for widget in self.current_frame.winfo_children():
             if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkFrame)):
                 widget.configure(fg_color=self.theme_color, text_color="black" if self.theme_color == "#FFFFFF" else "white")
+
+class IntroFrame(customtkinter.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.configure(fg_color="#2C2F33", border_width=0, border_color="#7289DA")
+        self.configure(fg_color=master.theme_color)
+
+        title = customtkinter.CTkLabel(self, text="Settings", text_color=master.text_color,
+                                       font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
+        title.pack(fill="x")
+
+        contact_text = """Welcome to the settings page! """
+
+        label = customtkinter.CTkLabel(self, text=contact_text, text_color="white",  justify="left", font=("Segoe UI", 16), wraplength=600)
+        label.pack(pady=20, padx=20)
+
             
 class SettingsFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -136,6 +154,8 @@ class SettingsFrame(customtkinter.CTkFrame):
                                           hover_color="#d4af37", corner_radius=10, border_width=2, border_color="#7289DA")
             btn.pack(fill="x", padx=20, pady=0)    
 
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
+        back_button.pack(pady=20)
         
         
  
@@ -158,7 +178,7 @@ class SecurityFrame(customtkinter.CTkFrame):
         self.recovery_code_button = customtkinter.CTkButton(self, text="Generate Recovery Codes", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color,corner_radius=10, border_width=2, border_color="#7289DA")
         self.recovery_code_button.pack(pady=10)
 
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_settings_page, corner_radius=10, border_width=2, border_color="#7289DA")
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=20)
         
 
@@ -174,6 +194,9 @@ class ThemesFrame(customtkinter.CTkFrame):
         self.color_button = customtkinter.CTkButton(self, text="Pick Theme Color", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.pick_color)
         self.color_button.pack(pady=10)
 
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
+        back_button.pack(pady=20)  
+
     def pick_color(self):
         color_code = colorchooser.askcolor(title="Choose Theme Color")[1]
         if color_code:
@@ -188,6 +211,8 @@ class HelpFrame(customtkinter.CTkFrame):
         title = customtkinter.CTkLabel(self, text="Help", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
         title.pack(fill="x")
 
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
+        back_button.pack(pady=20) 
     
 
 class ContactFrame(customtkinter.CTkFrame):
@@ -211,6 +236,8 @@ class ContactFrame(customtkinter.CTkFrame):
         label = customtkinter.CTkLabel(self, text=contact_text, text_color="white",  justify="left", font=("Segoe UI", 16), wraplength=600)
         label.pack(pady=20, padx=20)
 
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
+        back_button.pack(pady=20)
 
 
 def opening_settings():
