@@ -6,6 +6,10 @@ import tkinter
 import os
 from pathlib import Path
 import string
+
+from PIL.ImageOps import expand
+
+
 #from Dan import window
 
 
@@ -17,6 +21,12 @@ class Login_Page(customtkinter.CTk):
 
         self.title("Vaulture")
         self.configure(fg_color="#0d133e")
+
+        self.columnconfigure(0, weight = 1)
+        self.rowconfigure(0, weight = 1)
+
+        self.minsize(800, 600)
+        self.maxsize(1920, 1080)
 
 
         #Retrieve screen width and height
@@ -36,7 +46,7 @@ class Login_Page(customtkinter.CTk):
                                      border_color ="#000206",
                                      fg_color = "#030c49")
 
-        self.login_frame.pack(padx = 20, pady = 20)
+        self.login_frame.grid(row= 0, column= 0, padx = 15, pady = 15, sticky = "nsew")
         self.login_frame.pack_propagate(False)
 
         self.account_frame = customtkinter.CTkFrame(self, width = screen_dimension_width/2,
@@ -48,8 +58,9 @@ class Login_Page(customtkinter.CTk):
         
         self.account_frame.pack_propagate(False)
 
-        create_account_label = customtkinter.CTkLabel(self.account_frame, text="Create an Account", text_color="yellow",font=("Arial", 22, "bold"))
-        create_account_label.place(relx=0.5, rely=0.15, anchor=tkinter.CENTER)
+
+        create_account_label = customtkinter.CTkLabel(self.account_frame, text="Create an Account", text_color="yellow",font=("Arial", 26, "bold"))
+        create_account_label.grid(row = 0, column = 0, sticky = "n", pady=20)
 
         script_dir = Path(__file__).parent
         project_root = script_dir.parent
@@ -58,106 +69,123 @@ class Login_Page(customtkinter.CTk):
 
         self.vulture = customtkinter.CTkImage(
             Image.open(image_path),
-            size = (185,185)
+            size = (200,200)
         )
+
+        self.login_frame.columnconfigure(0, weight = 1)
+        self.login_frame.rowconfigure(0, weight = 1)
+        self.login_frame.rowconfigure((1,2,3), weight = 2)
+        self.login_frame.rowconfigure(4, weight = 5)
+
+        self.account_frame.columnconfigure(0, weight = 1)
+        self.account_frame.rowconfigure(0, weight = 1)
+        self.account_frame.rowconfigure(1, weight = 3)
+        self.account_frame.rowconfigure(2, weight = 15)
 
 
         vulture_label = customtkinter.CTkLabel(self.login_frame, text = "", image=self.vulture)
-        vulture_label.pack(pady=10)
-
-        title_label = customtkinter.CTkLabel(self.login_frame, text= "VAULTURE", text_color="yellow", font= ("Arial", 22, "bold"))
-        title_label.place(relx= 0.5, rely= 0.35, anchor= tkinter.CENTER)
+        vulture_label.grid(row = 0, column = 0, pady= 30, sticky = "n")
 
 
-        username_label = customtkinter.CTkLabel(self.login_frame, text= "Username", font=("Courier", 16, "bold"), text_color="yellow")
-        username_label.place(relx= 0.5, rely= 0.4, anchor= tkinter.CENTER)
+        title_label = customtkinter.CTkLabel(self.login_frame, text= "VAULTURE", text_color="yellow", font= ("Arial", 35, "bold"))
+        title_label.grid(row = 0, column = 0, pady = 15, sticky = "n")
+
+
+        username_label = customtkinter.CTkLabel(self.login_frame, text= "Username", font=("Courier", 20, "bold"), text_color="yellow")
+        username_label.grid(row = 0, column = 0, sticky = "s")
+
 
         self.username_entry = customtkinter.CTkEntry(self.login_frame, placeholder_text= "Enter Username",
-                                        width = 150,
-                                        height = 30,
-                                        border_width= 1,
+                                         width = 200,
+                                         height = 30,
+                                         border_width= 1,
                                         corner_radius= 10)
-        self.username_entry.place(relx = 0.5, rely = 0.45, anchor = tkinter.CENTER)
+        self.username_entry.grid(row = 1, column = 0, sticky = "n")
 
 
-        password_label = customtkinter.CTkLabel(self.login_frame, text= "Password", font=("Courier", 16, "bold"), text_color="yellow")
-        password_label.place(relx= 0.5, rely= 0.5, anchor= tkinter.CENTER)
+        password_label = customtkinter.CTkLabel(self.login_frame, text= "Password", font=("Courier", 20, "bold"), text_color="yellow")
+        password_label.grid(row = 1, column= 0, sticky = "s")
+
 
         self.password_entry = customtkinter.CTkEntry(self.login_frame, show="*", placeholder_text="Enter Password",
-                                        width= 150,
-                                        height= 30,
-                                        border_width= 1,
+                                         width= 200,
+                                         height= 30,
+                                         border_width= 1,
                                         corner_radius= 10)
-        self.password_entry.place(relx= 0.5, rely= 0.55, anchor= tkinter.CENTER)
+        self.password_entry.grid(row = 2, column = 0, sticky = "n")
+
 
         account_label = customtkinter.CTkLabel(self.login_frame, text="Don't have an account? Create one by clicking the 'Sign Up' button", font= ("Courier", 12, "bold"), text_color="yellow")
-        account_label.place(relx= 0.5, rely= 0.6, anchor= tkinter.CENTER)
+        account_label.grid(row = 2, column = 0, sticky = "s")
+
 
         login_button = customtkinter.CTkButton(self.login_frame, text="Login", fg_color="yellow", text_color="black", command = self.confirm_login)
-        login_button.place(x=225, rely= 0.65)
+        login_button.grid(row = 3, column = 0, sticky = "n", padx = 10, pady = 5)
 
         sign_up_button = customtkinter.CTkButton(self.login_frame, text="Sign Up", fg_color="yellow", text_color="black", command= lambda: self.show_create_account_frame())
-        sign_up_button.place(x=380, rely= 0.65)
+        sign_up_button.grid(row = 3, column = 0)
 
-        new_username_label = customtkinter.CTkLabel(self.account_frame, text= "Username", font=("Courier", 16, "bold"), text_color="yellow")
-        new_username_label.place(relx= 0.5, rely= 0.25, anchor= tkinter.CENTER)
+
+        new_username_label = customtkinter.CTkLabel(self.account_frame, text= "Username", font=("Courier", 18, "bold"), text_color="yellow")
+        new_username_label.grid(row = 1, column=0, sticky = "n")
+
 
         self.new_username_entry = customtkinter.CTkEntry(self.account_frame, placeholder_text= "Enter Username",
-                                        width = 150,
+                                        width = 200,
                                         height = 30,
                                         border_width= 1,
                                         corner_radius= 10)
-        self.new_username_entry.place(relx = 0.5, rely = 0.30, anchor = tkinter.CENTER)
+        self.new_username_entry.grid(row=1, column = 0, sticky="n", pady = 30)
 
-        email_label = customtkinter.CTkLabel(self.account_frame, text= "Email", font=("Courier", 16, "bold"), text_color="yellow")
-        email_label.place(relx= 0.5, rely= 0.35, anchor= tkinter.CENTER)
+        email_label = customtkinter.CTkLabel(self.account_frame, text= "Email", font=("Courier", 18, "bold"), text_color="yellow")
+        email_label.grid(row = 1, column =0, sticky = "n", pady = 80)
 
         self.email_entry = customtkinter.CTkEntry(self.account_frame, placeholder_text= "Enter Email",
-                                        width = 150,
+                                        width = 200,
                                         height = 30,
                                         border_width= 1,
                                         corner_radius= 10)
-        self.email_entry.place(relx = 0.5, rely = 0.40, anchor = tkinter.CENTER)
+        self.email_entry.grid(row = 1, column = 0, sticky = "n", pady = 110)
 
-        #New password label and entry box
-        new_password_label = customtkinter.CTkLabel(self.account_frame, text= "Password", font=("Courier", 16, "bold"), text_color="yellow")
-        new_password_label.place(relx= 0.5, rely= 0.45, anchor= tkinter.CENTER)
+        new_password_label = customtkinter.CTkLabel(self.account_frame, text= "Password", font=("Courier", 18, "bold"), text_color="yellow")
+        new_password_label.grid(row = 1, column = 0, sticky = "n", pady = 165)
+
 
         self.new_password_entry = customtkinter.CTkEntry(self.account_frame, show="*", placeholder_text="Enter Password",
-                                        width= 150,
+                                        width= 200,
                                         height= 30,
                                         border_width= 1,
                                         corner_radius= 10)
-        self.new_password_entry.place(relx= 0.5, rely= 0.50, anchor= tkinter.CENTER)
+        self.new_password_entry.grid(row = 1, column=0, sticky = "n", pady = 195)
 
-        confirm_password_label = customtkinter.CTkLabel(self.account_frame, text= "Confirm Password", font=("Courier", 16, "bold"), text_color="yellow")
-        confirm_password_label.place(relx= 0.5, rely= 0.55, anchor= tkinter.CENTER)
+        confirm_password_label = customtkinter.CTkLabel(self.account_frame, text= "Confirm Password", font=("Courier", 18, "bold"), text_color="yellow")
+        confirm_password_label.grid(row= 1, column= 0, sticky="n", pady= 255)
 
         self.confirm_password_entry = customtkinter.CTkEntry(self.account_frame, show="*", placeholder_text="Enter Password Again",
-                                        width= 150,
+                                        width= 200,
                                         height= 30,
                                         border_width= 1,
                                         corner_radius= 10)
-        self.confirm_password_entry.place(relx= 0.5, rely= 0.60, anchor= tkinter.CENTER)
+        self.confirm_password_entry.grid(row= 1, column = 0, sticky = "n", pady = 285)
 
         create_account_button = customtkinter.CTkButton(self.account_frame, text="Create Account", fg_color="yellow", text_color="black", command = self.save_account_info)
-        create_account_button.place(x=315, rely= 0.65)
+        create_account_button.grid(row= 1, column = 0, sticky = "n", pady = 345)
 
         back_button = customtkinter.CTkButton(self.account_frame, text="Back", fg_color="yellow", text_color="black", command= lambda: self.show_login_frame())
-        back_button.place(x=20, y= 598, anchor = "w")
+        back_button.grid(row = 2, column = 0, sticky = "w", padx = 20, pady = 50)
 
         #Show and hide password switches
         self.show_password_var = customtkinter.StringVar(value = "off")
         self.show_password_button = customtkinter.CTkSwitch(self.account_frame, variable= self.show_password_var, text="Show", onvalue="on", offvalue="off", command = self.show_password)
-        self.show_password_button.place(x= 470, y= 308)
+        self.show_password_button.grid(row= 1, column = 0, sticky = "ne", pady = 198, padx = 550)
 
         self.show_password_var = customtkinter.StringVar(value = "off")
         self.show_confirm_password_button = customtkinter.CTkSwitch(self.account_frame, variable= self.show_password_var, text="Show", onvalue="on", offvalue="off", command = self.show_confirm_password)
-        self.show_confirm_password_button.place(x= 470, y= 370)
+        self.show_confirm_password_button.grid(row = 1, column = 0, sticky = "ne", pady=285, padx = 550)
 
         self.show_password_var = customtkinter.StringVar(value = "off")
         self.show_password_button_login = customtkinter.CTkSwitch(self.login_frame, variable= self.show_password_var, text="Show", onvalue="on", offvalue="off", command = self.show_password_login)
-        self.show_password_button_login.place(x= 470, y= 338)
+        self.show_password_button_login.grid(row = 2, column = 0, sticky = "ne", padx=535)
 
         self.rules_label = customtkinter.CTkLabel(self.account_frame, text = "• Email Must have @ \n • Password must contain atleast one\nspecial character and atleast one number", text_color="yellow", font=("Courier", 12, "bold"))
         self.rules_label.pack(padx = 20, pady= 20, anchor= "e")
@@ -198,11 +226,11 @@ class Login_Page(customtkinter.CTk):
     #Move between login_frame and create_account frame
     def show_create_account_frame(self):
             self.login_frame.pack_forget()
-            self.account_frame.pack(padx=20, pady= 20)
+            self.account_frame.pack(fill = "both", expand = True)
 
     def show_login_frame(self):
             self.account_frame.pack_forget()
-            self.login_frame.pack(padx=20, pady= 20)
+            self.login_frame.pack(fill = "both", expand = True)
             self.new_username_entry.delete(0, "end")
             self.email_entry.delete(0, "end")
             self.password_entry.delete(0, "end")
@@ -287,12 +315,12 @@ class Login_Page(customtkinter.CTk):
             error = False
 
             if login_username != line_one:
-                self.login_username_error = customtkinter.CTkLabel(self.login_frame, text="Username not found", font=("Courier", 14, "bold"), text_color="red")
+                self.login_username_error = customtkinter.CTkLabel(self.login_frame, text="Username not found", font=("Courier", 20, "bold"), text_color="red")
                 self.login_username_error.pack(padx=20, pady=15, anchor="w")
                 error = True
 
             if login_password != line_three:
-                self.login_password_error = customtkinter.CTkLabel(self.login_frame, text="Password not found", font=("Courier", 14, "bold"), text_color="red")
+                self.login_password_error = customtkinter.CTkLabel(self.login_frame, text="Password not found", font=("Courier", 20, "bold"), text_color="red")
                 self.login_password_error.pack(padx=20, pady=15, anchor="w")
                 error = True
 
@@ -315,6 +343,7 @@ class Login_Page(customtkinter.CTk):
 
 if __name__ == "__main__":
     window_login = Login_Page()
+    window_login.resizable(False, False)
     try:
         window_login.mainloop()
     except KeyboardInterrupt:
