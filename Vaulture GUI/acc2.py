@@ -28,6 +28,7 @@ class SettingsApp(customtkinter.CTk):
         
         buttons = [
             ("⚙ Settings", self.show_settings_page),
+            ("👤 Account", self.show_account_page),
             ("🔒 Security", self.show_security_page),
             ("🎨 Themes", self.show_themes_page),
             ("ℹ️ Help", self.show_Help_page),
@@ -89,6 +90,9 @@ class SettingsApp(customtkinter.CTk):
     def show_settings_page(self):
         self._switch_frame(SettingsFrame)
         
+    def show_account_page(self):
+        self._switch_frame(AccountFrame)
+
     def show_security_page(self):
         self._switch_frame(SecurityFrame)
 
@@ -157,7 +161,18 @@ class SettingsFrame(customtkinter.CTkFrame):
         back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=20)
         
+class AccountFrame(customtkinter.CTkFrame):
+    def __init__(self, master):
+        super().__init__(master)
+        self.configure(fg_color="#2C2F33", border_width=0, border_color="#7289DA")
+        self.configure(fg_color=master.theme_color)
         
+        title = customtkinter.CTkLabel(self, text="Account Information!", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
+        title.pack(fill="x")
+
+ 
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
+        back_button.pack(pady=20)     
  
 class SecurityFrame(customtkinter.CTkFrame):
     def __init__(self, master):

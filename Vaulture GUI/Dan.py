@@ -25,7 +25,7 @@ window.columnconfigure(1, weight=2)
 # MainstuffR
 window.rowconfigure(1, weight=2)  
 # BottomBar
-window.rowconfigure(2, weight=0)  
+window.rowconfigure(3, weight=0)  
 
 # Main content frame
 main_frame = customtkinter.CTkFrame(window, fg_color="#A9A9A9")
@@ -57,16 +57,16 @@ bottom_bar.grid(row=2, column=1, columnspan=2, sticky="ew")
 hamburger_button = customtkinter.CTkButton(main_frame, text="☰", width=60, height=60, corner_radius=10, fg_color="#0e3161", border_width=2, border_color="gray", command=lambda: toggle_sidebar())
 hamburger_button.grid(row=0, column=0, padx=20, pady=30)
 
-filter1_button = customtkinter.CTkButton(sidebar, text="Passwords", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwordMaker_page())
+filter1_button = customtkinter.CTkButton(sidebar, text="Passwords🔒", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwordMaker_page())
 filter1_button.grid(row=0, column=0, padx=30, pady=10, sticky="nsew")
 
-filter3_button = customtkinter.CTkButton(sidebar, text="Notes", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_notes_page())
+filter3_button = customtkinter.CTkButton(sidebar, text="Notes📝", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_notes_page())
 filter3_button.grid(row=1, column=0, padx=30, pady=10, sticky="nsew")
 
-filter4_button = customtkinter.CTkButton(sidebar, text="Banking Cards", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_banking_cards_page())
+filter4_button = customtkinter.CTkButton(sidebar, text="Banking Cards💳", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_banking_cards_page())
 filter4_button.grid(row=2, column=0, padx=30, pady=10, sticky="nsew")
 
-filter5_button = customtkinter.CTkButton(sidebar, text="One-Time Password", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_one_time_password_page())
+filter5_button = customtkinter.CTkButton(sidebar, text="One-Time Password🔐", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_one_time_password_page())
 filter5_button.grid(row=3, column=0, padx=30, pady=10, sticky="nsew")
 
 Archive_button = customtkinter.CTkButton(sidebar, text="Archived 📦", width=40, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_archive_page())
