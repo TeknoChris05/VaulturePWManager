@@ -79,7 +79,7 @@ filter4_button.grid(row=3, column=0, padx=30, pady=10, sticky="nsew")
 filter5_button = customtkinter.CTkButton(sidebar, text="One-Time Password", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_one_time_password_page())
 filter5_button.grid(row=4, column=0, padx=30, pady=10, sticky="nsew")
 
-Archive_button = customtkinter.CTkButton(sidebar, text="Archived 📦", width=40, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray")
+Archive_button = customtkinter.CTkButton(sidebar, text="Archived 📦", width=40, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_archive_page())
 Archive_button.grid(row=5, column=0, padx=30, pady=20, sticky="nsew")
 
 Trash_button = customtkinter.CTkButton(sidebar, text="Trash 🗑️", width=40, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray")
@@ -120,10 +120,10 @@ Profile_button.grid(row=0, column=2, pady=5)
 
 # New Settings Button at Bottom 
 def open_settings_page():
-    settings_window = customtkinter.CTkFrame(master=main_frame)
-    settings_window.pack(fill="both", expand=True) 
+    settings_window = customtkinter.CTkFrame(main_frame)
+    settings_window = acc2.SettingsApp()
 
-Settings_button = customtkinter.CTkButton(bottom_bar, text="⚙️", width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray", command=open_settings_page)
+Settings_button = customtkinter.CTkButton(bottom_bar, text="⚙️", width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
 Settings_button.grid(row=0, column=3, pady=5) 
 
 
@@ -265,6 +265,8 @@ def close_one_time_password_page():
     
 #This is the profile page settings here you can upload an image and your name and save it!
 def open_Profile_Page():
+    window.minsize(800, 600)  
+    window.maxsize(1920, 1080)
     global Profile_Frame, Border_Frame, Profile_Name, PImage_label, profile_image
 
 
@@ -308,7 +310,7 @@ def upload_profile_image():
 
 # Image for profile page
         img_large = img.resize((400, 400), Image.LANCZOS)
-        profile_image_large = CTkImage(light_image=img_large, dark_image=img_large, size=(400, 400))
+        profile_image_large = CTkImage(light_image=img_large, dark_image=img_large, size=(200, 200))
 
 # Image in top-right profile box
         img_small = img.resize((50, 50), Image.Resampling.LANCZOS)
@@ -340,6 +342,30 @@ profile_box.place(relx=1.0, rely=0.0, anchor="ne", x=-10, y=10)
 profile_box_label = customtkinter.CTkLabel(profile_box, text="")
 profile_box_label.pack(expand=True)
 
+# Open Notes page
+def open_archive_page():
+    global Notes_Frame
+    if "Notes_Frame" in globals() and Notes_Frame.winfo_exists():
+        Notes_Frame.destroy()
+
+    Notes_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
+    Notes_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
+
+    Border_Frame = customtkinter.CTkFrame(Notes_Frame, fg_color="#A9A9A9")
+    Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+    label = customtkinter.CTkLabel(Border_Frame, text="Archived", font=("Verdana", 20))
+    label.pack(pady=20)
+
+    back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_notes_page)
+    back_button.pack(pady=20)
+
+    main_frame.grid_forget()
+    Notes_Frame.grid(row=1, column=1, sticky="nsew")
+
+def close_archive_page():
+    Notes_Frame.destroy()
+    main_frame.grid(row=1, column=1, sticky="nsew")
     
 # Make it not change size
 window.resizable(False, False)

@@ -211,9 +211,26 @@ class HelpFrame(customtkinter.CTkFrame):
         title = customtkinter.CTkLabel(self, text="Help", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
         title.pack(fill="x")
 
+        contact_text = """Here is some helpful tips!
+
+-How do i make passwords? Just click the waffle and all the options are there! 
+
+-How do i change the theme? Go to the themes page and click the button to change the theme color!
+
+-How do i enable 2FA? Go to the security page and click the switch to enable 2FA!
+
+-How do i contact you? Go to the contact page and all the emails are there
+
+-How can i see my passwords? Go hit the bird icon to dislpay!
+
+-Can i make a pfp and profile name? Yes! Go to the Profile Page on the bottom bar and you can change it there!
+        """
+
         back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=20) 
-    
+
+        label = customtkinter.CTkLabel(self, text=contact_text, text_color="white",  justify="left", font=("Segoe UI", 16), wraplength=600)
+        label.pack(pady=20, padx=20)
 
 class ContactFrame(customtkinter.CTkFrame):
     def __init__(self, master):
