@@ -22,8 +22,6 @@ window.maxsize(1920, 1080)
 window.columnconfigure(0, weight=0)  
 # MainStuffC
 window.columnconfigure(1, weight=2)  
-# SearchBar
-window.rowconfigure(0, weight=0)  
 # MainstuffR
 window.rowconfigure(1, weight=2)  
 # BottomBar
@@ -33,11 +31,6 @@ window.rowconfigure(2, weight=0)
 main_frame = customtkinter.CTkFrame(window, fg_color="#A9A9A9")
 main_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")  
 
-# Search bar and settings button within the main frame
-search_frame = customtkinter.CTkFrame(main_frame, fg_color="#A9A9A9", height=50, width=480)  
-search_frame.place(relx=0.5, rely=0.05, anchor="center")
-searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
-searching.place(relx=0.5, rely=0.5, anchor="center") 
 
 # Left sidebar 
 sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color="#0e3161", border_width=8, border_color="black")
@@ -64,80 +57,42 @@ bottom_bar.grid(row=2, column=1, columnspan=2, sticky="ew")
 hamburger_button = customtkinter.CTkButton(main_frame, text="☰", width=60, height=60, corner_radius=10, fg_color="#0e3161", border_width=2, border_color="gray", command=lambda: toggle_sidebar())
 hamburger_button.grid(row=0, column=0, padx=20, pady=30)
 
-filter1_button = customtkinter.CTkButton(sidebar, text="Passwords", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwords_page())
+filter1_button = customtkinter.CTkButton(sidebar, text="Passwords", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwordMaker_page())
 filter1_button.grid(row=0, column=0, padx=30, pady=10, sticky="nsew")
 
-filter2_button = customtkinter.CTkButton(sidebar, text="Favorites", width=150, height=0, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_favorites_page())
-filter2_button.grid(row=1, column=0, padx=30, pady=10, sticky="nsew")
-
 filter3_button = customtkinter.CTkButton(sidebar, text="Notes", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_notes_page())
-filter3_button.grid(row=2, column=0, padx=30, pady=10, sticky="nsew")
+filter3_button.grid(row=1, column=0, padx=30, pady=10, sticky="nsew")
 
 filter4_button = customtkinter.CTkButton(sidebar, text="Banking Cards", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_banking_cards_page())
-filter4_button.grid(row=3, column=0, padx=30, pady=10, sticky="nsew")
+filter4_button.grid(row=2, column=0, padx=30, pady=10, sticky="nsew")
 
 filter5_button = customtkinter.CTkButton(sidebar, text="One-Time Password", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_one_time_password_page())
-filter5_button.grid(row=4, column=0, padx=30, pady=10, sticky="nsew")
+filter5_button.grid(row=3, column=0, padx=30, pady=10, sticky="nsew")
 
 Archive_button = customtkinter.CTkButton(sidebar, text="Archived 📦", width=40, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_archive_page())
-Archive_button.grid(row=5, column=0, padx=30, pady=20, sticky="nsew")
+Archive_button.grid(row=4, column=0, padx=30, pady=20, sticky="nsew")
 
 Trash_button = customtkinter.CTkButton(sidebar, text="Trash 🗑️", width=40, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray")
-Trash_button.grid(row=6, column=0, padx=30, pady=20, sticky="nsew")
+Trash_button.grid(row=5, column=0, padx=30, pady=20, sticky="nsew")
 
 #Assigning weights so that these buttons wont go offscreen
 #Hamburger Button
 sidebar.rowconfigure(0, weight=2)
 # Passwords
 sidebar.rowconfigure(1, weight=2)
-# Favorites
-sidebar.rowconfigure(2, weight=2)  
 # Notes
+sidebar.rowconfigure(2, weight=2)  
+# Banking Card
 sidebar.rowconfigure(3, weight=2)  
-# Banking Cards
+# One-Time Passwords
 sidebar.rowconfigure(4, weight=2)  
-# One-Time Password
-sidebar.rowconfigure(5, weight=2)  
 # Archived
-sidebar.rowconfigure(6, weight=2)  
+sidebar.rowconfigure(5, weight=2)  
 # Trash
-sidebar.rowconfigure(7, weight=2)  
+sidebar.rowconfigure(6, weight=2)  
 
 # Bottom bar buttons 
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="🐦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray")
-ValtureP_button.grid(row=0, column=0, pady=30)
-
-Search_button = customtkinter.CTkButton(bottom_bar, text="🔍", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: search_bar_Click())
-Search_button.grid(row=0, column=1, pady=5)
-
-#this will move the mouse to the search bar
-def search_bar_Click():
-    searching.focus_set()
-
-# Profile button in bottom bar
-Profile_button = customtkinter.CTkButton(bottom_bar, text="👥", width=60, height=70, corner_radius=900, fg_color="#282929",border_width=2, border_color="gray", command=lambda: open_Profile_Page())
-Profile_button.grid(row=0, column=2, pady=5)
-
-# New Settings Button at Bottom 
-def open_settings_page():
-    settings_window = customtkinter.CTkFrame(main_frame)
-    settings_window = acc2.SettingsApp()
-
-Settings_button = customtkinter.CTkButton(bottom_bar, text="⚙️", width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
-Settings_button.grid(row=0, column=3, pady=5) 
-
-
-# Bottom Bar Setup
-#🐦
-bottom_bar.columnconfigure(0, weight=1)    
-# 🔍
-bottom_bar.columnconfigure(1, weight=1)  
-# 👥
-bottom_bar.columnconfigure(2, weight=1)  
-# ⚙️
-bottom_bar.columnconfigure(3, weight=1) 
-
-# Open passwords page
+# Passwords
 def open_passwords_page():
     global Passwords_Frame
     if "Passwords_Frame" in globals() and Passwords_Frame.winfo_exists():
@@ -151,6 +106,11 @@ def open_passwords_page():
 
     label = customtkinter.CTkLabel(Border_Frame, text="Passwords", font=("Verdana", 20))
     label.pack(pady=20)
+# Search Bar inside Passwords Page
+    search_frame = customtkinter.CTkFrame(Border_Frame, fg_color="#A9A9A9", height=50, width=480)
+    search_frame.pack(pady=10)
+    searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
+    searching.pack(pady=10)
 
     back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_passwords_page)
     back_button.pack(pady=20)
@@ -162,6 +122,10 @@ def open_passwords_page():
 def close_passwords_page():
     Passwords_Frame.destroy() 
     main_frame.grid(row=1, column=1, sticky="nsew") 
+
+
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text="🐦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwords_page())
+ValtureP_button.grid(row=0, column=0, pady=30)
 
 # Open Favorites page
 def open_favorites_page():
@@ -178,11 +142,70 @@ def open_favorites_page():
     label = customtkinter.CTkLabel(Border_Frame, text="Favorites", font=("Verdana", 20))
     label.pack(pady=20)
 
+# Search Bar inside Favorites Page
+    search_frame = customtkinter.CTkFrame(Border_Frame, fg_color="#A9A9A9", height=50, width=480)
+    search_frame.pack(pady=10)
+    searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
+    searching.pack(pady=10)
+
     back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_favorites_page)
     back_button.pack(pady=20)
 
     main_frame.grid_forget()
     Favorites_Frame.grid(row=1, column=1, sticky="nsew")
+
+Search_button = customtkinter.CTkButton(bottom_bar, text="⭐", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_favorites_page())
+Search_button.grid(row=0, column=1, pady=5)
+
+# Profile button in bottom bar
+Profile_button = customtkinter.CTkButton(bottom_bar, text="👥", width=60, height=70, corner_radius=900, fg_color="#282929",border_width=2, border_color="gray", command=lambda: open_Profile_Page())
+Profile_button.grid(row=0, column=2, pady=5)
+
+# New Settings Button at Bottom 
+def open_settings_page():
+    settings_window = customtkinter.CTkFrame(main_frame)
+    settings_window = acc2.SettingsApp()
+
+Settings_button = customtkinter.CTkButton(bottom_bar, text="⚙️", width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
+Settings_button.grid(row=0, column=3, pady=5) 
+
+
+# Bottom Bar Setup
+#🐦
+bottom_bar.columnconfigure(0, weight=2)    
+# ⭐
+bottom_bar.columnconfigure(1, weight=1)  
+# 👥
+bottom_bar.columnconfigure(2, weight=1)  
+# ⚙️
+bottom_bar.columnconfigure(3, weight=1) 
+
+# Open passwords page
+def open_passwordMaker_page():
+    global Passwords_Frame
+    if "Passwords_Frame" in globals() and Passwords_Frame.winfo_exists():
+        Passwords_Frame.destroy()
+
+#  The creation of the frame and border
+    Passwords_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
+    Passwords_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
+    Border_Frame = customtkinter.CTkFrame(Passwords_Frame, fg_color="#A9A9A9")
+    Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+    label = customtkinter.CTkLabel(Border_Frame, text="Passwords", font=("Verdana", 20))
+    label.pack(pady=20)
+
+    back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_passwordMaker_page)
+    back_button.pack(pady=20)
+
+    main_frame.grid_forget()
+    Passwords_Frame.grid(row=1, column=1, sticky="nsew")
+
+#Closing the page 
+def close_passwordMaker_page():
+    Passwords_Frame.destroy() 
+    main_frame.grid(row=1, column=1, sticky="nsew") 
+
    
 def close_favorites_page():
     Favorites_Frame.destroy()

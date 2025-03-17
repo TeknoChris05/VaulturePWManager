@@ -28,7 +28,8 @@ class Login_Page(customtkinter.CTk):
 
         self.geometry(f"{screen_dimension_width}x{screen_dimension_height}+{x_pos}+{y_pos}")
         self.pack_propagate(False)
-
+        self.minsize(800, 600)  
+        self.maxsize(1920, 1080)
         self.login_frame = customtkinter.CTkFrame(master=self,
                                      width = screen_dimension_width/2,
                                      height = screen_dimension_height/1.5,
@@ -144,7 +145,7 @@ class Login_Page(customtkinter.CTk):
         create_account_button.place(x=315, rely= 0.65)
 
         back_button = customtkinter.CTkButton(self.account_frame, text="Back", fg_color="yellow", text_color="black", command= lambda: self.show_login_frame())
-        back_button.place(x=20, y= 598, anchor = "w")
+        back_button.pack(side="bottom", padx = 20, pady= 20, anchor = "w")
 
         #Show and hide password switches
         self.show_password_var = customtkinter.StringVar(value = "off")
