@@ -44,6 +44,18 @@ sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color="
 sidebar.grid(row=0, column=0, rowspan=2, sticky="nsw")  
 sidebar.grid_forget()  
 
+# global sidebar 
+sidebar_open = False 
+def toggle_sidebar():
+    global sidebar_open  
+    if sidebar_open:
+        # Hide the sidebar
+        sidebar.grid_forget()
+    else:
+        # Show the sidebar
+        sidebar.grid(row=0, column=0, rowspan=3, sticky="nsw")
+    sidebar_open = not sidebar_open  # Toggle the state
+
 # White bottom bar
 bottom_bar = customtkinter.CTkFrame(window, height=90, corner_radius=0, fg_color="#133f61")
 bottom_bar.grid(row=2, column=1, columnspan=2, sticky="ew") 
@@ -91,21 +103,6 @@ sidebar.rowconfigure(6, weight=2)
 # Trash
 sidebar.rowconfigure(7, weight=2)  
 
-
-# global sidebar 
-sidebar_open = False 
-def toggle_sidebar():
-    global sidebar_open  
-    if sidebar_open:
-        # Hide the sidebar
-        sidebar.grid_forget()
-    else:
-        # Show the sidebar
-        sidebar.grid(row=0, column=0, rowspan=3, sticky="nsw")
-    sidebar_open = not sidebar_open  # Toggle the state
-
-
-
 # Bottom bar buttons 
 ValtureP_button = customtkinter.CTkButton(bottom_bar, text="🐦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray")
 ValtureP_button.grid(row=0, column=0, pady=30)
@@ -117,95 +114,155 @@ Search_button.grid(row=0, column=1, pady=5)
 def search_bar_Click():
     searching.focus_set()
 
-
 # Profile button in bottom bar
 Profile_button = customtkinter.CTkButton(bottom_bar, text="👥", width=60, height=70, corner_radius=900, fg_color="#282929",border_width=2, border_color="gray", command=lambda: open_Profile_Page())
 Profile_button.grid(row=0, column=2, pady=5)
 
 # New Settings Button at Bottom 
 def open_settings_page():
-    settings_window = customtkinter.CTkFrame(main_frame)
-    settings_window = acc2.SettingsApp() 
+    settings_window = customtkinter.CTkFrame(master=main_frame)
+    settings_window.pack(fill="both", expand=True) 
 
 Settings_button = customtkinter.CTkButton(bottom_bar, text="⚙️", width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray", command=open_settings_page)
 Settings_button.grid(row=0, column=3, pady=5) 
 
 
 # Bottom Bar Setup
+#🐦
 bottom_bar.columnconfigure(0, weight=1)    
-# 
+# 🔍
 bottom_bar.columnconfigure(1, weight=1)  
-# 
+# 👥
 bottom_bar.columnconfigure(2, weight=1)  
-# 
+# ⚙️
 bottom_bar.columnconfigure(3, weight=1) 
-
-
 
 # Open passwords page
 def open_passwords_page():
-    favorites_window = customtkinter.CTkToplevel(window)
-    favorites_window.title("Passwords Page")
-    favorites_window.geometry("600x400")
-    favorites_window.attributes("-topmost", True)
+    global Passwords_Frame
+    if "Passwords_Frame" in globals() and Passwords_Frame.winfo_exists():
+        Passwords_Frame.destroy()
 
-    label = customtkinter.CTkLabel(favorites_window, text="Create Passwords", font=("Verdana", 20))
+#  The creation of the frame and border
+    Passwords_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
+    Passwords_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
+    Border_Frame = customtkinter.CTkFrame(Passwords_Frame, fg_color="#A9A9A9")
+    Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+    label = customtkinter.CTkLabel(Border_Frame, text="Passwords", font=("Verdana", 20))
     label.pack(pady=20)
 
-    back_button = customtkinter.CTkButton(favorites_window, text="Back", command=favorites_window.destroy)
+    back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_passwords_page)
     back_button.pack(pady=20)
+
+    main_frame.grid_forget()
+    Passwords_Frame.grid(row=1, column=1, sticky="nsew")
+
+#Closing the page 
+def close_passwords_page():
+    Passwords_Frame.destroy() 
+    main_frame.grid(row=1, column=1, sticky="nsew") 
+
 # Open Favorites page
 def open_favorites_page():
-    favorites_window = customtkinter.CTkToplevel(window)
-    favorites_window.title("Favorites Page")
-    favorites_window.geometry("600x400")
-    favorites_window.attributes("-topmost", True)
+    global Favorites_Frame
+    if "Favorites_Frame" in globals() and Favorites_Frame.winfo_exists():
+        Favorites_Frame.destroy()
 
-    label = customtkinter.CTkLabel(favorites_window, text="Favorites", font=("Verdana", 20))
+    Favorites_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
+    Favorites_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
+
+    Border_Frame = customtkinter.CTkFrame(Favorites_Frame, fg_color="#A9A9A9")
+    Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+    label = customtkinter.CTkLabel(Border_Frame, text="Favorites", font=("Verdana", 20))
     label.pack(pady=20)
 
-    back_button = customtkinter.CTkButton(favorites_window, text="Back", command=favorites_window.destroy)
+    back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_favorites_page)
     back_button.pack(pady=20)
+
+    main_frame.grid_forget()
+    Favorites_Frame.grid(row=1, column=1, sticky="nsew")
+   
+def close_favorites_page():
+    Favorites_Frame.destroy()
+    main_frame.grid(row=1, column=1, sticky="nsew")
 
 # Open Notes page
 def open_notes_page():
-    notes_window = customtkinter.CTkToplevel(window)
-    notes_window.title("Create Notes Page")
-    notes_window.geometry("600x400")
-    notes_window.attributes("-topmost", True)
+    global Notes_Frame
+    if "Notes_Frame" in globals() and Notes_Frame.winfo_exists():
+        Notes_Frame.destroy()
 
-    label = customtkinter.CTkLabel(notes_window, text="Create Notes", font=("Verdana", 20))
+    Notes_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
+    Notes_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
+
+    Border_Frame = customtkinter.CTkFrame(Notes_Frame, fg_color="#A9A9A9")
+    Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+    label = customtkinter.CTkLabel(Border_Frame, text="Notes", font=("Verdana", 20))
     label.pack(pady=20)
 
-    back_button = customtkinter.CTkButton(notes_window, text="Back", command=notes_window.destroy)
+    back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_notes_page)
     back_button.pack(pady=20)
+
+    main_frame.grid_forget()
+    Notes_Frame.grid(row=1, column=1, sticky="nsew")
+
+def close_notes_page():
+    Notes_Frame.destroy()
+    main_frame.grid(row=1, column=1, sticky="nsew")
 
 # Open Banking Cards page
 def open_banking_cards_page():
-    banking_window = customtkinter.CTkToplevel(window)
-    banking_window.title("Create Banking Cards Page")
-    banking_window.geometry("600x400")
-    banking_window.attributes("-topmost", True)
+    global Banking_Cards_Frame
+    if "Banking_Cards_Frame" in globals() and Banking_Cards_Frame.winfo_exists():
+        Banking_Cards_Frame.destroy()
 
-    label = customtkinter.CTkLabel(banking_window, text="Create Banking Cards", font=("Verdana", 20))
+    Banking_Cards_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
+    Banking_Cards_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
+
+    Border_Frame = customtkinter.CTkFrame(Banking_Cards_Frame, fg_color="#A9A9A9")
+    Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+    label = customtkinter.CTkLabel(Border_Frame, text="Banking Cards", font=("Verdana", 20))
     label.pack(pady=20)
 
-    back_button = customtkinter.CTkButton(banking_window, text="Back", command=banking_window.destroy)
+    back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_banking_cards_page)
     back_button.pack(pady=20)
+
+    main_frame.grid_forget()
+    Banking_Cards_Frame.grid(row=1, column=1, sticky="nsew")
+
+def close_banking_cards_page():
+    Banking_Cards_Frame.destroy()
+    main_frame.grid(row=1, column=1, sticky="nsew")
 
 # Open One-Time Password page
 def open_one_time_password_page():
-    otp_window = customtkinter.CTkToplevel(window)
-    otp_window.title("One-Time Password Page")
-    otp_window.geometry("600x400")
-    otp_window.attributes("-topmost", True)
+    global One_Time_Password_Frame
+    if "One_Time_Password_Frame" in globals() and One_Time_Password_Frame.winfo_exists():
+        One_Time_Password_Frame.destroy()
 
-    label = customtkinter.CTkLabel(otp_window, text="Create One-Time Passwords", font=("Verdana", 20))
+    One_Time_Password_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
+    One_Time_Password_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
+
+    Border_Frame = customtkinter.CTkFrame(One_Time_Password_Frame, fg_color="#A9A9A9")
+    Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+    label = customtkinter.CTkLabel(Border_Frame, text="One-Time Password", font=("Verdana", 20))
     label.pack(pady=20)
 
-    back_button = customtkinter.CTkButton(otp_window, text="Back", command=otp_window.destroy)
+    back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_one_time_password_page)
     back_button.pack(pady=20)
 
+    main_frame.grid_forget()
+    One_Time_Password_Frame.grid(row=1, column=1, sticky="nsew")
+
+def close_one_time_password_page():
+    One_Time_Password_Frame.destroy()
+    main_frame.grid(row=1, column=1, sticky="nsew")
+    
 #This is the profile page settings here you can upload an image and your name and save it!
 def open_Profile_Page():
     global Profile_Frame, Border_Frame, Profile_Name, PImage_label, profile_image
