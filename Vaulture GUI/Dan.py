@@ -221,7 +221,7 @@ def open_passwordMaker_page():
     Border_Frame = customtkinter.CTkFrame(Passwords_Frame, fg_color="#A9A9A9")
     Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    label = customtkinter.CTkLabel(Border_Frame, text="Passwords", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(Border_Frame, text="Passwords", font=("Verdana", 20), text_color="black")
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_passwordMaker_page)
@@ -254,7 +254,7 @@ def open_notes_page():
     Border_Frame = customtkinter.CTkFrame(Notes_Frame, fg_color="#A9A9A9")
     Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    label = customtkinter.CTkLabel(Border_Frame, text="Notes", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(Border_Frame, text="Notes", font=("Verdana", 20,), text_color="black")
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_notes_page)
@@ -281,7 +281,7 @@ def open_banking_cards_page():
     Border_Frame = customtkinter.CTkFrame(Banking_Cards_Frame, fg_color="#A9A9A9")
     Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    label = customtkinter.CTkLabel(Border_Frame, text="Banking Cards", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(Border_Frame, text="Banking Cards", font=("Verdana", 20), text_color="black")
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_banking_cards_page)
@@ -308,7 +308,7 @@ def open_one_time_password_page():
     Border_Frame = customtkinter.CTkFrame(One_Time_Password_Frame, fg_color="#A9A9A9")
     Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    label = customtkinter.CTkLabel(Border_Frame, text="One-Time Password", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(Border_Frame, text="One-Time Password", font=("Verdana", 20), text_color="black")
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_one_time_password_page)
@@ -336,6 +336,9 @@ def open_Profile_Page():
 
         Border_Frame = customtkinter.CTkFrame(Profile_Frame, fg_color="#A9A9A9")
         Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+        label = customtkinter.CTkLabel(Border_Frame, text="Profile Page", font=("Verdana", 20), text_color="black")
+        label.pack(pady=20)
 
         PImage_label = customtkinter.CTkLabel(Border_Frame, text="Please put a picture!", width=180, height=180,
                                               fg_color="black")
@@ -421,7 +424,7 @@ def open_archive_page():
     Border_Frame = customtkinter.CTkFrame(Notes_Frame, fg_color="#A9A9A9")
     Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    label = customtkinter.CTkLabel(Border_Frame, text="Archived", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(Border_Frame, text="Archived", font=("Verdana", 20), text_color="black")
     label.pack(pady=20)
 
     back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_notes_page)

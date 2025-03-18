@@ -187,7 +187,7 @@ class Login_Page(customtkinter.CTk):
         self.show_password_button_login = customtkinter.CTkSwitch(self.login_frame, variable= self.show_password_var, text="Show", onvalue="on", offvalue="off", command = self.show_password_login)
         self.show_password_button_login.grid(row = 2, column = 0, sticky = "ne", padx=535)
 
-        self.rules_label = customtkinter.CTkLabel(self.account_frame, text = "• Email Must have @ \n • Password must contain atleast one\nspecial character and atleast one number", text_color="yellow", font=("Courier", 12, "bold"))
+        self.rules_label = customtkinter.CTkLabel(self.account_frame, text = "• Email Must have @ address \n • Password must contain atleast one\nspecial character and atleast one number", text_color="yellow", font=("Courier", 12, "bold"))
         self.rules_label.pack(padx = 20, pady= 20, anchor= "e")
 
         self.username_error_label = None
@@ -285,7 +285,7 @@ class Login_Page(customtkinter.CTk):
             with open("Account_info" , "w") as file:
                 file.write(f"Username: {username}\nEmail: {email}\nPassword: {password}\n\n")
             self.account_frame.pack_forget()
-            self.login_frame.pack(padx=20, pady= 20)
+            self.login_frame.pack(fill = "both", expand = "True")
             self.new_username_entry.delete(0, "end")
             self.email_entry.delete(0, "end")
             self.new_password_entry.delete(0, "end")
