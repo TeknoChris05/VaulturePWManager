@@ -369,11 +369,6 @@ class Login_Page(customtkinter.CTk):
 
 
 
-    def close(self):
-        print("closed")
-        self.destroy()
-
-
 
 if __name__ == "__main__":
     window_login = Login_Page()
