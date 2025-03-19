@@ -161,18 +161,31 @@ class SettingsFrame(customtkinter.CTkFrame):
         back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=20)
         
+import customtkinter
+from tkinter import filedialog
+
 class AccountFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
-        self.configure(fg_color="#2C2F33", border_width=0, border_color="#7289DA")
-        self.configure(fg_color=master.theme_color)
-        
-        title = customtkinter.CTkLabel(self, text="Account Information!", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
-        title.pack(fill="x")
+        self.configure(fg_color="#2C2F33", corner_radius=10)
 
- 
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
-        back_button.pack(pady=20)     
+        title = customtkinter.CTkLabel(self, text="Account Information", text_color="white", font=("Segoe UI", 28, "bold"), fg_color="#2C2F33")
+        title.pack(pady=10)
+
+        self.text_widget = customtkinter.CTkTextbox(self, height=200, width=400, font=("Arial", 16))
+        self.text_widget.pack(pady=10, padx=10)
+
+        self.load_Account_Info()
+
+    def load_Account_Info(self):
+        try:
+            with open("Account_info", "r") as file:
+                content = file.read()
+                self.text_widget.delete("1.0", "end")  
+                self.text_widget.insert("end", content)  
+        except FileNotFoundError:
+            self.text_widget.insert("end", "No account info file found.")
+
  
 class SecurityFrame(customtkinter.CTkFrame):
     def __init__(self, master):
