@@ -6,12 +6,11 @@ import tkinter
 import os
 from pathlib import Path
 import string
-
 from PIL.ImageOps import expand
-
-
 #from Dan import window
 
+
+#NOTICE: Some Sections of Code are AI GENERATED. The sections will be labeled (AI GENERATED) in its comment
 
 
 class Login_Page(customtkinter.CTk):
@@ -29,7 +28,7 @@ class Login_Page(customtkinter.CTk):
         self.maxsize(1920, 1080)
 
 
-        #Retrieve screen width and height
+        #Retrieve screen width and height (AI GENERATED)
         screen_dimension_width = self.winfo_screenwidth()
         screen_dimension_height = self.winfo_screenheight()
 
@@ -187,7 +186,7 @@ class Login_Page(customtkinter.CTk):
         self.show_password_button_login = customtkinter.CTkSwitch(self.login_frame, variable= self.show_password_var, text="Show", onvalue="on", offvalue="off", command = self.show_password_login)
         self.show_password_button_login.grid(row = 2, column = 0, sticky = "ne", padx=535)
 
-        self.rules_label = customtkinter.CTkLabel(self.account_frame, text = "• Email Must have @ address \n • Password must contain atleast one\nspecial character and atleast one number", text_color="yellow", font=("Courier", 12, "bold"))
+        self.rules_label = customtkinter.CTkLabel(self.account_frame, text = "• Email Must have be  a valid (have @ and .com written) address \n • Password must contain atleast one\nspecial character and atleast one number", text_color="yellow", font=("Courier", 14, "bold"))
         self.rules_label.pack(padx = 20, pady= 20, anchor= "e")
 
         self.username_error_label = None
@@ -216,6 +215,8 @@ class Login_Page(customtkinter.CTk):
             self.show_confirm_password_button.configure(text="Show")
 
     def show_password_login(self):
+
+        #Checks to see if password is hidden. If it is, the password is displayed after the switch is clicked (AI GENERATED)
         if self.password_entry.cget("show") == "*":
             self.password_entry.configure(show="")
             self.show_password_button_login.configure(text = "Hide")
@@ -230,6 +231,36 @@ class Login_Page(customtkinter.CTk):
 
     def show_login_frame(self):
             self.account_frame.pack_forget()
+
+            #Checks if certain labels exist and if they do, they are destroyed (AI GENERATED)
+            if self.login_username_error is not None:
+                self.login_username_error.destroy()
+                self.login_username_error = None
+
+            if self.login_password_error is not None:
+                self.login_password_error.destroy()
+                self.login_password_error = None
+
+            if self.username_error_label is not None:
+                self.username_error_label.destroy()
+                self.username_error_label = None
+
+            if self.email_error_label is not None:
+                self.email_error_label.destroy()
+                self.email_error_label = None
+
+            if self.confirm_password_error_label is not None:
+                self.confirm_password_error_label.destroy()
+                self.confirm_password_error_label = None
+
+            if self.password_error_label is not None:
+                self.password_error_label.destroy()
+                self.password_error_label = None
+
+            if self.successful_account is not None:
+                self.successful_account.destroy()
+                self.successful_account = None
+
             self.login_frame.pack(fill = "both", expand = True)
             self.new_username_entry.delete(0, "end")
             self.email_entry.delete(0, "end")
@@ -242,6 +273,7 @@ class Login_Page(customtkinter.CTk):
         password = self.new_password_entry.get()
         confirm_password = self.confirm_password_entry.get()
 
+        #Checks if there are any special characters or numbers in the password (AI GENERATED)
         contains_number = any(char.isdigit() for char in password)
         contains_special = any(char in string.punctuation for char in password)
 
@@ -264,19 +296,19 @@ class Login_Page(customtkinter.CTk):
         error = False
 
         if username == "":
-            self.username_error_label = customtkinter.CTkLabel(self.account_frame, text="Please Enter A Valid Username", font=("Courier", 14, "bold"), text_color="red")
+            self.username_error_label = customtkinter.CTkLabel(self.account_frame, text="Please Enter A Username", font=("Courier", 18, "bold"), text_color="red")
             self.username_error_label.pack(padx=20, pady=15, anchor="w")
             error = True
             print("username error")
 
-        if email == "" or "@" not in email:
-            self.email_error_label = customtkinter.CTkLabel(self.account_frame, text="Please Enter A Valid Email", font=("Courier", 14, "bold"), text_color="red")
+        if email == "" or ("@" and ".com") not in email:
+            self.email_error_label = customtkinter.CTkLabel(self.account_frame, text="Please Enter A Valid Email", font=("Courier", 18, "bold"), text_color="red")
             self.email_error_label.pack(padx=20, pady=15, anchor="w")
             error = True
             print("email error")
 
         if password == "" or password != confirm_password or (not contains_number or not contains_special):
-            self.password_error_label = customtkinter.CTkLabel(self.account_frame, text="Please Enter a Valid Password or\ncheck if password entries match", font=("Courier", 14, "bold"), text_color="red")
+            self.password_error_label = customtkinter.CTkLabel(self.account_frame, text="Please Enter a Valid Password or\ncheck if password entries match", font=("Courier", 18, "bold"), text_color="red")
             self.password_error_label.pack(padx=20, pady=15, anchor="w")
             error=True
 
@@ -290,11 +322,13 @@ class Login_Page(customtkinter.CTk):
             self.email_entry.delete(0, "end")
             self.new_password_entry.delete(0, "end")
             self.confirm_password_entry.delete(0, "end")
-            self.successful_account = customtkinter.CTkLabel(self.login_frame, text="Successfully Created Account!", font=("Courier", 14, "bold"), text_color="green")
+            self.successful_account = customtkinter.CTkLabel(self.login_frame, text="Successfully Created Account!", font=("Courier", 18, "bold"), text_color="green")
             self.successful_account.pack(padx=20, pady=15, anchor="w")
 
     #Error handling in main login frame and checks if login information is correct
     def confirm_login(self):
+
+        #Reads each line of the file. Specifically only what the user wrote in the entry boxes (AI GENERATED)
         with open("Account_info", "r") as file:
             lines = file.readlines()
             line_one = lines[1-1].split(":")[1].strip()
@@ -325,7 +359,7 @@ class Login_Page(customtkinter.CTk):
                 error = True
 
             if not error:
-                print("Success")
+                print("Successfully logged in!")
 
 
     # def open_main_page(self):
