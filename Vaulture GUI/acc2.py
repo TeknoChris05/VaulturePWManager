@@ -6,24 +6,25 @@ from PIL import Image, ImageTk
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
 
-class SettingsApp(customtkinter.CTk):
+class SettingsApp(customtkinter.CTkToplevel):
     def __init__(self):
-            super().__init__()
-            screen_dimension_width = self.winfo_screenwidth()
-            screen_dimension_height = self.winfo_screenheight()
-            self.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
-            self.configure(fg_color="#2C2F33")
-            self.minsize(800, 600)  
-            self.maxsize(1920, 1080)
-
-        #Default theme 
-            self.theme_color = "#2C2F33"
-            self.text_color = "white"
-            self.current_frame = None
-            self._create_sidebar()
-            self.show_Intro_page()
-            Exit_button = customtkinter.CTkButton(self, text="Exit", command=self.destroy)
-            Exit_button.pack(side="bottom", pady=100)
+        super().__init__()
+        screen_dimension_width = self.winfo_screenwidth()
+        screen_dimension_height = self.winfo_screenheight()
+        self.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
+        self.configure(fg_color="#2C2F33")
+        self.minsize(800, 600)  
+        self.maxsize(1920, 1080)
+        self.theme_color = "#2C2F33"
+        self.text_color = "white"
+        self.current_frame = None
+        self._create_sidebar()
+        self.show_Intro_page()
+        Exit_button = customtkinter.CTkButton(self, text="Exit", command=self.destroy)
+        Exit_button.pack(side="bottom", pady=100)
+        self.lift()
+        self.focus_force()
+        self.grab_set()
             
     def _create_sidebar(self):
         self.sidebar = customtkinter.CTkFrame(self, fg_color="#23272A", width=200, corner_radius=10)
@@ -294,4 +295,3 @@ class ContactFrame(customtkinter.CTkFrame):
 def opening_settings():
     app = SettingsApp()
     app.resizable(False, False)
-    app.mainloop()
