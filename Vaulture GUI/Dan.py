@@ -163,8 +163,9 @@ Profile_button.grid(row=0, column=2, pady=5)
 
 # New Settings Button at Bottom 
 def open_settings_page():
-    settings_window = customtkinter.CTkFrame(main_frame)
     settings_window = acc2.SettingsApp()
+    settings_window.resizable(False, False)
+    settings_window.mainloop()
 
 Settings_button = customtkinter.CTkButton(bottom_bar, text="⚙️", width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
 Settings_button.grid(row=0, column=3, pady=5) 

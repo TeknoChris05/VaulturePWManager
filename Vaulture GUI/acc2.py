@@ -9,8 +9,13 @@ customtkinter.set_default_color_theme("dark-blue")
 class SettingsApp(customtkinter.CTk):
     def __init__(self):
             super().__init__()
-            self.state("zoomed")
+            screen_dimension_width = self.winfo_screenwidth()
+            screen_dimension_height = self.winfo_screenheight()
+            self.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
             self.configure(fg_color="#2C2F33")
+            self.minsize(800, 600)  
+            self.maxsize(1920, 1080)
+
         #Default theme 
             self.theme_color = "#2C2F33"
             self.text_color = "white"
@@ -18,7 +23,7 @@ class SettingsApp(customtkinter.CTk):
             self._create_sidebar()
             self.show_Intro_page()
             Exit_button = customtkinter.CTkButton(self, text="Exit", command=self.destroy)
-            Exit_button.pack(side="bottom", pady=20)
+            Exit_button.pack(side="bottom", pady=100)
             
     def _create_sidebar(self):
         self.sidebar = customtkinter.CTkFrame(self, fg_color="#23272A", width=200, corner_radius=10)
@@ -285,7 +290,8 @@ class ContactFrame(customtkinter.CTkFrame):
         back_button.pack(pady=20)
 
 
+
 def opening_settings():
-    app.resizable(False, False)
     app = SettingsApp()
+    app.resizable(False, False)
     app.mainloop()
