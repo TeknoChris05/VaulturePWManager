@@ -6,6 +6,7 @@ import tkinter
 import os
 from pathlib import Path
 import string
+import mysql.connector
 from PIL.ImageOps import expand
 #from Dan import window
 
@@ -26,6 +27,15 @@ class Login_Page(customtkinter.CTk):
 
         self.minsize(800, 600)
         self.maxsize(1920, 1080)
+
+        self.login_database = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            passwd='Mufeed2004-',
+            database="Login_information"
+        )
+
+        self.mycursor = self.login_database.cursor()
 
 
         #Retrieve screen width and height (AI GENERATED)
@@ -299,13 +309,13 @@ class Login_Page(customtkinter.CTk):
             self.username_error_label = customtkinter.CTkLabel(self.account_frame, text="Please Enter A Username", font=("Courier", 18, "bold"), text_color="red")
             self.username_error_label.pack(padx=20, pady=15, anchor="w")
             error = True
-            print("username error")
+
 
         if email == "" or ("@" and ".com") not in email:
             self.email_error_label = customtkinter.CTkLabel(self.account_frame, text="Please Enter A Valid Email", font=("Courier", 18, "bold"), text_color="red")
             self.email_error_label.pack(padx=20, pady=15, anchor="w")
             error = True
-            print("email error")
+
 
         if password == "" or password != confirm_password or (not contains_number or not contains_special):
             self.password_error_label = customtkinter.CTkLabel(self.account_frame, text="Please Enter a Valid Password or\ncheck if password entries match", font=("Courier", 18, "bold"), text_color="red")
@@ -314,8 +324,12 @@ class Login_Page(customtkinter.CTk):
 
 
         if not error:
-            with open("Account_info" , "w") as file:
-                file.write(f"Username: {username}\nEmail: {email}\nPassword: {password}\n\n")
+            self.mycursor.execute("INSERT INTO Account (Username, Email, Password) VALUES (%s,%s,%s)",(username, email, password))
+            self.login_database.commit()
+            self.mycursor.execute("SELECT * FROM Account")
+            result = self.mycursor.fetchall()
+            for row in result:
+                print(row)
             self.account_frame.pack_forget()
             self.login_frame.pack(fill = "both", expand = "True")
             self.new_username_entry.delete(0, "end")
@@ -327,39 +341,55 @@ class Login_Page(customtkinter.CTk):
 
     #Error handling in main login frame and checks if login information is correct
     def confirm_login(self):
+        login_username = self.username_entry.get()
+        login_password = self.password_entry.get()
 
-        #Reads each line of the file. Specifically only what the user wrote in the entry boxes (AI GENERATED)
-        with open("Account_info", "r") as file:
-            lines = file.readlines()
-            line_one = lines[1-1].split(":")[1].strip()
-            line_three = lines[3-1].split(":")[1].strip()
-            print(line_one + "\n" + line_three)
+        if self.login_username_error is not None:
+            self.login_username_error.destroy()
+            self.login_username_error = None
 
-            login_username = self.username_entry.get()
-            login_password = self.password_entry.get()
+        if self.login_password_error is not None:
+            self.login_password_error.destroy()
+            self.login_password_error = None
 
-            if self.login_username_error is not None:
-                self.login_username_error.destroy()
-                self.login_username_error = None
+        try:
+            self.login_database = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                passwd="Mufeed2004-",
+                database="Login_information"
+            )
+            self.mycursor = self.login_database.cursor()
 
-            if self.login_password_error is not None:
-                self.login_password_error.destroy()
-                self.login_password_error = None
+            query = "SELECT Password FROM Account WHERE Username = %s"
+            self.mycursor.execute(query, (login_username,))
+            result = self.mycursor.fetchone()
 
-            error = False
+            #Check if the user exists and the password matches (AI GENERATED)
+            if result:
+                stored_password = result[0]
+                if stored_password == login_password:
+                    print("Login successful! Welcome,", login_username)
+                    #self.open_window
 
-            if login_username != line_one:
+                    #self.withdraw()
+                    return True
+                else:
+                    self.login_password_error = customtkinter.CTkLabel(self.login_frame, text="Password not found",font=("Courier", 20, "bold"), text_color="red")
+                    self.login_password_error.pack(padx=20, pady=15, anchor="w")
+                    return False
+            else:
                 self.login_username_error = customtkinter.CTkLabel(self.login_frame, text="Username not found", font=("Courier", 20, "bold"), text_color="red")
                 self.login_username_error.pack(padx=20, pady=15, anchor="w")
-                error = True
+                return False
 
-            if login_password != line_three:
-                self.login_password_error = customtkinter.CTkLabel(self.login_frame, text="Password not found", font=("Courier", 20, "bold"), text_color="red")
-                self.login_password_error.pack(padx=20, pady=15, anchor="w")
-                error = True
+        except mysql.connector.Error as e:
+            print("Error connecting to database:", e)
+        finally:
+            if self.login_database.is_connected():
+                self.mycursor.close()
+                self.login_database.close()
 
-            if not error:
-                print("Successfully logged in!")
 
 
     # def open_main_page(self):
