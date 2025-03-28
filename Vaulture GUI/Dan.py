@@ -197,20 +197,26 @@ def open_passwordMaker_page(*args, **kwargs):
     label = customtkinter.CTkLabel(Border_Frame, text="Password Maker", font=("Verdana", 20), text_color="black")
     label.grid(row=0, column=2, pady=(10, 20), sticky="n")
 
-    label = customtkinter.CTkLabel(Border_Frame, text="Username/ Email", text_color="black")
+    label = customtkinter.CTkLabel(Border_Frame, text="Username", text_color="black")
     label.grid(row=1,column=2, pady=10, sticky="ew")
 
     label = customtkinter.CTkEntry(Border_Frame, placeholder_text="Enter 1")
     label.grid(row=2,column=2, pady=10, sticky="ew")
-
-    label = customtkinter.CTkLabel(Border_Frame, text="Password", text_color="black")
+    
+    label = customtkinter.CTkLabel(Border_Frame, text="Email", text_color="black")
     label.grid(row=3,column=2, pady=10, sticky="ew")
 
     label = customtkinter.CTkEntry(Border_Frame, placeholder_text="Enter 2")
     label.grid(row=4,column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(Border_Frame, text="Password Generation Checklist", text_color="black")
+    label = customtkinter.CTkLabel(Border_Frame, text="Password", text_color="black")
     label.grid(row=5,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkEntry(Border_Frame, placeholder_text="Enter 3")
+    label.grid(row=6,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkLabel(Border_Frame, text="Password Generation Checklist", text_color="black")
+    label.grid(row=7,column=2, pady=10, sticky="ew")
 #######################################################################################################################################################
 # AI-Assisted Code: Password Generation Feature
 # This section was created with the help of ChatGPT to implement, as i accidentally deleted it when trying to delete a different one, i had it changed, the link is provided to the history
@@ -224,10 +230,10 @@ def open_passwordMaker_page(*args, **kwargs):
     use_lower = customtkinter.BooleanVar(value=False)
 
     # Checkboxes for user selection
-    customtkinter.CTkCheckBox(Border_Frame, text="Special Characters", variable=use_special, text_color="black").grid(row=6, column=2, pady=5, sticky="ew")
-    customtkinter.CTkCheckBox(Border_Frame, text="Numbers", variable=use_numbers, text_color="black").grid(row=7, column=2, pady=5, sticky="ew")
-    customtkinter.CTkCheckBox(Border_Frame, text="Uppercase Letters", variable=use_upper, text_color="black").grid(row=8, column=2, pady=5, sticky="ew")
-    customtkinter.CTkCheckBox(Border_Frame, text="Lowercase Letters", variable=use_lower, text_color="black").grid(row=9, column=2, pady=5, sticky="ew")
+    customtkinter.CTkCheckBox(Border_Frame, text="Special Characters", variable=use_special, text_color="black").grid(row=8, column=2, pady=5, sticky="ew")
+    customtkinter.CTkCheckBox(Border_Frame, text="Numbers", variable=use_numbers, text_color="black").grid(row=9, column=2, pady=5, sticky="ew")
+    customtkinter.CTkCheckBox(Border_Frame, text="Uppercase Letters", variable=use_upper, text_color="black").grid(row=8, column=3, pady=5, sticky="ew")
+    customtkinter.CTkCheckBox(Border_Frame, text="Lowercase Letters", variable=use_lower, text_color="black").grid(row=9, column=3, pady=5, sticky="ew")
 
     # Label to display the result
     result_label = customtkinter.CTkLabel(Border_Frame, text="", text_color="black")
@@ -289,18 +295,39 @@ def open_notes_page():
 
     Notes_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     Notes_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-
     Border_Frame = customtkinter.CTkFrame(Notes_Frame, fg_color="#A9A9A9")
     Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
     label = customtkinter.CTkLabel(Border_Frame, text="Notes Maker", font=("Verdana", 20, ), text_color="black")
-    label.pack(pady=20)
+    label.grid(row=0,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkLabel(Border_Frame, text="Notes Title", text_color="black")
+    label.grid(row=1,column=2, pady=10, sticky="ew")
+    label = customtkinter.CTkEntry(Border_Frame, placeholder_text="Enter 1")
+    label.grid(row=2,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkLabel(Border_Frame, text="Enter Notes", text_color="black")
+    label.grid(row=3,column=2, pady=10, sticky="ew")
+    label = customtkinter.CTkTextbox(Border_Frame, height=150)
+    label.grid(row=4,column=2, pady=10, sticky="ew")
+
+    create_button = customtkinter.CTkButton(Border_Frame, text="Create")
+    create_button.grid(row=5,column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_notes_page)
-    back_button.pack(pady=20)
+    back_button.grid(row=6,column=2, pady=10, sticky="ew")
 
     main_frame.grid_forget()
     Notes_Frame.grid(row=1, column=1, sticky="nsew")
+
+
+    Border_Frame.columnconfigure(0, weight=1)
+    Border_Frame.columnconfigure(1, weight=2)
+    Border_Frame.columnconfigure(2, weight=1)
+    Border_Frame.columnconfigure(3, weight=1)
+    Border_Frame.columnconfigure(4, weight=1)
+    Border_Frame.columnconfigure(5, weight=1)
+    Border_Frame.columnconfigure(6, weight=1)
 
 def close_notes_page():
     Notes_Frame.destroy()
@@ -319,14 +346,44 @@ def open_banking_cards_page():
     Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
     label = customtkinter.CTkLabel(Border_Frame, text="Banking Cards Maker", font=("Verdana", 20), text_color="black")
-    label.pack(pady=20)
+    label.grid(row=0, column=2, pady=(10, 20), sticky="n")
+
+    label = customtkinter.CTkLabel(Border_Frame, text="Card Number", text_color="black")
+    label.grid(row=1,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkEntry(Border_Frame, placeholder_text="Enter 1")
+    label.grid(row=2,column=2, pady=10, sticky="ew")
+    
+    label = customtkinter.CTkLabel(Border_Frame, text="Expire Date", text_color="black")
+    label.grid(row=3,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkEntry(Border_Frame, placeholder_text="Enter 2")
+    label.grid(row=4,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkLabel(Border_Frame, text="CVV", text_color="black")
+    label.grid(row=5,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkEntry(Border_Frame, placeholder_text="Enter 3")
+    label.grid(row=6,column=2, pady=10, sticky="ew")
+
+    create_button = customtkinter.CTkButton(Border_Frame, text="Create")
+    create_button.grid(row=7,column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(Border_Frame, text="Back", command=close_banking_cards_page)
-    back_button.pack(pady=20)
+    back_button.grid(row=8,column=2, pady=10, sticky="ew")
 
     main_frame.grid_forget()
     Banking_Cards_Frame.grid(row=1, column=1, sticky="nsew")
 
+    Border_Frame.columnconfigure(0, weight=1)
+    Border_Frame.columnconfigure(1, weight=2)
+    Border_Frame.columnconfigure(2, weight=1)
+    Border_Frame.columnconfigure(3, weight=1)
+    Border_Frame.columnconfigure(4, weight=1)
+    Border_Frame.columnconfigure(5, weight=1)
+    Border_Frame.columnconfigure(6, weight=1)
+
+    
 def close_banking_cards_page():
     Banking_Cards_Frame.destroy()
     main_frame.grid(row=1, column=1, sticky="nsew")
