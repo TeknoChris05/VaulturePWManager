@@ -1,3 +1,5 @@
+import subprocess
+from distutils.util import execute
 from typing import no_type_check_decorator
 
 import customtkinter
@@ -8,7 +10,8 @@ from pathlib import Path
 import string
 import mysql.connector
 from PIL.ImageOps import expand
-#from Dan import window
+import subprocess
+import sys
 
 
 #NOTICE: Some Sections of Code are AI GENERATED. The sections will be labeled (AI GENERATED) in its comment
@@ -339,7 +342,7 @@ class Login_Page(customtkinter.CTk):
             self.successful_account = customtkinter.CTkLabel(self.login_frame, text="Successfully Created Account!", font=("Courier", 18, "bold"), text_color="green")
             self.successful_account.pack(padx=20, pady=15, anchor="w")
 
-    #Error handling in main login frame and checks if login information is correct
+    #Error handling in main login frame and checks if login information is correct using database
     def confirm_login(self):
         login_username = self.username_entry.get()
         login_password = self.password_entry.get()
@@ -361,18 +364,25 @@ class Login_Page(customtkinter.CTk):
             )
             self.mycursor = self.login_database.cursor()
 
-            query = "SELECT Password FROM Account WHERE Username = %s"
+            query = "SELECT AccountID, Password FROM Account WHERE Username = %s"
             self.mycursor.execute(query, (login_username,))
             result = self.mycursor.fetchone()
 
             #Check if the user exists and the password matches (AI GENERATED)
+            #*******************************************************************
             if result:
-                stored_password = result[0]
+                account_id, stored_password = result
+                account_id = result[0]  # Store AccountID
+                print("User AccountID:", account_id)
+
                 if stored_password == login_password:
                     print("Login successful! Welcome,", login_username)
-                    #self.open_window
+                    self.destroy()
 
-                    #self.withdraw()
+                    try:
+                        subprocess.run([sys.executable, "Dan.py", str(account_id)], check=True)
+                    except subprocess.CalledProcessError as e:
+                        print(f"Error running Dan.py: {e}")
                     return True
                 else:
                     self.login_password_error = customtkinter.CTkLabel(self.login_frame, text="Password not found",font=("Courier", 20, "bold"), text_color="red")
@@ -389,6 +399,7 @@ class Login_Page(customtkinter.CTk):
             if self.login_database.is_connected():
                 self.mycursor.close()
                 self.login_database.close()
+            #*******************************************************************************
 
 
 
