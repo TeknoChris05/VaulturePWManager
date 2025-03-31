@@ -67,14 +67,14 @@ Notes_button.grid(row=1, column=0, padx=30, pady=10, sticky="nsew")
 Filter4_button = customtkinter.CTkButton(sidebar, text="Banking Cards💳", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_banking_cards_page())
 Filter4_button.grid(row=2, column=0, padx=30, pady=10, sticky="nsew")
 
-filter5_button = customtkinter.CTkButton(sidebar, text="One-Time Password🔐", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_one_time_password_page())
-filter5_button.grid(row=3, column=0, padx=30, pady=10, sticky="nsew")
-
-Network_button = customtkinter.CTkButton(sidebar, text="Network 🛜", width=40, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray")
-Network_button.grid(row=4, column=0, padx=30, pady=20, sticky="nsew")
+Network_button = customtkinter.CTkButton(sidebar, text="Network 🛜", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_network_page())
+Network_button.grid(row=3, column=0, padx=30, pady=20, sticky="nsew")
 
 Archive_button = customtkinter.CTkButton(sidebar, text="Archived 📦", width=40, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_archive_page())
-Archive_button.grid(row=5, column=0, padx=30, pady=20, sticky="nsew")
+Archive_button.grid(row=4, column=0, padx=30, pady=20, sticky="nsew")
+
+archive_image = customtkinter.CTkLabel(sidebar, text="", image="") 
+archive_image.grid(row=5, column=0, padx=30, pady=10, sticky="nsew")
 
 
 
