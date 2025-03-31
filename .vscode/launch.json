@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Live Share: Debug Dan.py",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/Dan.py",
             "console": "integratedTerminal",
