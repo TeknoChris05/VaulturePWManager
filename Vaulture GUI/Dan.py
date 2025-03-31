@@ -6,6 +6,7 @@ import os
 from customtkinter import CTkImage
 from tkinter import filedialog
 from PIL import Image, ImageTk
+from pathlib import Path
 import random
 import string
 
@@ -18,6 +19,7 @@ screen_dimension_height = window.winfo_screenheight()
 window.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
 window.minsize(800, 600)  
 window.maxsize(1920, 1080)
+
 
 # Sidebar
 window.columnconfigure(0, weight=0)  
@@ -58,23 +60,29 @@ bottom_bar.grid(row=2, column=1, columnspan=2, sticky="ew")
 hamburger_button = customtkinter.CTkButton(main_frame, text="☰", width=60, height=60, corner_radius=10, fg_color="#0e3161", border_width=2, border_color="gray", command=lambda: toggle_sidebar())
 hamburger_button.grid(row=0, column=0, padx=20, pady=30)
 
-filter1_button = customtkinter.CTkButton(sidebar, text="Passwords🔒", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwordMaker_page())
-filter1_button.grid(row=0, column=0, padx=30, pady=10, sticky="nsew")
+Passwords_button = customtkinter.CTkButton(sidebar, text="Passwords🔒", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwordMaker_page())
+Passwords_button.grid(row=0, column=0, padx=30, pady=10, sticky="nsew")
 
-filter3_button = customtkinter.CTkButton(sidebar, text="Notes📝", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_notes_page())
-filter3_button.grid(row=1, column=0, padx=30, pady=10, sticky="nsew")
+Notes_button = customtkinter.CTkButton(sidebar, text="Notes📝", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_notes_page())
+Notes_button.grid(row=1, column=0, padx=30, pady=10, sticky="nsew")
 
-filter4_button = customtkinter.CTkButton(sidebar, text="Banking Cards💳", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_banking_cards_page())
-filter4_button.grid(row=2, column=0, padx=30, pady=10, sticky="nsew")
+Filter4_button = customtkinter.CTkButton(sidebar, text="Banking Cards💳", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_banking_cards_page())
+Filter4_button.grid(row=2, column=0, padx=30, pady=10, sticky="nsew")
 
-filter5_button = customtkinter.CTkButton(sidebar, text="One-Time Password🔐", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_one_time_password_page())
-filter5_button.grid(row=3, column=0, padx=30, pady=10, sticky="nsew")
+Network_button = customtkinter.CTkButton(sidebar, text="Network 🛜", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_network_page())
+Network_button.grid(row=3, column=0, padx=30, pady=20, sticky="nsew")
 
 Archive_button = customtkinter.CTkButton(sidebar, text="Archived 📦", width=40, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_archive_page())
 Archive_button.grid(row=4, column=0, padx=30, pady=20, sticky="nsew")
 
-Trash_button = customtkinter.CTkButton(sidebar, text="Trash 🗑️", width=40, height=20, corner_radius=5, fg_color="#282929", border_width=2, border_color="gray")
-Trash_button.grid(row=5, column=0, padx=30, pady=20, sticky="nsew")
+script_dir = Path(__file__).parent
+project_root = script_dir.parent
+image_path = project_root / "images" / "Vaulture.png"
+vulture_image = customtkinter.CTkImage(Image.open(image_path), size = (200,200))
+vulture_label = customtkinter.CTkLabel(sidebar, text = "", image= vulture_image)
+vulture_label.grid(row=5, column=0, padx=30, sticky="nsew")
+
+
 
 #Assigning weights so that these buttons wont go offscreen
 #Hamburger Button
@@ -187,12 +195,17 @@ def open_passwordMaker_page(*args, **kwargs):
     global Passwords_Frame
     if "Passwords_Frame" in globals() and Passwords_Frame.winfo_exists():
         Passwords_Frame.destroy()
+        window.minsize(800, 600)  
+        window.maxsize(1920, 1080)
 
     # Main frame and border setup
     Passwords_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     Passwords_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
     Border_Frame = customtkinter.CTkFrame(Passwords_Frame, fg_color="#A9A9A9")
     Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+    scroll_frame = customtkinter.CTkScrollableFrame(Border_Frame, fg_color="#A9A9A9")
+    scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+    Border_Frame = scroll_frame 
 
     label = customtkinter.CTkLabel(Border_Frame, text="Password Maker", font=("Verdana", 20), text_color="black")
     label.grid(row=0, column=2, pady=(10, 20), sticky="n")
@@ -428,10 +441,14 @@ def open_Profile_Page():
         Border_Frame = customtkinter.CTkFrame(Profile_Frame, fg_color="#A9A9A9")  
         Border_Frame.pack(fill="both", expand=True, padx=5, pady=5) 
 
-        label = customtkinter.CTkLabel(Border_Frame, text="Profile Page", font=("Verdana", 20), text_color="black")
+        scroll_frame = customtkinter.CTkScrollableFrame(Border_Frame, fg_color="#A9A9A9")
+        scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+        Border_Frame = scroll_frame 
+
+        label = customtkinter.CTkLabel(Border_Frame, text="Profile Page", font=("Verdana", 30), text_color="black")
         label.pack(pady=20)
 
-        PImage_label = customtkinter.CTkLabel(Border_Frame , text="Please put a picture!", width=180, height=180, fg_color="black")
+        PImage_label = customtkinter.CTkLabel(Border_Frame , text="Please put a picture!", width=300, height=300, fg_color="black")
         PImage_label.pack(pady=10)
 
         UploadingI = customtkinter.CTkButton(Border_Frame , text="Upload Image", command=upload_profile_image)
