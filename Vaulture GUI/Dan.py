@@ -9,27 +9,7 @@ from PIL import Image, ImageTk
 from pathlib import Path
 import random
 import string
-import mysql.connector
-import sys
 
-#AI GENERATED
-#********************************************************
-account_id = sys.argv[1] if len(sys.argv) > 1 else None
-
-if account_id:
-    print(f"Logged in with Account ID: {account_id}")
-else:
-    print("Error: No account ID received!")
-#********************************************************
-
-login_database = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd='Mufeed2004-',
-    database= "Login_information"
-)
-
-mycursor = login_database.cursor()
 
 window = customtkinter.CTk()
 window.title("Vaulture")
@@ -304,46 +284,6 @@ def open_passwordMaker_page(*args, **kwargs):
     # Button to trigger password generation
     customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Generate Password", command=generate_password).grid(row=10, column=2, pady=10, sticky="ew")
 #######################################################################################################################################################
-
-    def store_password_data():
-        global account_id, P_Border_Frame, Passwords_Frame
-
-        if account_id is None:
-            print("Error: account_id is not set. Data cannot be stored")
-            return
-
-        username = Username_Entry.get()
-        email = Email_Entry.get()
-        password = Password_Entry.get()
-
-        mycursor.execute("INSERT INTO Account_Data_Password (AccountID, Username, Email, Password) VALUES (%s,%s,%s,%s)",
-                         (account_id, username, email, password))
-        login_database.commit()
-        print("Data saved")
-        mycursor.execute("SELECT Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s",
-                         (account_id,))
-        data = mycursor.fetchall()
-        print("Fetched Data:", data)  # Debugging
-
-        #AI GENERATED
-        #******************************************************************************************
-        if data:
-            for index, row in enumerate(data):
-                username, email, password = row
-                label_text = f"Username: {username} | Email: {email} | Password: {password}"
-
-                # Debugging: Confirm UI element is being created
-                print("Creating Label:", label_text)
-
-                password_display = customtkinter.CTkLabel(P_Border_Frame, text=label_text,
-                                                          font=("Courier", 20, "bold"), text_color="red")
-                password_display.grid(row=index, column=0, sticky="w", padx=10, pady=5)
-
-            Passwords_Frame.update_idletasks()  # Force update UI
-        else:
-            no_data_label = customtkinter.CTkLabel(Passwords_Frame, text="No stored data found.")
-            no_data_label.pack()
-        #**********************************************************************************************
     # Save Button
     create_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Create")
     create_button.grid(row=12,column=2, pady=(30, 10), sticky="ew")

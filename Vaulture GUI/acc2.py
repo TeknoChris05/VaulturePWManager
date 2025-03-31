@@ -33,7 +33,6 @@ class SettingsApp(customtkinter.CTkToplevel):
         title.pack(pady=20)
         
         buttons = [
-            ("⚙ Settings", self.show_settings_page),
             ("👤 Account", self.show_account_page),
             ("🔒 Security", self.show_security_page),
             ("🎨 Themes", self.show_themes_page),
@@ -92,9 +91,6 @@ class SettingsApp(customtkinter.CTkToplevel):
             
     def show_Intro_page(self):
         self._switch_frame(IntroFrame)
-
-    def show_settings_page(self):
-        self._switch_frame(SettingsFrame)
         
     def show_account_page(self):
         self._switch_frame(AccountFrame)
@@ -140,32 +136,6 @@ class IntroFrame(customtkinter.CTkFrame):
         label.pack(pady=20, padx=20)
 
             
-class SettingsFrame(customtkinter.CTkFrame):
-    def __init__(self, master):
-        super().__init__(master)
-        self.configure(fg_color="#2C2F33", border_width=0, border_color="#7289DA")
-        self.configure(fg_color=master.theme_color)
-
-        title = customtkinter.CTkLabel(self, text="Settings", text_color=master.text_color,
-                                       font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
-        title.pack(fill="x")
-
-        btn_options = [
-            "Auto-lock",
-            "Password Strength",
-            "Autofill",
-            "Data Import/Export",
-            "Erase Data",
-        ]
-
-        for option in btn_options:
-            btn = customtkinter.CTkButton(self, text=option, text_color=master.text_color,
-                                          font=("Segoe UI", 18), fg_color=master.theme_color,
-                                          hover_color="#d4af37", corner_radius=10, border_width=2, border_color="#7289DA")
-            btn.pack(fill="x", padx=20, pady=0)    
-
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
-        back_button.pack(pady=20)
         
 import customtkinter
 from tkinter import filedialog
@@ -182,6 +152,12 @@ class AccountFrame(customtkinter.CTkFrame):
         self.text_widget.pack(pady=10, padx=10)
 
         self.load_Account_Info()
+        
+        Erase_button = customtkinter.CTkButton(self, text="Erase Account?", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA", width=60, height=70)
+        Erase_button.pack(pady=20)
+
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
+        back_button.pack(pady=20)
 
     def load_Account_Info(self):
         try:
