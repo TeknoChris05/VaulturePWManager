@@ -57,30 +57,60 @@ class SettingsApp(customtkinter.CTkToplevel):
     #Color Picker Theme Change        
     def update_theme(self, new_color):
         self.theme_color = new_color  
-        self.configure(fg_color=new_color)  
-        self.sidebar.configure(fg_color=new_color)
-        #Sidebar diff shade
-        darker_color = self._darken_color(new_color, 0.8)
-        self.sidebar.configure(fg_color=darker_color)
-        #Update Sidebar
+        self.configure(fg_color=new_color)
+        self.sidebar.configure(fg_color=self._darken_color(new_color, 0.8))
+
         for widget in self.sidebar.winfo_children():
             if isinstance(widget, customtkinter.CTkButton):
-                widget.configure(fg_color=new_color)
-        # Update Vaulture title label
-        title_label = self.sidebar.winfo_children()[0] 
+                widget.configure(fg_color=new_color, 
+                                border_width=2, 
+                                border_color=new_color)
+
+        title_label = self.sidebar.winfo_children()[0]  
         if isinstance(title_label, customtkinter.CTkLabel):
-            title_label.configure(fg_color=new_color)                
-        #Update Current Frame
+            title_label.configure(fg_color="transparent")
+
         if self.current_frame:
             self.current_frame.configure(fg_color=new_color)
             for widget in self.current_frame.winfo_children():
-                if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkSwitch, customtkinter.CTkFrame)):
-                    widget.configure(fg_color=new_color, text_color="black" if new_color == "#FFFFFF" else "white")
-        if isinstance(self.current_frame, SecurityFrame):
-                    self.current_frame.twofa_frame.configure(fg_color=new_color)                    
+                if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkFrame)):
+                    widget.configure(fg_color=new_color, 
+                                    text_color="black" if new_color == "#FFFFFF" else "white")
+                    widget.configure(border_width=2, border_color=new_color)
+
+                if isinstance(self.current_frame, SecurityFrame):
+                    self.current_frame.twofa_frame.configure(fg_color=new_color)
+
+        for widget in self.winfo_children():
+            if isinstance(widget, customtkinter.CTkButton) and widget.cget("text") == "Exit":
+                widget.configure(fg_color=new_color, 
+                                border_width=2, 
+                                border_color=new_color)
+
+        if isinstance(self.current_frame, ThemesFrame):
+            for widget in self.current_frame.winfo_children():
+                if isinstance(widget, customtkinter.CTkButton):
+                    widget.configure(fg_color=new_color, 
+                                    border_width=2, 
+                                    border_color=new_color)
         
-        self.refresh_current_frame()  
-    
+        self._update_buttons(new_color)  # Ensure button colors are updated immediately
+        self.refresh_current_frame()
+
+    def _update_buttons(self, new_color):
+        # Explicitly update the 'Pick Theme Color' and 'Back' buttons
+        for widget in self.winfo_children():
+            if isinstance(widget, customtkinter.CTkButton):
+                if widget.cget("text") == "Pick Theme Color":
+                    widget.configure(fg_color=new_color, 
+                                    border_width=2, 
+                                    border_color=new_color)
+                elif widget.cget("text") == "Back":
+                    widget.configure(fg_color=new_color, 
+                                    border_width=2, 
+                                    border_color=new_color)
+
+  
     def refresh_current_frame(self):
     #Recreate Frame and Apply changes
      if self.current_frame:
