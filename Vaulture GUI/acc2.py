@@ -74,10 +74,10 @@ class SettingsApp(customtkinter.CTkToplevel):
         if self.current_frame:
             self.current_frame.configure(fg_color=new_color)
             for widget in self.current_frame.winfo_children():
-                if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkSwitch, customtkinter.CTkFrame)):
-                    widget.configure(fg_color=new_color, text_color="black" if new_color == "#FFFFFF" else "white")
-        if isinstance(self.current_frame, SecurityFrame):
-                    self.current_frame.twofa_frame.configure(fg_color=new_color)                    
+                if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkSwitch)):
+                    widget.configure(fg_color=self.theme_color, text_color="black" if self.theme_color == "#FFFFFF" else "white")
+                elif isinstance(widget, customtkinter.CTkFrame):
+                    widget.configure(fg_color=self.theme_color)        
         
         self.refresh_current_frame()  
     
