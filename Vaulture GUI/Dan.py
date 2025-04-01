@@ -423,14 +423,46 @@ def open_Network_page():
     Network_Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
     label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Password Maker", font=("Verdana", 20), text_color="black")
-    label.pack(pady=20)
+    label.grid(row=0, column=2, pady=(10, 20), sticky="n")
+
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network", text_color="black")
+    label.grid(row=1,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter 1")
+    label.grid(row=2,column=2, pady=10, sticky="ew")
+    
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Ip Address", text_color="black")
+    label.grid(row=3,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter 2")
+    label.grid(row=4,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Password", text_color="black")
+    label.grid(row=5,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter 3")
+    label.grid(row=6,column=2, pady=10, sticky="ew")
+
+    create_button = customtkinter.CTkButton(Network_Border_Frame, text="Create")
+    create_button.grid(row=7,column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(Network_Border_Frame, text="Back", command=close_network_page)
-    back_button.pack(pady=20)
+    back_button.grid(row=8,column=2, pady=10, sticky="ew")
+
 
     main_frame.grid_forget()
     Network_Frame.grid(row=1, column=1, sticky="nsew")
 
+    Network_Border_Frame.columnconfigure(0, weight=1)
+    Network_Border_Frame.columnconfigure(1, weight=2)
+    Network_Border_Frame.columnconfigure(2, weight=1)
+    Network_Border_Frame.columnconfigure(3, weight=1)
+    Network_Border_Frame.columnconfigure(4, weight=1)
+    Network_Border_Frame.columnconfigure(5, weight=1)
+    Network_Border_Frame.columnconfigure(6, weight=1)
+    Network_Border_Frame.columnconfigure(7, weight=1)
+    Network_Border_Frame.columnconfigure(7, weight=1)
+    
 def close_network_page():
     Network_Frame.destroy()
     main_frame.grid(row=1, column=1, sticky="nsew")
