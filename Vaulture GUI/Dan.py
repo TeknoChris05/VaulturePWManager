@@ -222,30 +222,37 @@ def open_passwordMaker_page(*args, **kwargs):
     PasswordMakingBorder_Frame = scroll_frame 
 
     label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Maker", font=("Verdana", 20), text_color="black")
-    label.grid(row=0, column=2, pady=(10, 20), sticky="n")
+    label.grid(row=0, column=2, pady=(10, 20), sticky="nsew")
+
+
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Title", text_color="black")
+    label.grid(row=1,column=2, pady=10, sticky="nsew")
+
+    label = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter 0")
+    label.grid(row=2,column=2, pady=10, sticky="nsew")
 
     label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Username", text_color="black")
-    label.grid(row=1,column=2, pady=10, sticky="ew")
+    label.grid(row=3,column=2, pady=10, sticky="nsew")
 
     label = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter 1")
-    label.grid(row=2,column=2, pady=10, sticky="ew")
+    label.grid(row=4,column=2, pady=10, sticky="nsew")
     
     label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Email", text_color="black")
-    label.grid(row=3,column=2, pady=10, sticky="ew")
+    label.grid(row=5,column=2, pady=10, sticky="nsew")
 
     label = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter 2")
-    label.grid(row=4,column=2, pady=10, sticky="ew")
+    label.grid(row=6,column=2, pady=10, sticky="nsew")
 
     label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password", text_color="black")
-    label.grid(row=5,column=2, pady=10, sticky="ew")
+    label.grid(row=7,column=2, pady=10, sticky="nsew")
 
     label = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter 3")
-    label.grid(row=6,column=2, pady=10, sticky="ew")
+    label.grid(row=8,column=2, pady=10, sticky="nsew")
 
     label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Generation Checklist", text_color="black")
-    label.grid(row=7,column=2, pady=10, sticky="ew")
+    label.grid(row=9,column=2, pady=10, sticky="nsew")
 #######################################################################################################################################################
-# AI-Assisted Code: Password Generation Feature
+# AI-Assisted Code: Password Generation Feature - Marteno Romaya
 # This section was created with the help of ChatGPT to implement, as i accidentally deleted it when trying to delete a different one, i had it changed, the link is provided to the history
 # and it will be noted in the report. Any further questions ill be happy to answer 
 # https://chatgpt.com/share/67e6ef3a-edf4-800a-8ad2-d5eb1e63c908
@@ -257,14 +264,14 @@ def open_passwordMaker_page(*args, **kwargs):
     use_lower = customtkinter.BooleanVar(value=False)
 
     # Checkboxes for user selection
-    customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Special Characters", variable=use_special, text_color="black").grid(row=8, column=2, pady=5, sticky="ew")
-    customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Numbers", variable=use_numbers, text_color="black").grid(row=9, column=2, pady=5, sticky="ew")
-    customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Uppercase Letters", variable=use_upper, text_color="black").grid(row=8, column=3, pady=5, sticky="ew")
-    customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Lowercase Letters", variable=use_lower, text_color="black").grid(row=9, column=3, pady=5, sticky="ew")
+    customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Special Characters", variable=use_special, text_color="black").grid(row=10, column=2, pady=5, sticky="nsew")
+    customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Numbers", variable=use_numbers, text_color="black").grid(row=11, column=2, pady=5, sticky="nsew")
+    customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Uppercase Letters", variable=use_upper, text_color="black").grid(row=10, column=3, pady=5, sticky="nsew")
+    customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Lowercase Letters", variable=use_lower, text_color="black").grid(row=11, column=3, pady=5, sticky="nsew")
 
     # Label to display the result
     result_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="", text_color="black")
-    result_label.grid(row=11, column=2, pady=10, sticky="ew")
+    result_label.grid(row=12, column=2, pady=10, sticky="nsew")
 
     # Password generator function
     def generate_password():
@@ -282,26 +289,25 @@ def open_passwordMaker_page(*args, **kwargs):
         result_label.configure(text=f"Generated: {generated}")
 
     # Button to trigger password generation
-    customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Generate Password", command=generate_password).grid(row=10, column=2, pady=10, sticky="ew")
+    customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Generate Password", command=generate_password).grid(row=13, column=2, pady=10, sticky="nsew")
 #######################################################################################################################################################
     # Save Button
     create_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Create")
-    create_button.grid(row=12,column=2, pady=(30, 10), sticky="ew")
+    create_button.grid(row=14,column=2, pady=(30, 10), sticky="nsew")
 
     # Back Button
     back_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Back", command=close_passwordMaker_page)
-    back_button.grid(row=13,column=2, pady=(30, 10), sticky="ew")
+    back_button.grid(row=15,column=2, pady=(30, 10), sticky="nsew")
 
     main_frame.grid_forget()
     PasswordMaking_Frame.grid(row=1, column=1, sticky="nsew")
 
     PasswordMakingBorder_Frame.columnconfigure(0, weight=1)
-    PasswordMakingBorder_Frame.columnconfigure(1, weight=2)
+    PasswordMakingBorder_Frame.columnconfigure(1, weight=1)
     PasswordMakingBorder_Frame.columnconfigure(2, weight=1)
     PasswordMakingBorder_Frame.columnconfigure(3, weight=1)
     PasswordMakingBorder_Frame.columnconfigure(4, weight=1)
-    PasswordMakingBorder_Frame.columnconfigure(5, weight=1)
-    PasswordMakingBorder_Frame.columnconfigure(6, weight=1)
+
 
 #Closing the page 
 def close_passwordMaker_page():
@@ -351,6 +357,7 @@ def open_notes_page():
     NotesBorder_Frame.columnconfigure(5, weight=1)
     NotesBorder_Frame.columnconfigure(6, weight=1)
 
+
 def close_notes_page():
     Notes_Frame.destroy()
     main_frame.grid(row=1, column=1, sticky="nsew")
@@ -370,29 +377,36 @@ def open_banking_cards_page():
     label = customtkinter.CTkLabel(BankBorder_Frame, text="Banking Cards Maker", font=("Verdana", 20), text_color="black")
     label.grid(row=0, column=2, pady=(10, 20), sticky="n")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Number", text_color="black")
+
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Title", text_color="black")
     label.grid(row=1,column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter 1")
+    label = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter 0")
     label.grid(row=2,column=2, pady=10, sticky="ew")
-    
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Expire Date", text_color="black")
+
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Number", text_color="black")
     label.grid(row=3,column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter 2")
+    label = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter 1")
     label.grid(row=4,column=2, pady=10, sticky="ew")
-
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="CVV", text_color="black")
+    
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Expire Date", text_color="black")
     label.grid(row=5,column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter 3")
+    label = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter 2")
     label.grid(row=6,column=2, pady=10, sticky="ew")
 
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="CVV", text_color="black")
+    label.grid(row=7,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter 3")
+    label.grid(row=8,column=2, pady=10, sticky="ew")
+
     create_button = customtkinter.CTkButton(BankBorder_Frame, text="Create")
-    create_button.grid(row=7,column=2, pady=(30, 10), sticky="ew")
+    create_button.grid(row=9,column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(BankBorder_Frame, text="Back", command=close_banking_cards_page)
-    back_button.grid(row=8,column=2, pady=10, sticky="ew")
+    back_button.grid(row=10,column=2, pady=10, sticky="ew")
 
     main_frame.grid_forget()
     Banking_Cards_Frame.grid(row=1, column=1, sticky="nsew")
@@ -405,7 +419,6 @@ def open_banking_cards_page():
     BankBorder_Frame.columnconfigure(5, weight=1)
     BankBorder_Frame.columnconfigure(6, weight=1)
 
-    
 def close_banking_cards_page():
     Banking_Cards_Frame.destroy()
     main_frame.grid(row=1, column=1, sticky="nsew")
@@ -425,29 +438,35 @@ def open_Network_page():
     label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Password Maker", font=("Verdana", 20), text_color="black")
     label.grid(row=0, column=2, pady=(10, 20), sticky="n")
 
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network", text_color="black")
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Title", text_color="black")
     label.grid(row=1,column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter 1")
+    label = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter 0")
     label.grid(row=2,column=2, pady=10, sticky="ew")
-    
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Ip Address", text_color="black")
+
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network", text_color="black")
     label.grid(row=3,column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter 2")
+    label = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter 1")
     label.grid(row=4,column=2, pady=10, sticky="ew")
-
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Password", text_color="black")
+    
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Ip Address", text_color="black")
     label.grid(row=5,column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter 3")
+    label = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter 2")
     label.grid(row=6,column=2, pady=10, sticky="ew")
 
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Password", text_color="black")
+    label.grid(row=7,column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter 3")
+    label.grid(row=8,column=2, pady=10, sticky="ew")
+
     create_button = customtkinter.CTkButton(Network_Border_Frame, text="Create")
-    create_button.grid(row=7,column=2, pady=(30, 10), sticky="ew")
+    create_button.grid(row=9,column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(Network_Border_Frame, text="Back", command=close_network_page)
-    back_button.grid(row=8,column=2, pady=10, sticky="ew")
+    back_button.grid(row=10,column=2, pady=10, sticky="ew")
 
 
     main_frame.grid_forget()
@@ -460,9 +479,9 @@ def open_Network_page():
     Network_Border_Frame.columnconfigure(4, weight=1)
     Network_Border_Frame.columnconfigure(5, weight=1)
     Network_Border_Frame.columnconfigure(6, weight=1)
-    Network_Border_Frame.columnconfigure(7, weight=1)
-    Network_Border_Frame.columnconfigure(7, weight=1)
-    
+
+
+
 def close_network_page():
     Network_Frame.destroy()
     main_frame.grid(row=1, column=1, sticky="nsew")
