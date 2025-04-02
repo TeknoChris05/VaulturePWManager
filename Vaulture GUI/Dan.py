@@ -122,6 +122,7 @@ def open_passwords_page():
     scroll_frame = customtkinter.CTkScrollableFrame(PasswordBorder_Frame, fg_color="#A9A9A9")
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     PasswordBorder_Frame = scroll_frame 
+
 # Search Bar inside Passwords Page
     search_frame = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color="#A9A9A9", height=50, width=480)
     search_frame.pack(pady=10)
@@ -155,12 +156,13 @@ def open_archive_page():
     ArchiveBorder_Frame= customtkinter.CTkFrame(MainArchive_Frame, fg_color="#A9A9A9")
     ArchiveBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
+    scroll_frame = customtkinter.CTkScrollableFrame(ArchiveBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+    ArchiveBorder_Frame = scroll_frame     
+
     label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="Archived Passwords", font=("Verdana", 20))
     label.pack(pady=20)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(ArchiveBorder_Frame, fg_color="#A9A9A9")
-    scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
-    ArchiveBorder_Frame = scroll_frame 
 # Search Bar inside Passwords Page
     search_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color="#A9A9A9", height=50, width=480)
     search_frame.pack(pady=10)
@@ -326,6 +328,10 @@ def open_notes_page():
     NotesBorder_Frame = customtkinter.CTkFrame(Notes_Frame, fg_color="#A9A9A9")
     NotesBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
+    scroll_frame = customtkinter.CTkScrollableFrame(NotesBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+    NotesBorder_Frame = scroll_frame 
+
     label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes Maker", font=("Verdana", 20, ), text_color="black")
     label.grid(row=0,column=2, pady=10, sticky="ew")
 
@@ -373,6 +379,10 @@ def open_banking_cards_page():
 
     BankBorder_Frame = customtkinter.CTkFrame(Banking_Cards_Frame, fg_color="#A9A9A9")
     BankBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+    scroll_frame = customtkinter.CTkScrollableFrame(BankBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+    BankBorder_Frame = scroll_frame 
 
     label = customtkinter.CTkLabel(BankBorder_Frame, text="Banking Cards Maker", font=("Verdana", 20), text_color="black")
     label.grid(row=0, column=2, pady=(10, 20), sticky="n")
@@ -434,6 +444,10 @@ def open_Network_page():
 
     Network_Border_Frame = customtkinter.CTkFrame(Network_Frame, fg_color="#A9A9A9")
     Network_Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+    scroll_frame = customtkinter.CTkScrollableFrame(Network_Border_Frame, fg_color="#A9A9A9")
+    scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+    Network_Border_Frame = scroll_frame 
 
     label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Password Maker", font=("Verdana", 20), text_color="black")
     label.grid(row=0, column=2, pady=(10, 20), sticky="n")
