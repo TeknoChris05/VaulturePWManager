@@ -218,26 +218,49 @@ class HelpFrame(customtkinter.CTkFrame):
         self.configure(fg_color="#2C2F33", border_width=0, border_color="#7289DA")
         self.configure(fg_color=master.theme_color)
 
+        # Help Title
         title = customtkinter.CTkLabel(self, text="Help", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
-        title.pack(fill="x")
+        title.pack(fill="x", pady=(10, 10))
 
-        contact_text = """Here is some helpful tips!
+        # Adding a border around the helpful tips message
+        help_message = "Here are some helpful tips!"
+        
+        # "Here are some helpful tips!" message with a border
+        help_message_frame = customtkinter.CTkFrame(self, fg_color=master.theme_color, border_width=2, border_color="#7289DA", corner_radius=10)
+        help_message_frame.pack(padx=20, pady=(10, 20), fill="x")
 
--How do i make passwords? Just click the waffle and all the options are there! 
+        help_message_label = customtkinter.CTkLabel(help_message_frame, text=help_message, text_color="white", font=("Segoe UI", 20, "bold"), fg_color=master.theme_color)
+        help_message_label.pack(pady=10, padx=20)
 
--How do i change the theme? Go to the themes page and click the button to change the theme color!
+        # Adding a border around tips menu
+        text_frame = customtkinter.CTkFrame(self, fg_color="#2C2F33", border_width=2, border_color="#7289DA", corner_radius=10)
+        text_frame.pack(padx=20, pady=(0, 20), fill="x")
 
--How do i enable 2FA? Go to the security page and click the switch to enable 2FA!
+        
+        contact_text = [
+            ("How do I make passwords?", "Click the waffle at the bottom of the screen and all the options are there!"),
+            ("How can I see my passwords?", "Go hit the bird towards the bottom of the main page icon to display!"),
+            ("How do I enable 2FA?", "Go to the security page and click the switch to enable 2FA!"),
+            ("How do I contact you?", "Go to the contact page and all the emails are displayed."),
+            ("How can I see my passwords?", "Go hit the bird towards the bottom of the main page icon to display!"),
+          
+        ]
 
--How do i contact you? Go to the contact page and all the emails are there
+        # Question will make bold answer will stay regular
+        for question, answer in contact_text:
+            # If question it will make bold
+            question_label = customtkinter.CTkLabel(text_frame, text=f"• {question}", text_color="white", font=("Segoe UI", 16, "bold"), fg_color=master.theme_color, anchor="w")
+            question_label.pack(pady=(10, 0), padx=20, fill="x")
 
--How can i see my passwords? Go hit the bird icon to dislpay!
+            # If answer it will stay regular font
+            answer_label = customtkinter.CTkLabel(text_frame, text=answer, text_color="white", font=("Segoe UI", 16), fg_color=master.theme_color, anchor="w")
+            answer_label.pack(pady=(5, 10), padx=40, fill="x")
 
--Can i make a pfp and profile name? Yes! Go to the Profile Page on the bottom bar and you can change it there!
-        """
+            # Horizontal Lines
+            separator = customtkinter.CTkFrame(text_frame, height=2, fg_color="#7289DA")
+            separator.pack(pady=(10, 10), padx=20, fill="x")
 
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
-        back_button.pack(pady=20) 
+        # Back Button 
 
         label = customtkinter.CTkLabel(self, text=contact_text, text_color="white",  justify="left", font=("Segoe UI", 16), wraplength=600)
         label.pack(pady=20, padx=20)
@@ -252,20 +275,20 @@ class ContactFrame(customtkinter.CTkFrame):
         title = customtkinter.CTkLabel(self, text="Contact Us", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
         title.pack(fill="x", pady=(10, 20))
         
-        # Contact Icons and email message (Email icon below title)
+        # Contact Icons 
         contact_icons_frame = customtkinter.CTkFrame(self, fg_color=master.theme_color, corner_radius=10)
         contact_icons_frame.pack(pady=(10, 20), padx=20, fill="x")
         
-        # Email icon with message
+        # Email icon added email picture and readjusted message says
         icon_data = [
             ("📧", "Need help? Reach out to us through the following emails at any time!")
         ]
         
         for icon, label_text in icon_data:
-            contact_button = customtkinter.CTkButton(contact_icons_frame, text=f"{icon} {label_text}", font=("Segoe UI", 18,"bold"), fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, corner_radius=10, border_width=3, border_color="#7289DA")
+            contact_button = customtkinter.CTkButton(contact_icons_frame, text=f"{icon} {label_text}", font=("Segoe UI", 17,"bold"), fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, corner_radius=10, border_width=3, border_color="#7289DA")
             contact_button.pack(pady=5, fill="x", padx=20)
         
-        # Email addresses in a neat list with a border
+        # Email addresses added border to make it look neat 
         email_frame = customtkinter.CTkFrame(self, fg_color=master.theme_color, corner_radius=10, border_width=2, border_color="#7289DA")
         email_frame.pack(padx=20, pady=(0, 20), fill="x")
 
@@ -282,7 +305,7 @@ class ContactFrame(customtkinter.CTkFrame):
         
         # Back Button
         back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
-        back_button.pack(pady=(20, 30))  # Added padding for a clean layout
+        back_button.pack(pady=(20, 30))  
 
 
 def opening_settings():
