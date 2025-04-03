@@ -1,7 +1,8 @@
-
 import customtkinter
 from PIL import Image
-import tkinter as tk
+import tkinter
+
+from setuptools.logging import configure
 
 import acc2
 import os
@@ -11,6 +12,7 @@ from PIL import Image, ImageTk
 from pathlib import Path
 import random
 import string
+import tkinter as tk
 import mysql.connector
 import sys
 
@@ -140,7 +142,7 @@ sidebar.rowconfigure(6, weight=2)
 # Passwords
 def open_passwords_page():
     global MainPasswords_Frame
-    if "MainPasswords_Frame" in globals() and MainPasswords_Frame.winfo_exists():
+    if "MainPasswords_Fram" in globals() and MainPasswords_Frame.winfo_exists():
         MainPasswords_Frame.destroy()
 
     #  The creation of the frame and border
@@ -155,6 +157,7 @@ def open_passwords_page():
     scroll_frame = customtkinter.CTkScrollableFrame(PasswordBorder_Frame, fg_color="#A9A9A9")
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     PasswordBorder_Frame = scroll_frame
+
     # Search Bar inside Passwords Page
     search_frame = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color="#A9A9A9", height=50, width=480)
     search_frame.pack(pady=10)
@@ -167,42 +170,85 @@ def open_passwords_page():
     main_frame.grid_forget()
     MainPasswords_Frame.grid(row=1, column=1, sticky="nsew")
 
-    button_reference = {}
-
-    mycursor.execute("SELECT Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s",
+    mycursor.execute("SELECT data_id, Title, Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s",
                      (account_id,))
     data = mycursor.fetchall()
-    print("Fetched Data:", data)  # Debugging
 
+    mycursor.execute("SELECT data_id, Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE AccountID = %s",
+                     (account_id,))
+    banking_data = mycursor.fetchall()
+
+    mycursor.execute("SELECT data_id, Network_Title, Network, IP_Address, Password FROM Network_Data WHERE AccountID = %s",
+                     (account_id,))
+    network_data = mycursor.fetchall()
 
     password_display = tk.Listbox(PasswordBorder_Frame, width=100, height=100, bg="#A9A9A9",
                                   font=("Courier", 14, "bold"),
                                   highlightthickness=0, fg="black", borderwidth=0)
     password_display.pack(padx=10, pady=5, anchor="w", fill="both", expand=True)
 
-    password_display.delete(0, tk.END)  # Clear Listbox
-    # for widget in button_frame.winfo_children():  # Clear old buttons
+    # for widget in PasswordBorder_Frame.winfo_children():  # Clear old buttons
     #     widget.destroy()
 
+    # Dictionary to store buttons per row
+    button_refs = {}
 
     # AI GENERATED
     # ******************************************************************************************
     if data:
-
         for index, row in enumerate(data):
-            username, email, password = row
-            password_display.insert(tk.END, f"{index+1}. Username: {username} | Email: {email} | Password: {password}")
+            data_id, title, username, email, password = row
+            display_password_text = f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}"
+            password_display.insert(tk.END, display_password_text)
 
-            # password_display = customtkinter.CTkLabel(PasswordBorder_Frame, text=label_text,
-            #                                           font=("Courier", 14, "bold"), text_color="black")
-            # password_display.pack(padx=10, pady=5, anchor = "w")
+            # archive_button = tk.Button(PasswordBorder_Frame, text="Edit", command=lambda d=data_id: archive_row(d))
+            # delete_btn = tk.Button(PasswordBorder_Frame, text="Delete", command=lambda d=data_id: delete_row(d), fg="red")
+            #
+            # archive_button.grid(row=index, column=0, padx=5, pady=2, sticky="ew")
+            # delete_btn.grid(row=index, column=1, padx=5, pady=2, sticky="ew")
+
+            # button_refs[data_id] = (archive_button, delete_btn)
 
         MainPasswords_Frame.update_idletasks()  # Force update UI
     else:
-        no_data_label = customtkinter.CTkLabel(Passwords_Frame, text="No stored data found.")
+        no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No stored data found.")
         no_data_label.pack()
     # **********************************************************************************************
 
+    if banking_data:
+        for index, row in enumerate(banking_data, start=len(data) + 1):
+            data_id, card_name, card_number, expiry_date, cvv = row
+            display_text = f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}"
+            password_display.insert(tk.END, display_text)
+        MainPasswords_Frame.update_idletasks()  # Force update UI
+    else:
+        no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No stored data found.")
+        no_data_label.pack()
+
+    if network_data:
+        for index, row in enumerate(network_data, start=len(banking_data) + 1):
+            data_id, network_name, network_type, ip_address, password = row
+            display_text = f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}"
+            password_display.insert(tk.END, display_text)
+        MainPasswords_Frame.update_idletasks()  # Force update UI
+    else:
+        no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No stored data found.")
+        no_data_label.pack()
+
+
+# def delete_row(data_id):
+#     """Delete row from the database and update UI"""
+#     mycursor.execute("DELETE FROM Account_Data_Password WHERE id = ?", (data_id,))
+#     mycursor.execute("INSERT INTO Deleted_Passwords WHERE id = ?", (data_id,))
+#     login_database.commit()
+#     open_passwords_page()
+#
+#
+# def archive_row(data_id):
+#     mycursor.execute("DELETE FROM Account_Data_Password WHERE id = ?", (data_id,))
+#     mycursor.execute("INSERT INTO Archive_Data_Password WHERE id = ?", (data_id,))
+#     login_database.commit()
+#     open_passwords_page()
 
 
 # Closing the page
@@ -229,12 +275,13 @@ def open_archive_page():
     ArchiveBorder_Frame = customtkinter.CTkFrame(MainArchive_Frame, fg_color="#A9A9A9")
     ArchiveBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="Archived Passwords", font=("Verdana", 20))
-    label.pack(pady=20)
-
     scroll_frame = customtkinter.CTkScrollableFrame(ArchiveBorder_Frame, fg_color="#A9A9A9")
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     ArchiveBorder_Frame = scroll_frame
+
+    label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="Archived Passwords", font=("Verdana", 20))
+    label.pack(pady=20)
+
     # Search Bar inside Passwords Page
     search_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color="#A9A9A9", height=50, width=480)
     search_frame.pack(pady=10)
@@ -307,30 +354,36 @@ def open_passwordMaker_page(*args, **kwargs):
 
     label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Maker", font=("Verdana", 20),
                                    text_color="black")
-    label.grid(row=0, column=2, pady=(10, 20), sticky="n")
+    label.grid(row=0, column=2, pady=(10, 20), sticky="nsew")
+
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Title", text_color="black")
+    label.grid(row=1, column=2, pady=10, sticky="nsew")
+
+    Title_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Title")
+    Title_entry.grid(row=2, column=2, pady=10, sticky="nsew")
 
     label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Username", text_color="black")
-    label.grid(row=1, column=2, pady=10, sticky="ew")
+    label.grid(row=3, column=2, pady=10, sticky="nsew")
 
     Username_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Username")
-    Username_entry.grid(row=2, column=2, pady=10, sticky="ew")
+    Username_entry.grid(row=4, column=2, pady=10, sticky="nsew")
 
     label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Email", text_color="black")
-    label.grid(row=3, column=2, pady=10, sticky="ew")
+    label.grid(row=5, column=2, pady=10, sticky="nsew")
 
     Email_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Email")
-    Email_entry.grid(row=4, column=2, pady=10, sticky="ew")
+    Email_entry.grid(row=6, column=2, pady=10, sticky="nsew")
 
     label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password", text_color="black")
-    label.grid(row=5, column=2, pady=10, sticky="ew")
+    label.grid(row=7, column=2, pady=10, sticky="nsew")
 
     Password_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Password")
-    Password_entry.grid(row=6, column=2, pady=10, sticky="ew")
+    Password_entry.grid(row=8, column=2, pady=10, sticky="nsew")
 
     label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Generation Checklist", text_color="black")
-    label.grid(row=7, column=2, pady=10, sticky="ew")
+    label.grid(row=9, column=2, pady=10, sticky="nsew")
     #######################################################################################################################################################
-    # AI-Assisted Code: Password Generation Feature
+    # AI-Assisted Code: Password Generation Feature - Marteno Romaya
     # This section was created with the help of ChatGPT to implement, as i accidentally deleted it when trying to delete a different one, i had it changed, the link is provided to the history
     # and it will be noted in the report. Any further questions ill be happy to answer
     # https://chatgpt.com/share/67e6ef3a-edf4-800a-8ad2-d5eb1e63c908
@@ -343,17 +396,17 @@ def open_passwordMaker_page(*args, **kwargs):
 
     # Checkboxes for user selection
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Special Characters", variable=use_special,
-                              text_color="black").grid(row=8, column=2, pady=5, sticky="ew")
+                              text_color="black").grid(row=10, column=2, pady=5, sticky="nsew")
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Numbers", variable=use_numbers,
-                              text_color="black").grid(row=9, column=2, pady=5, sticky="ew")
+                              text_color="black").grid(row=11, column=2, pady=5, sticky="nsew")
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Uppercase Letters", variable=use_upper,
-                              text_color="black").grid(row=8, column=3, pady=5, sticky="ew")
+                              text_color="black").grid(row=10, column=3, pady=5, sticky="nsew")
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Lowercase Letters", variable=use_lower,
-                              text_color="black").grid(row=9, column=3, pady=5, sticky="ew")
+                              text_color="black").grid(row=11, column=3, pady=5, sticky="nsew")
 
     # Label to display the result
     result_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="", text_color="black")
-    result_label.grid(row=11, column=2, pady=10, sticky="ew")
+    result_label.grid(row=12, column=2, pady=10, sticky="nsew")
 
     # Password generator function
     def generate_password():
@@ -372,8 +425,7 @@ def open_passwordMaker_page(*args, **kwargs):
 
     # Button to trigger password generation
     customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Generate Password", command=generate_password).grid(
-        row=10, column=2, pady=10, sticky="ew")
-
+        row=13, column=2, pady=10, sticky="nsew")
     #######################################################################################################################################################
 
     def store_password_data():
@@ -383,36 +435,36 @@ def open_passwordMaker_page(*args, **kwargs):
             print("Error: account_id is not set. Data cannot be stored")
             return
 
+        title = Title_entry.get()
         username = Username_entry.get()
         email = Email_entry.get()
         password = Password_entry.get()
 
         mycursor.execute(
-            "INSERT INTO Account_Data_Password (AccountID, Username, Email, Password) VALUES (%s,%s,%s,%s)",
-            (account_id, username, email, password))
+            "INSERT INTO Account_Data_Password (AccountID, Title, Username, Email, Password) VALUES (%s,%s,%s,%s,%s)",
+            (account_id, title, username, email, password))
         login_database.commit()
         created_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Successfully created",
                                                   font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
 
+
     # Save Button
     create_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Create", command = store_password_data)
-    create_button.grid(row=12, column=2, pady=(30, 10), sticky="ew")
+    create_button.grid(row=14, column=2, pady=(30, 10), sticky="nsew")
 
     # Back Button
     back_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Back", command=close_passwordMaker_page)
-    back_button.grid(row=13, column=2, pady=(30, 10), sticky="ew")
+    back_button.grid(row=15, column=2, pady=(30, 10), sticky="nsew")
 
     main_frame.grid_forget()
     PasswordMaking_Frame.grid(row=1, column=1, sticky="nsew")
 
     PasswordMakingBorder_Frame.columnconfigure(0, weight=1)
-    PasswordMakingBorder_Frame.columnconfigure(1, weight=2)
+    PasswordMakingBorder_Frame.columnconfigure(1, weight=1)
     PasswordMakingBorder_Frame.columnconfigure(2, weight=1)
     PasswordMakingBorder_Frame.columnconfigure(3, weight=1)
     PasswordMakingBorder_Frame.columnconfigure(4, weight=1)
-    PasswordMakingBorder_Frame.columnconfigure(5, weight=1)
-    PasswordMakingBorder_Frame.columnconfigure(6, weight=1)
 
 
 # Closing the page
@@ -431,6 +483,10 @@ def open_notes_page():
     Notes_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
     NotesBorder_Frame = customtkinter.CTkFrame(Notes_Frame, fg_color="#A9A9A9")
     NotesBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+    scroll_frame = customtkinter.CTkScrollableFrame(NotesBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+    NotesBorder_Frame = scroll_frame
 
     label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes Maker", font=("Verdana", 20,), text_color="black")
     label.grid(row=0, column=2, pady=10, sticky="ew")
@@ -480,33 +536,63 @@ def open_banking_cards_page():
     BankBorder_Frame = customtkinter.CTkFrame(Banking_Cards_Frame, fg_color="#A9A9A9")
     BankBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
+    scroll_frame = customtkinter.CTkScrollableFrame(BankBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+    BankBorder_Frame = scroll_frame
+
     label = customtkinter.CTkLabel(BankBorder_Frame, text="Banking Cards Maker", font=("Verdana", 20),
                                    text_color="black")
     label.grid(row=0, column=2, pady=(10, 20), sticky="n")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Number", text_color="black")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Title", text_color="black")
     label.grid(row=1, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter 1")
-    label.grid(row=2, column=2, pady=10, sticky="ew")
+    Card_Title_entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter Title")
+    Card_Title_entry.grid(row=2, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Expire Date", text_color="black")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Number", text_color="black")
     label.grid(row=3, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter 2")
-    label.grid(row=4, column=2, pady=10, sticky="ew")
+    Card_Number_Entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter Card Number")
+    Card_Number_Entry.grid(row=4, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="CVV", text_color="black")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Expire Date", text_color="black")
     label.grid(row=5, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter 3")
-    label.grid(row=6, column=2, pady=10, sticky="ew")
+    Expiration_Date_entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter Expiration Date (EX: 03-2025)")
+    Expiration_Date_entry.grid(row=6, column=2, pady=10, sticky="ew")
 
-    create_button = customtkinter.CTkButton(BankBorder_Frame, text="Create")
-    create_button.grid(row=7, column=2, pady=(30, 10), sticky="ew")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="CVV", text_color="black")
+    label.grid(row=7, column=2, pady=10, sticky="ew")
+
+    CVV_entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter CVV")
+    CVV_entry.grid(row=8, column=2, pady=10, sticky="ew")
+
+    def store_bank_data():
+        global account_id, P_Border_Frame, Passwords_Frame
+
+        if account_id is None:
+            print("Error: account_id is not set. Data cannot be stored")
+            return
+
+        card_title = Card_Title_entry.get()
+        card_number = Card_Number_Entry.get()
+        expiration_date = Expiration_Date_entry.get()
+        cvv = CVV_entry.get()
+
+        mycursor.execute(
+            "INSERT INTO Banking_Card (AccountID, Card_Title, Card_Number, Expire_Date, CVV) VALUES (%s,%s,%s,%s,%s)",
+            (account_id, card_title, card_number, expiration_date, cvv))
+        login_database.commit()
+        created_label = customtkinter.CTkLabel(BankBorder_Frame, text="Successfully created",
+                                                  font=("Courier", 14, "bold"), text_color="green")
+        created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
+
+    create_button = customtkinter.CTkButton(BankBorder_Frame, text="Create", command= store_bank_data)
+    create_button.grid(row=9, column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(BankBorder_Frame, text="Back", command=close_banking_cards_page)
-    back_button.grid(row=8, column=2, pady=10, sticky="ew")
+    back_button.grid(row=10, column=2, pady=10, sticky="ew")
 
     main_frame.grid_forget()
     Banking_Cards_Frame.grid(row=1, column=1, sticky="nsew")
@@ -537,15 +623,74 @@ def open_Network_page():
     Network_Border_Frame = customtkinter.CTkFrame(Network_Frame, fg_color="#A9A9A9")
     Network_Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
+    scroll_frame = customtkinter.CTkScrollableFrame(Network_Border_Frame, fg_color="#A9A9A9")
+    scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+    Network_Border_Frame = scroll_frame
+
     label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Password Maker", font=("Verdana", 20),
                                    text_color="black")
-    label.pack(pady=20)
+    label.grid(row=0, column=2, pady=(10, 20), sticky="n")
+
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Title", text_color="black")
+    label.grid(row=1, column=2, pady=10, sticky="ew")
+
+    Network_title_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter Network Title")
+    Network_title_entry.grid(row=2, column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network", text_color="black")
+    label.grid(row=3, column=2, pady=10, sticky="ew")
+
+    Network_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter Network")
+    Network_entry.grid(row=4, column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Ip Address", text_color="black")
+    label.grid(row=5, column=2, pady=10, sticky="ew")
+
+    ip_address_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter IP Address")
+    ip_address_entry.grid(row=6, column=2, pady=10, sticky="ew")
+
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Password", text_color="black")
+    label.grid(row=7, column=2, pady=10, sticky="ew")
+
+    network_password_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter Network password")
+    network_password_entry.grid(row=8, column=2, pady=10, sticky="ew")
+
+    def store_network_data():
+        global account_id, P_Border_Frame, Passwords_Frame
+
+        if account_id is None:
+            print("Error: account_id is not set. Data cannot be stored")
+            return
+
+        network_title = Network_title_entry.get()
+        network = Network_entry.get()
+        ip_address = ip_address_entry.get()
+        network_password = network_password_entry.get()
+
+        mycursor.execute(
+            "INSERT INTO Network_Data (AccountID, Network_Title, Network, IP_Address, Password) VALUES (%s,%s,%s,%s,%s)",
+            (account_id, network_title, network, ip_address, network_password))
+        login_database.commit()
+        created_label = customtkinter.CTkLabel(Network_Border_Frame, text="Successfully created",
+                                                  font=("Courier", 14, "bold"), text_color="green")
+        created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
+
+    create_button = customtkinter.CTkButton(Network_Border_Frame, text="Create", command= store_network_data)
+    create_button.grid(row=9, column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(Network_Border_Frame, text="Back", command=close_network_page)
-    back_button.pack(pady=20)
+    back_button.grid(row=10, column=2, pady=10, sticky="ew")
 
     main_frame.grid_forget()
     Network_Frame.grid(row=1, column=1, sticky="nsew")
+
+    Network_Border_Frame.columnconfigure(0, weight=1)
+    Network_Border_Frame.columnconfigure(1, weight=2)
+    Network_Border_Frame.columnconfigure(2, weight=1)
+    Network_Border_Frame.columnconfigure(3, weight=1)
+    Network_Border_Frame.columnconfigure(4, weight=1)
+    Network_Border_Frame.columnconfigure(5, weight=1)
+    Network_Border_Frame.columnconfigure(6, weight=1)
 
 
 def close_network_page():
