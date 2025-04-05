@@ -2,7 +2,7 @@ import signal
 import subprocess
 from distutils.util import execute
 from typing import no_type_check_decorator
-
+import hashlib
 import customtkinter
 from PIL import Image
 import tkinter
@@ -19,6 +19,20 @@ import sys
 
 
 class Login_Page(customtkinter.CTk):
+
+    #Function to convert password string into SHA256 HASH
+    def password_hash(self, str_password):
+        string_to_hash = str_password
+        # Create a SHA256 hash object
+        hash_object = hashlib.sha256()
+        # Update the hash object with the string, encoded as bytes
+        hash_object.update(string_to_hash.encode('utf-8'))
+        # Get the hexadecimal representation of the hash
+        hex_digest = hash_object.hexdigest()
+        return hex_digest
+
+
+
     def __init__(self):
         super().__init__()
 
@@ -33,10 +47,11 @@ class Login_Page(customtkinter.CTk):
         self.maxsize(1920, 1080)
 
         self.login_database = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd='Mufeed2004-',
-            database="Login_information"
+            host="db-mysql-nyc3-37387-do-user-15222509-0.l.db.ondigitalocean.com",
+            user="doadmin",
+            passwd='AVNS_AK8FErb1DuSyVpZeMZR',
+            port='25060',
+            database="Vaulturedb"
         )
 
         self.mycursor = self.login_database.cursor()
@@ -280,6 +295,8 @@ class Login_Page(customtkinter.CTk):
             self.email_entry.delete(0, "end")
             self.password_entry.delete(0, "end")
 
+    
+    
     #Save account info into a text file and checks if any errors arise when creating an account
     def save_account_info(self):
         username = self.new_username_entry.get()
@@ -328,7 +345,7 @@ class Login_Page(customtkinter.CTk):
 
 
         if not error:
-            self.mycursor.execute("INSERT INTO Account (Username, Email, Password) VALUES (%s,%s,%s)",(username, email, password))
+            self.mycursor.execute("INSERT INTO Account (Username, Email, Password) VALUES (%s,%s,%s)",(username, email, self.password_hash(password)))
             self.login_database.commit()
             self.mycursor.execute("SELECT * FROM Account")
             result = self.mycursor.fetchall()
@@ -358,10 +375,11 @@ class Login_Page(customtkinter.CTk):
 
         try:
             self.login_database = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                passwd="Mufeed2004-",
-                database="Login_information"
+                host="db-mysql-nyc3-37387-do-user-15222509-0.l.db.ondigitalocean.com",
+                user="doadmin",
+                passwd='AVNS_AK8FErb1DuSyVpZeMZR',
+                port='25060',
+                database="Vaulturedb"
             )
             self.mycursor = self.login_database.cursor()
 
@@ -375,7 +393,7 @@ class Login_Page(customtkinter.CTk):
                 account_id, stored_password = result
                 account_id = result[0]  # Store AccountID
 
-                if stored_password == login_password:
+                if stored_password == self.password_hash(login_password):
                     print("Login successful! Welcome,", login_username)
                     self.destroy()
 

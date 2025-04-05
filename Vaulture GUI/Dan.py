@@ -24,10 +24,11 @@ else:
 # ********************************************************
 
 login_database = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd='Mufeed2004-',
-    database="Login_information"
+    host="db-mysql-nyc3-37387-do-user-15222509-0.l.db.ondigitalocean.com",
+    user="doadmin",
+    passwd='AVNS_AK8FErb1DuSyVpZeMZR',
+    port='25060',
+    database="Vaulturedb"
 )
 
 mycursor = login_database.cursor()
