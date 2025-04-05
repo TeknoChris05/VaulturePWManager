@@ -37,8 +37,22 @@ window.rowconfigure(3, weight=0)
 main_frame = customtkinter.CTkFrame(window, fg_color="#A9A9A9")
 main_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
 
+#######################################################################################################################################
+# AI -Assisted Code: Theme Color Update Feature - Marteno Romaya ,https://chatgpt.com/share/67f19bc3-4ab8-800a-bfaa-5ae77d2372a2
+def load_saved_theme_color():
+    try:
+        with open("theme_settings.txt", "r") as file:
+            saved_color = file.read().strip()
+            if not saved_color or saved_color.lower() == "#2c2f33":
+                return "#133f61"  # Force blue if empty or default gray
+            return saved_color
+    except FileNotFoundError:
+        return "#133f61"  # Default if no file exists
+saved_theme_color = load_saved_theme_color()
+#######################################################################################################################################
+
 # Left sidebar
-sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color="#0e3161", border_width=8,  border_color="black")
+sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color=saved_theme_color, border_width=8, border_color="black")
 sidebar.grid(row=0, column=0, rowspan=2, sticky="nsw")
 sidebar.grid_forget()
 
@@ -58,13 +72,39 @@ def toggle_sidebar():
 
 
 # White bottom bar
-bottom_bar = customtkinter.CTkFrame(window, height=90, corner_radius=0, fg_color="#133f61")
+bottom_bar = customtkinter.CTkFrame(window, height=90, corner_radius=0, fg_color=saved_theme_color)
 bottom_bar.grid(row=2, column=1, columnspan=2, sticky="ew")
+#######################################################################################################################################
+# AI -Assisted Code: Theme Color Update Feature - Marteno Romaya, https://chatgpt.com/share/67f19bc3-4ab8-800a-bfaa-5ae77d2372a2
+def update_main_theme(new_color):
+    # If the settings page is default gray, make sidebar and bottom_bar blue
+    if new_color.lower() == "#2c2f33":
+        actual_color = "#133f61"  # Vaulture default blue
+    else:
+        actual_color = new_color
+
+    # Update sidebar and bottom bar color
+    sidebar.configure(fg_color=actual_color)
+    bottom_bar.configure(fg_color=actual_color)
+
+    # Only update the Vaulture picture label and Storage Options label
+    for widget in sidebar.winfo_children():
+        if widget == vulture_label or widget == Title_Spot:
+            widget.configure(fg_color=actual_color)
+
+    for widget in bottom_bar.winfo_children():
+        if isinstance(widget, customtkinter.CTkLabel):
+            widget.configure(fg_color=actual_color)
+
+    hamburger_button.configure(fg_color=actual_color)
+
+#######################################################################################################################################
 
 # Sidebar buttons (These will appear when the sidebar is toggled)
 # Hamburger Icon
 hamburger_button = customtkinter.CTkButton(main_frame, text="☰", width=60, height=60, corner_radius=10, fg_color="#0e3161", border_width=3, border_color="black", font=("Arial", 24), command=lambda: toggle_sidebar())
 hamburger_button.grid(row=0, column=0, padx=20, pady=30)
+hamburger_button.configure(fg_color=saved_theme_color)
 
 Title_Spot = customtkinter.CTkLabel(sidebar, text="Storage Options", text_color="White", font=("Segoe UI", 28, "bold"), height=60)
 Title_Spot.grid(row=0, column=0, padx=30, pady=10, sticky="nsew")
@@ -152,7 +192,7 @@ def close_passwords_page():
 Notes_button = customtkinter.CTkButton(bottom_bar, text="Notes 📝", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda:  open_Notes_page())
 Notes_button.grid(row=0, column=1, pady=30, )
 
-# Open archive page
+# Notes Page
 def open_Notes_page():
     global MainNotes_Frame
     if "MainNotes_Frame" in globals() and MainNotes_Frame.winfo_exists():
@@ -183,6 +223,8 @@ def open_Notes_page():
     main_frame.grid_forget()
     MainNotes_Frame.grid(row=1, column=1, sticky="nsew")
 
+    notes_display = tk.Listbox(NotesBorder_Frame, width=100, height=100, bg="#A9A9A9",font=("Courier", 14, "bold"),highlightthickness=0, fg="black", borderwidth=0)
+    notes_display.pack(padx=10, pady=5, anchor="w", fill="both", expand=True)
 
 def close_Notes_page():
     MainNotes_Frame.destroy()
@@ -327,7 +369,8 @@ profile_box_label.pack(expand=True)
 
 # New Settings Button at Bottom
 def open_settings_page():
-    acc2.opening_settings()
+        acc2.opening_settings(update_main_theme)
+
 
 Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", width=10, height=70, corner_radius=900,fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
 Settings_button.grid(row=0, column=4, pady=5)
@@ -335,7 +378,7 @@ Settings_button.grid(row=0, column=4, pady=5)
 # Bottom Bar Setup
 # 🐦
 bottom_bar.columnconfigure(0, weight=2)
-# ⚙️
+# 📝
 bottom_bar.columnconfigure(1, weight=1)
 # 📦
 bottom_bar.columnconfigure(2, weight=1)

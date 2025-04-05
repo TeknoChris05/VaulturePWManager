@@ -7,8 +7,9 @@ customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
 
 class SettingsApp(customtkinter.CTkToplevel):
-    def __init__(self):
+    def __init__(self, update_callback=None): # This update_callback=None was used by ai to make it so it can be used in the main.py file to update the theme color in the main.py file
         super().__init__()
+        self.update_callback = update_callback
         screen_dimension_width = self.winfo_screenwidth()
         screen_dimension_height = self.winfo_screenheight()
         self.geometry(f"{screen_dimension_width}x{screen_dimension_height}-10+0")
@@ -20,12 +21,13 @@ class SettingsApp(customtkinter.CTkToplevel):
         self.current_frame = None
         self._create_sidebar()
         self.show_Intro_page()
-        Exit_button = customtkinter.CTkButton(self, text="Exit", command=self.destroy)
+        Exit_button = customtkinter.CTkButton(self, text="Exit", command=self.Saving)
         Exit_button.pack(side="bottom", pady=100)
         self.lift()
         self.focus_force()
         self.grab_set()
-            
+        self.load_theme()
+
     def _create_sidebar(self):
         self.sidebar = customtkinter.CTkFrame(self, fg_color="#23272A", width=200, corner_radius=10)
         self.sidebar.pack(side="left", fill="y", padx=10, pady=10)        
@@ -43,7 +45,7 @@ class SettingsApp(customtkinter.CTkToplevel):
         for text, command in buttons:
             button = customtkinter.CTkButton(self.sidebar, text=text, font=("Segoe UI", 18), fg_color="#2C2F33", hover_color="#7289DA", text_color="#FFFFFF", command=command, corner_radius=10, border_width=2, border_color="#7289DA")
             button.pack(fill="x", padx=10, pady=10)
-    
+
     #Sidebar Diff Shade        
     def _darken_color(self, hex_color, factor=0.8):
         hex_color = hex_color.lstrip("#")
@@ -51,7 +53,7 @@ class SettingsApp(customtkinter.CTkToplevel):
         h, l, s = colorsys.rgb_to_hls(r / 255.0, g / 255.0, b / 255.0)
         l = max(0, min(1, l * factor)) 
         r, g, b = colorsys.hls_to_rgb(h, l, s)
-    
+
         return f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}"    
     
     def update_theme(self, new_color):
@@ -81,13 +83,13 @@ class SettingsApp(customtkinter.CTkToplevel):
         self.refresh_current_frame()
     
     def refresh_current_frame(self):
-    #Recreate Frame and Apply changes
-     if self.current_frame:
-        frame_class = type(self.current_frame)  
-        self.current_frame.destroy()
-        self.current_frame = frame_class(self)
-        self.current_frame.pack(fill="both", expand=True, padx=20, pady=20)
-            
+        # Recreate Frame and Apply changes
+        if self.current_frame:
+            frame_class = type(self.current_frame)  
+            self.current_frame.destroy()
+            self.current_frame = frame_class(self)
+            self.current_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
     def show_Intro_page(self):
         self._switch_frame(IntroFrame)
         
@@ -113,13 +115,37 @@ class SettingsApp(customtkinter.CTkToplevel):
         self.current_frame = frame_class(self)
         self.current_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-        #Theme Color Update
+        # Theme Color Update
         self.current_frame.configure(fg_color=self.theme_color)
         for widget in self.current_frame.winfo_children():
             if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel)):
                 widget.configure(fg_color=self.theme_color, text_color="black" if self.theme_color == "#FFFFFF" else "white")
             elif isinstance(widget, customtkinter.CTkFrame):
                 widget.configure(fg_color=self.theme_color)
+
+    def save_theme_(self):
+        with open("theme_settings.txt", "w") as file:
+            file.write(self.theme_color)
+
+    def load_theme(self):
+        try:
+            with open("theme_settings.txt", "r") as file:
+                saved_color = file.read().strip()
+                if saved_color:
+                    self.update_theme(saved_color)
+        except FileNotFoundError:
+            pass
+#######################################################################################################################################
+# Used ai to edit what i already had here to make it so it saves to dan.py as well https://chatgpt.com/share/67f19bc3-4ab8-800a-bfaa-5ae77d2372a2
+    def Saving(self):
+        self.save_theme_()
+        if self.update_callback:
+            try:
+                self.update_callback(self.theme_color)
+            except Exception as e:
+                print("Failed to update main theme:", e)
+        self.destroy()
+#######################################################################################################################################
 
 
 class IntroFrame(customtkinter.CTkFrame):
@@ -155,7 +181,7 @@ class AccountFrame(customtkinter.CTkFrame):
 
         self.load_Account_Info()
         
-        Erase_button = customtkinter.CTkButton(self, text="Erase Account?", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA", width=60, height=70)
+        Erase_button = customtkinter.CTkButton(self, text="Erase Account?", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, corner_radius=10, border_width=2, border_color="#7289DA", width=60, height=70)
         Erase_button.pack(pady=20)
 
         back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
@@ -206,6 +232,13 @@ class ThemesFrame(customtkinter.CTkFrame):
         self.color_button = customtkinter.CTkButton(self, text="Pick Theme Color", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.pick_color)
         self.color_button.pack(pady=10)
 
+        self.Font_button = customtkinter.CTkButton(self, text="Change Font Color", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color)
+        self.Font_button.pack(pady=10)
+
+        self.reset_button = customtkinter.CTkButton(self, text="Click For Default Theme", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.reset_theme)
+        self.reset_button.pack(pady=10)
+
+
         back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=20)  
 
@@ -213,6 +246,12 @@ class ThemesFrame(customtkinter.CTkFrame):
         color_code = colorchooser.askcolor(title="Choose Theme Color")[1]
         if color_code:
             self.master.update_theme(color_code)
+    
+# This will Reset the theme to the original color 
+    def reset_theme(self):
+        # Og Color for settings page
+        OG_settings_color = "#2C2F33" 
+        self.master.update_theme(OG_settings_color)
 
 class HelpFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -235,7 +274,6 @@ class HelpFrame(customtkinter.CTkFrame):
         help_message_label = customtkinter.CTkLabel(help_message_frame, text=help_message, text_color="white", font=("Segoe UI", 20, "bold"), fg_color=master.theme_color)
         help_message_label.pack(pady=10, padx=20)
 
-        # Adding a border around tips menu
         # Adding a border around tips menu
         text_frame = customtkinter.CTkFrame(self, fg_color="#2C2F33", border_width=2, border_color="#7289DA", corner_radius=10)
         text_frame.pack(padx=20, pady=(0, 50), fill="both", expand=True)
@@ -313,7 +351,7 @@ class ContactFrame(customtkinter.CTkFrame):
         back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=(20, 30))  
 
-
-def opening_settings():
-    app = SettingsApp()
+# This update_callback=None was used by ai to make it so it can be used in the main.py file to update the theme color in the main.py file
+def opening_settings(update_callback=None): 
+    app = SettingsApp(update_callback)
     app.resizable(False, False)
