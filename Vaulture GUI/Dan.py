@@ -104,8 +104,9 @@ sidebar.rowconfigure(5, weight=2)
 # Trash
 sidebar.rowconfigure(6, weight=2)
 
-
 # Bottom bar buttons
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Passwords 🐦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwords_page())
+ValtureP_button.grid(row=0, column=0, pady=30)
 # Passwords
 def open_passwords_page():
     global MainPasswords_Frame
@@ -147,8 +148,48 @@ def close_passwords_page():
     main_frame.grid(row=1, column=1, sticky="nsew")
 
 
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Passwords 🐦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwords_page())
-ValtureP_button.grid(row=0, column=0, pady=30)
+# Notes button in bottom bar
+Notes_button = customtkinter.CTkButton(bottom_bar, text="Notes 📝", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda:  open_Notes_page())
+Notes_button.grid(row=0, column=1, pady=30, )
+
+# Open archive page
+def open_Notes_page():
+    global MainNotes_Frame
+    if "MainNotes_Frame" in globals() and MainNotes_Frame.winfo_exists():
+        MainNotes_Frame.destroy()
+
+    #  The creation of the frame and border
+    MainNotes_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
+    MainNotes_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
+    NotesBorder_Frame = customtkinter.CTkFrame(MainNotes_Frame, fg_color="#A9A9A9")
+    NotesBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+    scroll_frame = customtkinter.CTkScrollableFrame(NotesBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+    NotesBorder_Frame = scroll_frame
+
+    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes List", font=("Verdana", 20))
+    label.pack(pady=20)
+
+    # Search Bar inside Passwords Page
+    search_frame = customtkinter.CTkFrame(NotesBorder_Frame, fg_color="#A9A9A9", height=50, width=480)
+    search_frame.pack(pady=10)
+    searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
+    searching.pack(pady=10)
+
+    back_button = customtkinter.CTkButton(NotesBorder_Frame, text="Back", command=close_Notes_page)
+    back_button.pack(pady=20)
+
+    main_frame.grid_forget()
+    MainNotes_Frame.grid(row=1, column=1, sticky="nsew")
+
+
+def close_Notes_page():
+    MainNotes_Frame.destroy()
+    main_frame.grid(row=1, column=1, sticky="nsew")
+
+Archive_button = customtkinter.CTkButton(bottom_bar, text="Archive 📦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_archive_page())
+Archive_button.grid(row=0, column=2, pady=30, )
 
 
 # Open archive page
@@ -190,29 +231,118 @@ def close_archive_page():
 
 # Profile button in bottom bar
 Profile_button = customtkinter.CTkButton(bottom_bar, text="Profile 👥", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_Profile_Page())
-Profile_button.grid(row=0, column=2, pady=5)
+Profile_button.grid(row=0, column=3, pady=5)
+
+# This is the profile page settings here you can upload an image and your name and save it!
+def open_Profile_Page():
+    window.minsize(800, 600)
+    window.maxsize(1920, 1080)
+    global Profile_Frame, Border_Frame, Profile_Name, PImage_label
+
+    # Makes the frame if its not already made
+    if "Profile_Frame" not in globals():
+        Profile_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
+        Profile_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
+
+        Profile_Border_Frame = customtkinter.CTkFrame(Profile_Frame, fg_color="#A9A9A9")
+        Profile_Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
+
+        scroll_frame = customtkinter.CTkScrollableFrame(Profile_Border_Frame, fg_color="#A9A9A9")
+        scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+        Profile_Border_Frame = scroll_frame
+
+        label = customtkinter.CTkLabel(Profile_Border_Frame, text="Profile Page", font=("Verdana", 30),
+                                       text_color="black")
+        label.pack(pady=20)
+
+        PImage_label = customtkinter.CTkLabel(Profile_Border_Frame, text="Please put a picture!", width=300, height=300,
+                                              fg_color="black")
+        PImage_label.pack(pady=10)
+
+        UploadingI = customtkinter.CTkButton(Profile_Border_Frame, text="Upload Image", command=upload_profile_image)
+        UploadingI.pack(pady=30)
+
+        # Profile Name Input Field
+        Profile_Name = customtkinter.StringVar()
+        name_entry = customtkinter.CTkEntry(Profile_Border_Frame, textvariable=Profile_Name, width=250,
+                                            placeholder_text="Enter your name")
+        name_entry.pack(pady=20)
+
+        Save_button = customtkinter.CTkButton(Profile_Border_Frame, text="Save Name", command=save_profile_name)
+        Save_button.pack(pady=5)
+
+        # Back Button
+        back_button = customtkinter.CTkButton(Profile_Border_Frame, text="Back", command=close_Profile_Page)
+        back_button.pack(pady=20)
+
+    # Show the Profile Frame
+    main_frame.grid_forget()
+    Profile_Frame.grid(row=1, column=1, sticky="nsew")
+
+
+def upload_profile_image():
+    global profile_image_large, profile_image_small, PImage_label, profile_box_label
+
+    file_path = filedialog.askopenfilename(title="Choosing PFP", filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
+
+    if file_path:
+        img = Image.open(file_path)
+
+        # Image for profile page
+        img_large = img.resize((400, 400), Image.LANCZOS)
+        profile_image_large = CTkImage(light_image=img_large, dark_image=img_large, size=(400, 400))
+
+        # Image in top-right profile box
+        img_small = img.resize((50, 50), Image.Resampling.LANCZOS)
+        profile_image_small = CTkImage(light_image=img_small, dark_image=img_small, size=(70, 70))
+
+        # The profile page image
+        PImage_label.configure(image=profile_image_large, text="")
+        PImage_label.image = profile_image_large
+
+        # The profile box image
+        profile_box_label.configure(image=profile_image_small, text="")
+        profile_box_label.image = profile_image_small
+
+    # Now we can save it and close the page and when we open it it will save till you click X out
+
+def save_profile_name():
+    global Profile_Name
+    profile_name = Profile_Name.get()
+
+
+def close_Profile_Page():
+    Profile_Frame.grid_forget()
+    main_frame.grid(row=1, column=1, sticky="nsew")
+
+
+# Profile Picture Box inside main_frame (Top-Right Corner)
+profile_box = customtkinter.CTkFrame(main_frame, fg_color="#282929", border_width=2, border_color="gray", width=50, height=50)
+profile_box.place(relx=1.0, rely=0.0, anchor="ne", x=-10, y=10)
+
+# The image label inside the profile box
+profile_box_label = customtkinter.CTkLabel(profile_box, text="")
+profile_box_label.pack(expand=True)
 
 
 # New Settings Button at Bottom
 def open_settings_page():
     acc2.opening_settings()
 
-
-Archive_button = customtkinter.CTkButton(bottom_bar, text="Archive 📦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_archive_page())
-Archive_button.grid(row=0, column=1, pady=30, )
-
 Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", width=10, height=70, corner_radius=900,fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
-Settings_button.grid(row=0, column=3, pady=5)
+Settings_button.grid(row=0, column=4, pady=5)
 
 # Bottom Bar Setup
 # 🐦
 bottom_bar.columnconfigure(0, weight=2)
-# 📦
-bottom_bar.columnconfigure(1, weight=1)
-# 👥
-bottom_bar.columnconfigure(2, weight=1)
 # ⚙️
+bottom_bar.columnconfigure(1, weight=1)
+# 📦
+bottom_bar.columnconfigure(2, weight=1)
+# 👥
 bottom_bar.columnconfigure(3, weight=1)
+# ⚙️
+bottom_bar.columnconfigure(4, weight=1)
 
 
 # Left bar stuff
@@ -512,96 +642,6 @@ def close_network_page():
     main_frame.grid(row=1, column=1, sticky="nsew")
 
 
-# This is the profile page settings here you can upload an image and your name and save it!
-def open_Profile_Page():
-    window.minsize(800, 600)
-    window.maxsize(1920, 1080)
-    global Profile_Frame, Border_Frame, Profile_Name, PImage_label
-
-    # Makes the frame if its not already made
-    if "Profile_Frame" not in globals():
-        Profile_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
-        Profile_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-
-        Profile_Border_Frame = customtkinter.CTkFrame(Profile_Frame, fg_color="#A9A9A9")
-        Profile_Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
-
-        scroll_frame = customtkinter.CTkScrollableFrame(Profile_Border_Frame, fg_color="#A9A9A9")
-        scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
-        Profile_Border_Frame = scroll_frame
-
-        label = customtkinter.CTkLabel(Profile_Border_Frame, text="Profile Page", font=("Verdana", 30),
-                                       text_color="black")
-        label.pack(pady=20)
-
-        PImage_label = customtkinter.CTkLabel(Profile_Border_Frame, text="Please put a picture!", width=300, height=300,
-                                              fg_color="black")
-        PImage_label.pack(pady=10)
-
-        UploadingI = customtkinter.CTkButton(Profile_Border_Frame, text="Upload Image", command=upload_profile_image)
-        UploadingI.pack(pady=30)
-
-        # Profile Name Input Field
-        Profile_Name = customtkinter.StringVar()
-        name_entry = customtkinter.CTkEntry(Profile_Border_Frame, textvariable=Profile_Name, width=250,
-                                            placeholder_text="Enter your name")
-        name_entry.pack(pady=20)
-
-        Save_button = customtkinter.CTkButton(Profile_Border_Frame, text="Save Name", command=save_profile_name)
-        Save_button.pack(pady=5)
-
-        # Back Button
-        back_button = customtkinter.CTkButton(Profile_Border_Frame, text="Back", command=close_Profile_Page)
-        back_button.pack(pady=20)
-
-    # Show the Profile Frame
-    main_frame.grid_forget()
-    Profile_Frame.grid(row=1, column=1, sticky="nsew")
-
-
-def upload_profile_image():
-    global profile_image_large, profile_image_small, PImage_label, profile_box_label
-
-    file_path = filedialog.askopenfilename(title="Choosing PFP", filetypes=[("Image Files", "*.png *.jpg *.jpeg")])
-
-    if file_path:
-        img = Image.open(file_path)
-
-        # Image for profile page
-        img_large = img.resize((400, 400), Image.LANCZOS)
-        profile_image_large = CTkImage(light_image=img_large, dark_image=img_large, size=(400, 400))
-
-        # Image in top-right profile box
-        img_small = img.resize((50, 50), Image.Resampling.LANCZOS)
-        profile_image_small = CTkImage(light_image=img_small, dark_image=img_small, size=(70, 70))
-
-        # The profile page image
-        PImage_label.configure(image=profile_image_large, text="")
-        PImage_label.image = profile_image_large
-
-        # The profile box image
-        profile_box_label.configure(image=profile_image_small, text="")
-        profile_box_label.image = profile_image_small
-
-    # Now we can save it and close the page and when we open it it will save till you click X out
-
-def save_profile_name():
-    global Profile_Name
-    profile_name = Profile_Name.get()
-
-
-def close_Profile_Page():
-    Profile_Frame.grid_forget()
-    main_frame.grid(row=1, column=1, sticky="nsew")
-
-
-# Profile Picture Box inside main_frame (Top-Right Corner)
-profile_box = customtkinter.CTkFrame(main_frame, fg_color="#282929", border_width=2, border_color="gray", width=50, height=50)
-profile_box.place(relx=1.0, rely=0.0, anchor="ne", x=-10, y=10)
-
-# The image label inside the profile box
-profile_box_label = customtkinter.CTkLabel(profile_box, text="")
-profile_box_label.pack(expand=True)
 
 # Make it not change size
 window.resizable(False, False)
