@@ -1,3 +1,4 @@
+import signal
 import subprocess
 from distutils.util import execute
 from typing import no_type_check_decorator
@@ -373,17 +374,27 @@ class Login_Page(customtkinter.CTk):
             if result:
                 account_id, stored_password = result
                 account_id = result[0]  # Store AccountID
-                print("User AccountID:", account_id)
 
                 if stored_password == login_password:
                     print("Login successful! Welcome,", login_username)
                     self.destroy()
 
                     try:
+                        # Ensure no old process is lingering around before reopening Dan.py
+                        for proc in os.popen('tasklist').readlines():
+                            if "Dan.py" in proc:  # or the name of your script
+                                pid = int(proc.split()[1])
+                                os.kill(pid, signal.SIGTERM)  # Forcefully kill the process if it's still running
+
+                        # Now launch the login page
                         subprocess.run([sys.executable, "Dan.py", str(account_id)], check=True)
+                        return True
                     except subprocess.CalledProcessError as e:
                         print(f"Error running Dan.py: {e}")
-                    return True
+                        return False
+                    except Exception as e:
+                        print(f"Error managing subprocess: {e}")
+                        return False
                 else:
                     self.login_password_error = customtkinter.CTkLabel(self.login_frame, text="Password not found",font=("Courier", 20, "bold"), text_color="red")
                     self.login_password_error.pack(padx=20, pady=15, anchor="w")
