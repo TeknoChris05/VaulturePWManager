@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="Create_Account.css">
+    </head>
+    <body>
+        <div id="MainFrame">
+            <form>
+                <div id="Create_account_title_div">
+                    <img id=account_image src="Images/Vaulture.png" alt="Description of image" width="240" height="240" style="margin-right: 20px;">
+                    <h1 id="Create_Account_Heading">Create an Account</h1> 
+                </div>
+                <div id="input_login">
+                    <label id="Username_label" for="Username">Username:</label>
+                    <input id=Username type="text" name="New_Username" placeholder="Enter Username">
+                </div>
+                <div id="input_login">
+                    <label id="Email_label" for="Email">Email:</label>
+                    <input id="Email" type="text" name="New_Email" placeholder="Enter Email">
+                </div>
+                <div class="input-login-password">
+                    <label id="Password_label" for="Password">Password:</label>
+                    <input type="password" id="Password" name="New_Password" placeholder="Enter Password">
+                    <img src="Images/eye-close.png" id="eyeicon" onclick="togglePassword()">
+                </div>
+                <div class="input-login-password">
+                    <label id="Confirm_Password_Label" for="Confirm_Password">Confirm Password:</label>
+                    <input type="password" id="Confirm_Password" name="Confirm_Password" placeholder="Enter Password Again">
+                    <img src="Images/eye-close.png" id="eyeicon_password" onclick="ConfirmPasswordToggle()">
+                </div>
+                <button class="animated-button">Create Account</button>
+            </form>
+        </div>
+        <script src="LoginPage_Script.js" async defer></script>
+    </body>
+</html>
