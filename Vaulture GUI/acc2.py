@@ -170,14 +170,9 @@ class IntroFrame(customtkinter.CTkFrame):
         label = customtkinter.CTkLabel(self, text=contact_text, text_color="white",  justify="left", font=("Segoe UI", 16), wraplength=600)
         label.pack(pady=20, padx=20)
 
-            
-        
-import customtkinter
-from tkinter import filedialog
-
 class AccountFrame(customtkinter.CTkFrame):
     def __init__(self, master, parent):
-        super().__init__(master)        
+        super().__init__(master)
         self.parent = parent
         self.configure(fg_color="#2C2F33", corner_radius=10)
 
@@ -192,10 +187,9 @@ class AccountFrame(customtkinter.CTkFrame):
         Erase_button = customtkinter.CTkButton(self, text="Erase Account?", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, corner_radius=10, border_width=2, border_color="#7289DA", width=60, height=70)
         Erase_button.pack(pady=20)
 
-        logout_button = customtkinter.CTkButton(self, text="Logout", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color,
-                                               command=self.logout, corner_radius=10, border_width=2,
-                                               border_color="#7289DA")
+        logout_button = customtkinter.CTkButton(self, text="Logout", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.logout, corner_radius=10, border_width=2, border_color="#7289DA")
         logout_button.pack(pady=20)
+
         back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=20)
 
@@ -210,30 +204,29 @@ class AccountFrame(customtkinter.CTkFrame):
 
     def logout(self):
         try:
-            # Launch login page
-            subprocess.Popen([sys.executable, "Vaulture GUI/Dan.py"])
+            # Launch the login page when logging out
+            subprocess.Popen([sys.executable, "Vaulture GUI/Initial_GUI_Design.py"])
         except Exception as e:
             print(f"Error launching login page: {e}")
 
         # Destroy both windows
         try:
             if hasattr(self, "master") and self.master.winfo_exists():
-                self.master.destroy()  # Close the settings page (master window)
+                self.master.destroy()
         except Exception as e:
             print(f"Error closing master window: {e}")
 
         try:
-            self.destroy()  # Close the current window
+            self.destroy()
         except Exception as e:
             print(f"Error closing current window: {e}")
 
-        # Close the main window (Dan.py)
         try:
             if self.parent:
-                self.parent.quit()  # Quit the main window's event loop
-                self.parent.destroy()  # Destroy the main window
+                self.parent.quit()
+                self.parent.destroy()
         except Exception as e:
-            print(f"Error closing parent window (Dan.py): {e}")
+            print(f"Error closing parent window: {e}")
 
 class SecurityFrame(customtkinter.CTkFrame):
     def __init__(self, master):
