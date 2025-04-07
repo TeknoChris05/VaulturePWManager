@@ -13,7 +13,7 @@ import mysql.connector
 from PIL.ImageOps import expand
 import subprocess
 import sys
-
+ 
 
 #NOTICE: Some Sections of Code are AI GENERATED. The sections will be labeled (AI GENERATED) in its comment
 
@@ -95,12 +95,12 @@ class Login_Page(customtkinter.CTk):
             Image.open(image_path),
             size = (200,200)
         )
-
+  
         self.login_frame.columnconfigure(0, weight = 1)
         self.login_frame.rowconfigure(0, weight = 1)
         self.login_frame.rowconfigure((1,2,3), weight = 2)
         self.login_frame.rowconfigure(4, weight = 5)
-
+ 
         self.account_frame.columnconfigure(0, weight = 1)
         self.account_frame.rowconfigure(0, weight = 1)
         self.account_frame.rowconfigure(1, weight = 3)
@@ -363,7 +363,7 @@ class Login_Page(customtkinter.CTk):
 
         if self.login_username_error is not None:
             self.login_username_error.destroy()
-            self.login_username_error = None
+            self.login_username_error = None  
 
         if self.login_password_error is not None:
             self.login_password_error.destroy()

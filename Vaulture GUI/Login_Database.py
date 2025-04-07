@@ -4,7 +4,7 @@ import mysql.connector
 import customtkinter
 
 
-login_database = mysql.connector.connect(
+login_database = mysql.connector.connect( 
     host="db-mysql-nyc3-37387-do-user-15222509-0.l.db.ondigitalocean.com",
     user="doadmin",
     passwd='AVNS_AK8FErb1DuSyVpZeMZR',

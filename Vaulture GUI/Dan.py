@@ -197,7 +197,7 @@ def open_passwords_page():
     main_frame.grid_forget()
     MainPasswords_Frame.grid(row=1, column=1, sticky="nsew")
 
-    mycursor.execute("SELECT data_id, Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s", (account_id,))
+    mycursor.execute("SELECT data_id, Title, Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s", (account_id,))
 
     data = mycursor.fetchall()
 
@@ -481,8 +481,10 @@ profile_box_label.pack(expand=True)
 
 
 # New Settings Button at Bottom
-def open_settings_page():
-    acc2.opening_settings(update_main_theme)   
+def open_settings_page():    
+    acc2.opening_settings(update_main_theme)  
+    settings_window = acc2.SettingsApp(parent = window)
+    settings_window.mainloop()
 
 Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", width=10, height=70, corner_radius=900,fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
 Settings_button.grid(row=0, column=4, pady=5)

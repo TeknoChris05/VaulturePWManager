@@ -1,6 +1,7 @@
 import customtkinter
 import subprocess
 import sys
+import os
 import colorsys
 from tkinter import colorchooser
 from PIL import Image, ImageTk
@@ -176,23 +177,32 @@ class AccountFrame(customtkinter.CTkFrame):
         self.parent = parent
         self.configure(fg_color="#2C2F33", corner_radius=10)
 
-        title = customtkinter.CTkLabel(self, text="Account Information", text_color="white", font=("Segoe UI", 28, "bold"), fg_color="#2C2F33")
+        title = customtkinter.CTkLabel(self, text="Account Information", text_color="white",
+                                       font=("Segoe UI", 28, "bold"), fg_color="#2C2F33")
         title.pack(pady=10)
 
         self.text_widget = customtkinter.CTkTextbox(self, height=200, width=400, font=("Arial", 16))
         self.text_widget.pack(pady=10, padx=10)
 
         self.load_Account_Info()
-        
-        Erase_button = customtkinter.CTkButton(self, text="Erase Account?", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, corner_radius=10, border_width=2, border_color="#7289DA", width=60, height=70)
+
+        Erase_button = customtkinter.CTkButton(self, text="Erase Account?", fg_color=master.theme_color,
+                                               hover_color="#d4af37", text_color=master.text_color,
+                                               command=master.show_Intro_page, corner_radius=10, border_width=2,
+                                               border_color="#7289DA", width=60, height=70)
         Erase_button.pack(pady=20)
 
-        logout_button = customtkinter.CTkButton(self, text="Logout", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.logout, corner_radius=10, border_width=2, border_color="#7289DA")
+        logout_button = customtkinter.CTkButton(self, text="Logout", fg_color=master.theme_color,
+                                               hover_color="#d4af37", text_color=master.text_color,
+                                               command=self.logout, corner_radius=10, border_width=2,
+                                               border_color="#7289DA")
         logout_button.pack(pady=20)
 
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
-        back_button.pack(pady=20)
 
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37",
+                                              text_color=master.text_color, command=master.show_Intro_page,
+                                              corner_radius=10, border_width=2, border_color="#7289DA")
+        back_button.pack(pady=20) 
     def load_Account_Info(self):
         try:
             with open("Account_info", "r") as file:
@@ -204,7 +214,7 @@ class AccountFrame(customtkinter.CTkFrame):
 
     def logout(self):
         try:
-            # Launch the login page when logging out
+            # Launch login page again
             subprocess.Popen([sys.executable, "Vaulture GUI/Initial_GUI_Design.py"])
         except Exception as e:
             print(f"Error launching login page: {e}")
@@ -212,22 +222,21 @@ class AccountFrame(customtkinter.CTkFrame):
         # Destroy both windows
         try:
             if hasattr(self, "master") and self.master.winfo_exists():
-                self.master.destroy()
+                self.master.destroy()  # Close the settings page
         except Exception as e:
             print(f"Error closing master window: {e}")
 
         try:
-            self.destroy()
+            self.destroy()  # Close the current settings window
         except Exception as e:
             print(f"Error closing current window: {e}")
 
         try:
             if self.parent:
-                self.parent.quit()
-                self.parent.destroy()
+                self.parent.quit()    # Stop the event loop
+                self.parent.destroy() # Close the main app window (Dan.py)
         except Exception as e:
-            print(f"Error closing parent window: {e}")
-
+            print(f"Error closing parent window (Dan.py): {e}")
 class SecurityFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
