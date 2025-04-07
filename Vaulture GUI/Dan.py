@@ -88,11 +88,27 @@ def toggle_sidebar():
         # Show the sidebar
         sidebar.grid(row=0, column=0, rowspan=3, sticky="nsw")
     sidebar_open = not sidebar_open
+#####################################################################################################################################
+# Function to go to home page
+def go_to_home_page():
+    # Hide the main frame
+    main_frame.grid_forget()
+    
+    # If you have any other frames to hide, you can hide them as well here.
+    
+    # Display the initial content or home page content here
+    initial_page_frame = customtkinter.CTkFrame(window, fg_color="#A9A9A9")
+    initial_page_frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
+    
 
-house_icon_label = customtkinter.CTkLabel(sidebar, text="🏠", font=("Arial", 70 ), fg_color=saved_theme_color)
-house_icon_label.grid(row=6, column=0, padx=30, pady=10, sticky="nsew") 
+
+# Create the house icon button in the sidebar
+house_icon_button = customtkinter.CTkButton(sidebar, text="🏠", font=("Arial", 70), fg_color=saved_theme_color, command=go_to_home_page)
+house_icon_button.grid(row=6, column=0, padx=30, pady=10, sticky="nsew")
 
 
+
+########################################################################################################################
 
 
 
