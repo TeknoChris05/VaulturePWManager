@@ -197,8 +197,8 @@ def open_passwords_page():
     main_frame.grid_forget()
     MainPasswords_Frame.grid(row=1, column=1, sticky="nsew")
 
-    mycursor.execute("SELECT data_id, Title, Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s",
-                     (account_id,))
+    mycursor.execute("SELECT data_id, Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s", (account_id,))
+
     data = mycursor.fetchall()
 
     mycursor.execute("SELECT data_id, Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE AccountID = %s",
@@ -482,11 +482,7 @@ profile_box_label.pack(expand=True)
 
 # New Settings Button at Bottom
 def open_settings_page():
-        settings_window = acc2.SettingsApp(parent = window)
-        acc2.opening_settings(update_main_theme)
-        settings_window.mainloop()
-        
-
+    acc2.opening_settings(update_main_theme)   
 
 Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", width=10, height=70, corner_radius=900,fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
 Settings_button.grid(row=0, column=4, pady=5)
@@ -607,14 +603,14 @@ def open_passwordMaker_page(*args, **kwargs):
 
         mycursor.execute(
             "INSERT INTO Account_Data_Password (AccountID, Title, Username, Email, Password) VALUES (%s,%s,%s,%s,%s)",
-            (account_id, title, username, email, password))
+            (account_id, title,username, email, password))
         login_database.commit()
         created_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Successfully created",
                                                   font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
 
     # Save Button
-    create_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Create")
+    create_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Create", command = store_password_data)
     create_button.grid(row=14, column=2, pady=(30, 10), sticky="nsew")
 
     # Back Button
@@ -655,12 +651,9 @@ def open_notes_page():
     label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes Maker", font=("Verdana", 20,), text_color="black")
     label.grid(row=0, column=2, pady=10, sticky="ew")
 
-    Notes_title_entry = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes Title", text_color="black")
+    Notes_title_entry = customtkinter.CTkEntry(NotesBorder_Frame, placeholder_text="Enter Title")
     Notes_title_entry.grid(row=1, column=2, pady=10, sticky="ew")
     
-    label = customtkinter.CTkEntry(NotesBorder_Frame, placeholder_text="Enter 1")
-    label.grid(row=2, column=2, pady=10, sticky="ew")
-
     label = customtkinter.CTkLabel(NotesBorder_Frame, text="Enter Notes", text_color="black")
     label.grid(row=3, column=2, pady=10, sticky="ew")
     
@@ -686,7 +679,7 @@ def open_notes_page():
         created_label = customtkinter.CTkLabel(NotesBorder_Frame, text="Successfully created",
                                                   font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
-    create_button = customtkinter.CTkButton(NotesBorder_Frame, text="Create")
+    create_button = customtkinter.CTkButton(NotesBorder_Frame, text="Create" , command = store_notes_data)
     create_button.grid(row=5, column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(NotesBorder_Frame, text="Back", command=close_notes_page)
@@ -771,7 +764,7 @@ def open_banking_cards_page():
         created_label = customtkinter.CTkLabel(BankBorder_Frame, text="Successfully created",
                                            font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
-    create_button = customtkinter.CTkButton(BankBorder_Frame, text="Create")
+    create_button = customtkinter.CTkButton(BankBorder_Frame, text="Create", command = store_bank_data)
     create_button.grid(row=9, column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(BankBorder_Frame, text="Back", command=close_banking_cards_page)
@@ -858,7 +851,7 @@ def open_Network_page():
                                            font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
 
-    create_button = customtkinter.CTkButton(Network_Border_Frame, text="Create")
+    create_button = customtkinter.CTkButton(Network_Border_Frame, text="Create", command = store_network_data)
     create_button.grid(row=9, column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(Network_Border_Frame, text="Back", command=close_network_page)

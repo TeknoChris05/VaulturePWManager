@@ -77,12 +77,8 @@ class Login_Page(customtkinter.CTk):
         self.login_frame.grid(row= 0, column= 0, padx = 15, pady = 15, sticky = "nsew")
         self.login_frame.pack_propagate(False)
 
-        self.account_frame = customtkinter.CTkFrame(self, width = screen_dimension_width/2,
-                                                        height= screen_dimension_height/1.5,
-                                                        border_width= 10,
-                                                        corner_radius= 10,
-                                                        border_color="#000206",
-                                                        fg_color="#030c49")
+        self.account_frame = customtkinter.CTkScrollableFrame(self, width=screen_dimension_width/2, height=screen_dimension_height/1.5, border_width=10, corner_radius=10, border_color="#000206", fg_color="#030c49")
+
         
         self.account_frame.pack_propagate(False)
 
@@ -405,7 +401,7 @@ class Login_Page(customtkinter.CTk):
                                 os.kill(pid, signal.SIGTERM)  # Forcefully kill the process if it's still running
 
                         # Now launch the login page
-                        subprocess.run([sys.executable, "Dan.py", str(account_id)], check=True)
+                        subprocess.run([sys.executable, "Vaulture GUI/Dan.py", str(account_id)], check=True)
                         return True
                     except subprocess.CalledProcessError as e:
                         print(f"Error running Dan.py: {e}")
