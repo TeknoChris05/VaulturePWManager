@@ -11,7 +11,7 @@ login_database = mysql.connector.connect(
 
 mycursor = login_database.cursor()
 
-# Create tables with 2FA support
+# Create the Account table with 2FA support (including the TwoFA_Secret column)
 mycursor.execute("""
 CREATE TABLE IF NOT EXISTS Account (
     AccountID INT PRIMARY KEY AUTO_INCREMENT,
@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS Account (
 )
 """)
 
+# Create table for storing active account passwords
 mycursor.execute("""
 CREATE TABLE IF NOT EXISTS Account_Data_Password (
     data_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -34,6 +35,7 @@ CREATE TABLE IF NOT EXISTS Account_Data_Password (
 )
 """)
 
+# Create table for archiving account passwords
 mycursor.execute("""
 CREATE TABLE IF NOT EXISTS Archive_Data_Password (
     data_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -46,6 +48,7 @@ CREATE TABLE IF NOT EXISTS Archive_Data_Password (
 )
 """)
 
+# Create table for deleted passwords
 mycursor.execute("""
 CREATE TABLE IF NOT EXISTS Deleted_Passwords (
     data_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,6 +61,7 @@ CREATE TABLE IF NOT EXISTS Deleted_Passwords (
 )
 """)
 
+# Create table for banking card information
 mycursor.execute("""
 CREATE TABLE IF NOT EXISTS Banking_Card (
     data_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -70,6 +74,7 @@ CREATE TABLE IF NOT EXISTS Banking_Card (
 )
 """)
 
+# Create table for network data
 mycursor.execute("""
 CREATE TABLE IF NOT EXISTS Network_Data (
     data_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -82,6 +87,7 @@ CREATE TABLE IF NOT EXISTS Network_Data (
 )
 """)
 
+# Create table for notes
 mycursor.execute("""
 CREATE TABLE IF NOT EXISTS Notes_Data (
     data_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -93,3 +99,7 @@ CREATE TABLE IF NOT EXISTS Notes_Data (
 """)
 
 login_database.commit()
+mycursor.close()
+login_database.close()
+
+print("Database tables created/verified successfully.")

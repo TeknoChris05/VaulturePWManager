@@ -4,7 +4,7 @@ from distutils.util import execute
 from typing import no_type_check_decorator
 import hashlib
 import customtkinter
-from PIL import Image
+from PIL import Image, ImageTk
 import tkinter
 import os
 from pathlib import Path
@@ -13,7 +13,8 @@ import mysql.connector
 from PIL.ImageOps import expand
 import subprocess
 import sys
- 
+import pyotp
+import qrcode 
 
 #NOTICE: Some Sections of Code are AI GENERATED. The sections will be labeled (AI GENERATED) in its comment
 
