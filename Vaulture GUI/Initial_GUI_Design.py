@@ -115,28 +115,36 @@ class Login_Page(customtkinter.CTk):
         title_label.grid(row = 0, column = 0, pady = 15, sticky = "n")
 
 
-        username_label = customtkinter.CTkLabel(self.login_frame, text= "Username", font=("Courier", 20, "bold"), text_color="yellow")
-        username_label.grid(row = 0, column = 0, sticky = "s")
+        # Username
+        username_label = customtkinter.CTkLabel(self.login_frame, text="Username", font=("Courier", 20, "bold"), text_color="yellow")
+        username_label.grid(row=0, column=0, sticky="s", pady=(10, 0))
 
+        self.username_entry = customtkinter.CTkEntry(self.login_frame, placeholder_text="Enter Username",
+                                                    width=200, height=30, border_width=1, corner_radius=10)
+        self.username_entry.grid(row=1, column=0, sticky="n", pady=(0, 10))
 
-        self.username_entry = customtkinter.CTkEntry(self.login_frame, placeholder_text= "Enter Username",
-                                         width = 200,
-                                         height = 30,
-                                         border_width= 1,
-                                        corner_radius= 10)
-        self.username_entry.grid(row = 1, column = 0, sticky = "n")
-
-
-        password_label = customtkinter.CTkLabel(self.login_frame, text= "Password", font=("Courier", 20, "bold"), text_color="yellow")
-        password_label.grid(row = 1, column= 0, sticky = "s")
-
+        # Password
+        password_label = customtkinter.CTkLabel(self.login_frame, text="Password", font=("Courier", 20, "bold"), text_color="yellow")
+        password_label.grid(row=1, column=0, sticky="s", pady=(10, 0))
 
         self.password_entry = customtkinter.CTkEntry(self.login_frame, show="*", placeholder_text="Enter Password",
-                                         width= 200,
-                                         height= 30,
-                                         border_width= 1,
-                                        corner_radius= 10)
-        self.password_entry.grid(row = 2, column = 0, sticky = "n")
+                                                    width=200, height=30, border_width=1, corner_radius=10)
+        self.password_entry.grid(row=2, column=0, sticky="n", pady=(0, 10))
+
+
+        # New 2FA Code Label and Entry
+        code_label = customtkinter.CTkLabel(self.login_frame, text="2FA Code", font=("Courier", 20, "bold"), text_color="yellow")
+        code_label.grid(row=3, column=0, sticky="n", pady=(10, 0))
+
+        self.code_entry = customtkinter.CTkEntry(self.login_frame, placeholder_text="Enter 2FA Code",
+                                        width=200,
+                                        height=30,
+                                        border_width=1,
+                                        corner_radius=10)
+        self.code_entry.grid(row=2, column=0, sticky="n", pady=(80, 0))
+
+        account_label = customtkinter.CTkLabel(self.login_frame, text="Don't have an account? Create one by clicking the 'Sign Up' button", font=("Courier", 12, "bold"), text_color="yellow")
+        account_label.grid(row=4, column=0, sticky="s")
 
 
         account_label = customtkinter.CTkLabel(self.login_frame, text="Don't have an account? Create one by clicking the 'Sign Up' button", font= ("Courier", 12, "bold"), text_color="yellow")
