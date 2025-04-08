@@ -56,8 +56,22 @@ window.rowconfigure(3, weight=0)
 main_frame = customtkinter.CTkFrame(window, fg_color="#A9A9A9")
 main_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
 
+#######################################################################################################################################
+# AI -Assisted Code: Theme Color Update Feature - Marteno Romaya ,https://chatgpt.com/share/67f19bc3-4ab8-800a-bfaa-5ae77d2372a2
+def load_saved_theme_color():
+    try:
+        with open("theme_settings.txt", "r") as file:
+            saved_color = file.read().strip()
+            if not saved_color or saved_color.lower() == "#2c2f33":
+                return "#133f61"  # Force blue if empty or default gray
+            return saved_color
+    except FileNotFoundError:
+        return "#133f61"  # Default if no file exists
+saved_theme_color = load_saved_theme_color()
+#######################################################################################################################################
+
 # Left sidebar
-sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color="#0e3161", border_width=8,  border_color="black")
+sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color=saved_theme_color, border_width=8, border_color="black")
 sidebar.grid(row=0, column=0, rowspan=2, sticky="nsw")
 sidebar.grid_forget()
 
@@ -77,13 +91,39 @@ def toggle_sidebar():
 
 
 # White bottom bar
-bottom_bar = customtkinter.CTkFrame(window, height=90, corner_radius=0, fg_color="#133f61")
+bottom_bar = customtkinter.CTkFrame(window, height=90, corner_radius=0, fg_color=saved_theme_color)
 bottom_bar.grid(row=2, column=1, columnspan=2, sticky="ew")
+#######################################################################################################################################
+# AI -Assisted Code: Theme Color Update Feature - Marteno Romaya, https://chatgpt.com/share/67f19bc3-4ab8-800a-bfaa-5ae77d2372a2
+def update_main_theme(new_color):
+    # If the settings page is default gray, make sidebar and bottom_bar blue
+    if new_color.lower() == "#2c2f33":
+        actual_color = "#133f61"  # Vaulture default blue
+    else:
+        actual_color = new_color
+
+    # Update sidebar and bottom bar color
+    sidebar.configure(fg_color=actual_color)
+    bottom_bar.configure(fg_color=actual_color)
+
+    # Only update the Vaulture picture label and Storage Options label
+    for widget in sidebar.winfo_children():
+        if widget == vulture_label or widget == Title_Spot:
+            widget.configure(fg_color=actual_color)
+
+    for widget in bottom_bar.winfo_children():
+        if isinstance(widget, customtkinter.CTkLabel):
+            widget.configure(fg_color=actual_color)
+
+    hamburger_button.configure(fg_color=actual_color)
+
+#######################################################################################################################################
 
 # Sidebar buttons (These will appear when the sidebar is toggled)
 # Hamburger Icon
 hamburger_button = customtkinter.CTkButton(main_frame, text="☰", width=60, height=60, corner_radius=10, fg_color="#0e3161", border_width=3, border_color="black", font=("Arial", 24), command=lambda: toggle_sidebar())
 hamburger_button.grid(row=0, column=0, padx=20, pady=30)
+hamburger_button.configure(fg_color=saved_theme_color)
 
 Title_Spot = customtkinter.CTkLabel(sidebar, text="Storage Options", text_color="White", font=("Segoe UI", 28, "bold"), height=60)
 Title_Spot.grid(row=0, column=0, padx=30, pady=10, sticky="nsew")
@@ -94,8 +134,8 @@ Passwords_button.grid(row=1, column=0, padx=30, pady=10, sticky="nsew")
 Notes_button = customtkinter.CTkButton(sidebar, text="Notes📝", width=150, height=20, corner_radius=5,fg_color="#282929", border_width=3, border_color="#bbbdbf",command=lambda: open_notes_page())
 Notes_button.grid(row=2, column=0, padx=30, pady=10, sticky="nsew")
 
-Filter4_button = customtkinter.CTkButton(sidebar, text="Banking Cards💳", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_banking_cards_page())
-Filter4_button.grid(row=3, column=0, padx=30, pady=10, sticky="nsew")
+Banking_button = customtkinter.CTkButton(sidebar, text="Banking Cards💳", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_banking_cards_page())
+Banking_button.grid(row=3, column=0, padx=30, pady=10, sticky="nsew")
 
 Network_button = customtkinter.CTkButton(sidebar, text="Network 🛜", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_Network_page())
 Network_button.grid(row=4, column=0, padx=30, pady=20, sticky="nsew")
@@ -157,8 +197,8 @@ def open_passwords_page():
     main_frame.grid_forget()
     MainPasswords_Frame.grid(row=1, column=1, sticky="nsew")
 
-    mycursor.execute("SELECT data_id, Title, Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s",
-                     (account_id,))
+    mycursor.execute("SELECT data_id, Title, Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s", (account_id,))
+
     data = mycursor.fetchall()
 
     mycursor.execute("SELECT data_id, Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE AccountID = %s",
@@ -251,7 +291,7 @@ def close_passwords_page():
 Notes_button = customtkinter.CTkButton(bottom_bar, text="Notes 📝", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda:  open_Notes_page())
 Notes_button.grid(row=0, column=1, pady=30, )
 
-# Open archive page
+# Notes Page
 def open_Notes_page():
     global MainNotes_Frame
     if "MainNotes_Frame" in globals() and MainNotes_Frame.winfo_exists():
@@ -279,9 +319,6 @@ def open_Notes_page():
     back_button = customtkinter.CTkButton(NotesBorder_Frame, text="Back", command=close_Notes_page)
     back_button.pack(pady=20)
 
-    main_frame.grid_forget()
-    MainNotes_Frame.grid(row=1, column=1, sticky="nsew")
-
     mycursor.execute(
         "SELECT Notes_title, Notes_body FROM Notes_Data WHERE AccountID = %s",
         (account_id,))
@@ -301,7 +338,6 @@ def open_Notes_page():
     else:
         no_data_label = customtkinter.CTkLabel(NotesBorder_Frame, text="No stored data found.")
         no_data_label.pack()
-
 
 def close_Notes_page():
     MainNotes_Frame.destroy()
@@ -445,7 +481,8 @@ profile_box_label.pack(expand=True)
 
 
 # New Settings Button at Bottom
-def open_settings_page():
+def open_settings_page():    
+    acc2.opening_settings(update_main_theme)  
     settings_window = acc2.SettingsApp(parent = window)
     settings_window.mainloop()
 
@@ -455,7 +492,7 @@ Settings_button.grid(row=0, column=4, pady=5)
 # Bottom Bar Setup
 # 🐦
 bottom_bar.columnconfigure(0, weight=2)
-# ⚙️
+# 📝
 bottom_bar.columnconfigure(1, weight=1)
 # 📦
 bottom_bar.columnconfigure(2, weight=1)
@@ -554,7 +591,6 @@ def open_passwordMaker_page(*args, **kwargs):
     customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Generate Password", command=generate_password).grid(
         row=13, column=2, pady=10, sticky="nsew")
     #######################################################################################################################################################
-
     def store_password_data():
         global account_id
 
@@ -569,14 +605,14 @@ def open_passwordMaker_page(*args, **kwargs):
 
         mycursor.execute(
             "INSERT INTO Account_Data_Password (AccountID, Title, Username, Email, Password) VALUES (%s,%s,%s,%s,%s)",
-            (account_id, title, username, email, password))
+            (account_id, title,username, email, password))
         login_database.commit()
         created_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Successfully created",
                                                   font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
 
     # Save Button
-    create_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Create", command=store_password_data)
+    create_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Create", command = store_password_data)
     create_button.grid(row=14, column=2, pady=(30, 10), sticky="nsew")
 
     # Back Button
@@ -617,18 +653,15 @@ def open_notes_page():
     label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes Maker", font=("Verdana", 20,), text_color="black")
     label.grid(row=0, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes Title", text_color="black")
-    label.grid(row=1, column=2, pady=10, sticky="ew")
-
     Notes_title_entry = customtkinter.CTkEntry(NotesBorder_Frame, placeholder_text="Enter Title")
-    Notes_title_entry.grid(row=2, column=2, pady=10, sticky="ew")
-
+    Notes_title_entry.grid(row=1, column=2, pady=10, sticky="ew")
+    
     label = customtkinter.CTkLabel(NotesBorder_Frame, text="Enter Notes", text_color="black")
     label.grid(row=3, column=2, pady=10, sticky="ew")
-
+    
     Notes_body = customtkinter.CTkTextbox(NotesBorder_Frame, height=150)
     Notes_body.grid(row=4, column=2, pady=10, sticky="ew")
-
+    
     def store_notes_data():
         global account_id
 
@@ -648,8 +681,7 @@ def open_notes_page():
         created_label = customtkinter.CTkLabel(NotesBorder_Frame, text="Successfully created",
                                                   font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
-
-    create_button = customtkinter.CTkButton(NotesBorder_Frame, text="Create", command=store_notes_data)
+    create_button = customtkinter.CTkButton(NotesBorder_Frame, text="Create" , command = store_notes_data)
     create_button.grid(row=5, column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(NotesBorder_Frame, text="Back", command=close_notes_page)
@@ -714,7 +746,7 @@ def open_banking_cards_page():
 
     CVV_entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter CVV")
     CVV_entry.grid(row=8, column=2, pady=10, sticky="ew")
-
+    
     def store_bank_data():
         global account_id
 
@@ -734,8 +766,7 @@ def open_banking_cards_page():
         created_label = customtkinter.CTkLabel(BankBorder_Frame, text="Successfully created",
                                            font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
-
-    create_button = customtkinter.CTkButton(BankBorder_Frame, text="Create", command=store_bank_data)
+    create_button = customtkinter.CTkButton(BankBorder_Frame, text="Create", command = store_bank_data)
     create_button.grid(row=9, column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(BankBorder_Frame, text="Back", command=close_banking_cards_page)
@@ -758,7 +789,7 @@ def close_banking_cards_page():
     main_frame.grid(row=1, column=1, sticky="nsew")
 
 
-# Open One-Time Password page
+# Open Network page
 def open_Network_page():
     global Network_Frame
     if "One_Time_Password_Frame" in globals() and Network_Frame.winfo_exists():
@@ -801,6 +832,7 @@ def open_Network_page():
     network_password_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter Network password")
     network_password_entry.grid(row=8, column=2, pady=10, sticky="ew")
 
+ 
     def store_network_data():
         global account_id
 
@@ -821,7 +853,7 @@ def open_Network_page():
                                            font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
 
-    create_button = customtkinter.CTkButton(Network_Border_Frame, text="Create", command=store_network_data)
+    create_button = customtkinter.CTkButton(Network_Border_Frame, text="Create", command = store_network_data)
     create_button.grid(row=9, column=2, pady=(30, 10), sticky="ew")
 
     back_button = customtkinter.CTkButton(Network_Border_Frame, text="Back", command=close_network_page)
@@ -848,4 +880,3 @@ def close_network_page():
 # Make it not change size
 window.resizable(False, False)
 window.mainloop()
-

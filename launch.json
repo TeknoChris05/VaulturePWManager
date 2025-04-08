@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Vaulture GUI",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/Vaulture GUI/Initial_GUI_Design.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/Vaulture GUI"
+        }
+    ]
+}
