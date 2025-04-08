@@ -369,7 +369,7 @@ class Login_Page(customtkinter.CTk):
             )
             self.successful_account.pack(padx=20, pady=15, anchor="w")
 
-            # Show the QR code popup so you can register the secret in Google Authenticator
+            # Show the QR code popup for 2FA registration
             self.show_qr_popup(username, secret)
 
     # Display a popup window with the QR code for Google Authenticator registration
@@ -423,7 +423,7 @@ class Login_Page(customtkinter.CTk):
                     # Verify the 2FA code entered by the user
                     code_input = self.code_entry.get().strip()
                     totp = pyotp.TOTP(twofa_secret)
-                    if totp.verify(code_input):
+                    if totp.verify(code_input, valid_window=1):
                         print("Login successful! Welcome,", login_username)
                         self.destroy()
                         try:
@@ -431,7 +431,9 @@ class Login_Page(customtkinter.CTk):
                                 if "Dan.py" in proc:
                                     pid = int(proc.split()[1])
                                     os.kill(pid, signal.SIGTERM)
-                            subprocess.run([sys.executable, "Vaulture GUI/Dan.py", str(account_id)], check=True)
+                            # Construct the absolute path to Dan.py based on the current file's directory
+                            dan_path = str(Path(__file__).parent / "Dan.py")
+                            subprocess.run([sys.executable, dan_path, str(account_id)], check=True)
                             return True
                         except subprocess.CalledProcessError as e:
                             print(f"Error running Dan.py: {e}")
