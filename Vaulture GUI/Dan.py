@@ -88,29 +88,6 @@ def toggle_sidebar():
         # Show the sidebar
         sidebar.grid(row=0, column=0, rowspan=3, sticky="nsw")
     sidebar_open = not sidebar_open
-#####################################################################################################################################
-# Function to go to home page
-def go_to_home_page():
-    # Hide the main frame
-    main_frame.grid_forget()
-    
-    # If you have any other frames to hide, you can hide them as well here.
-    
-    # Display the initial content or home page content here
-    initial_page_frame = customtkinter.CTkFrame(window, fg_color="#A9A9A9")
-    initial_page_frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-    
-
-
-# Create the house icon button in the sidebar
-house_icon_button = customtkinter.CTkButton(sidebar, text="🏠", font=("Arial", 70), fg_color=saved_theme_color, command=go_to_home_page)
-house_icon_button.grid(row=6, column=0, padx=30, pady=10, sticky="nsew")
-
-
-
-########################################################################################################################
-
-
 
 # White bottom bar
 bottom_bar = customtkinter.CTkFrame(window, height=90, corner_radius=0, fg_color=saved_theme_color)
@@ -186,8 +163,36 @@ sidebar.rowconfigure(5, weight=2)
 sidebar.rowconfigure(6, weight=2)
 
 # Bottom bar buttons
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Passwords 🐦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwords_page())
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Home 🏠", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: go_to_home_page())
 ValtureP_button.grid(row=0, column=0, pady=30)
+
+# Function to go to home page
+def go_to_home_page():
+# Sidebar Frames
+    if 'PasswordMaking_Frame' in globals() and PasswordMaking_Frame.winfo_exists():
+        PasswordMaking_Frame.grid_forget()
+    if 'Notes_Frame' in globals() and Notes_Frame.winfo_exists():
+        Notes_Frame.grid_forget()
+    if 'Banking_Cards_Frame' in globals() and Banking_Cards_Frame.winfo_exists():
+        Banking_Cards_Frame.grid_forget()
+    if 'Network_Frame' in globals() and Network_Frame.winfo_exists():
+        Network_Frame.grid_forget()
+
+# Bottom Bar Frames
+    if 'MainPasswords_Frame' in globals() and MainPasswords_Frame.winfo_exists():
+        MainPasswords_Frame.grid_forget()
+    if 'MainNotes_Frame' in globals() and MainNotes_Frame.winfo_exists():
+        MainNotes_Frame.grid_forget()
+    if 'MainArchive_Frame' in globals() and MainArchive_Frame.winfo_exists():
+        MainArchive_Frame.grid_forget()
+    if 'Profile_Frame' in globals() and Profile_Frame.winfo_exists():
+        Profile_Frame.grid_forget()
+
+    # Bring back main home frame
+    main_frame.grid(row=1, column=1, sticky="nsew")
+
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Passwords 🐦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwords_page())
+ValtureP_button.grid(row=0, column=1, pady=30)
 # Passwords
 def open_passwords_page():
     global MainPasswords_Frame
@@ -311,7 +316,7 @@ def close_passwords_page():
 
 # Notes button in bottom bar
 Notes_button = customtkinter.CTkButton(bottom_bar, text="Notes 📝", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda:  open_Notes_page())
-Notes_button.grid(row=0, column=1, pady=30, )
+Notes_button.grid(row=0, column=2, pady=30, )
 
 # Notes Page
 def open_Notes_page():
@@ -366,7 +371,7 @@ def close_Notes_page():
     main_frame.grid(row=1, column=1, sticky="nsew")
 
 Archive_button = customtkinter.CTkButton(bottom_bar, text="Archive 📦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_archive_page())
-Archive_button.grid(row=0, column=2, pady=30, )
+Archive_button.grid(row=0, column=3, pady=30, )
 
 
 # Open archive page
@@ -408,7 +413,7 @@ def close_archive_page():
 
 # Profile button in bottom bar
 Profile_button = customtkinter.CTkButton(bottom_bar, text="Profile 👥", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_Profile_Page())
-Profile_button.grid(row=0, column=3, pady=5)
+Profile_button.grid(row=0, column=4, pady=5)
 
 # This is the profile page settings here you can upload an image and your name and save it!
 def open_Profile_Page():
@@ -509,19 +514,21 @@ def open_settings_page():
     settings_window.mainloop()
 
 Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", width=10, height=70, corner_radius=900,fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
-Settings_button.grid(row=0, column=4, pady=5)
+Settings_button.grid(row=0, column=5, pady=5)
 
 # Bottom Bar Setup
-# 🐦
+# 🏠
 bottom_bar.columnconfigure(0, weight=2)
+# 🐦
+bottom_bar.columnconfigure(1, weight=2)
 # 📝
-bottom_bar.columnconfigure(1, weight=1)
-# 📦
 bottom_bar.columnconfigure(2, weight=1)
-# 👥
+# 📦
 bottom_bar.columnconfigure(3, weight=1)
-# ⚙️
+# 👥
 bottom_bar.columnconfigure(4, weight=1)
+# ⚙️
+bottom_bar.columnconfigure(5, weight=1)
 
 
 # Left bar stuff
