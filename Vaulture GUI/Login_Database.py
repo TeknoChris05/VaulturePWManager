@@ -124,13 +124,23 @@ CREATE TABLE IF NOT EXISTS Notes_Data (
 )
 """)
 
-mycursor.execute("RENAME TABLE Network_Data TO Archive_Network_Data")
+#Create table for archiving notes
+mycursor.execute("""
+CREATE TABLE IF NOT EXISTS Archive_Notes_Data (
+    data_id INT AUTO_INCREMENT PRIMARY KEY,
+    AccountID INT NOT NULL,
+    Notes_title VARCHAR(50),
+    Notes_body VARCHAR(200),
+    FOREIGN KEY (AccountID) REFERENCES Account(AccountID)
+)
+""")
 
 login_database.commit()
 mycursor.close()
 login_database.close()
 
 print("Database tables created/verified successfully.")
+
 
 
 
