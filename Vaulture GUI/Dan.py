@@ -443,13 +443,13 @@ def open_Notes_page():
     back_button.pack(pady=20)
 
     mycursor.execute(
-        "SELECT Notes_title, Notes_body FROM Notes_Data WHERE AccountID = %s",
+        "SELECT data_id, Notes_title, Notes_body FROM Notes_Data WHERE AccountID = %s",
         (account_id,))
     notes_data = mycursor.fetchall()
 
     if notes_data:
         for index, row in enumerate(notes_data):
-            notes_title, notes_body = row
+            data_id, notes_title, notes_body = row
 
             entry_frame = customtkinter.CTkFrame(NotesBorder_Frame, fg_color="#A9A9A9")
             entry_frame.pack(fill="x", padx=10, pady=5)
@@ -457,16 +457,37 @@ def open_Notes_page():
             entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            # archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
-            #                                       command=lambda d=data_id, frame = entry_frame: archive_row(d, frame))
-            # archive_button.pack(side="left", padx=5)
-            #
-            # delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
-            #                                         command=lambda d=data_id, frame = entry_frame: delete_row(d, frame))
-            # delete_button.pack(side="left", padx=5)
+            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame = entry_frame: archive_notes_row(d, frame))
+            archive_button.pack(side="left", padx=5)
+
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame = entry_frame: delete_notes_row(d, frame))
+            delete_button.pack(side="left", padx=5)
     else:
         no_data_label = customtkinter.CTkLabel(NotesBorder_Frame, text="No notes data found.")
         no_data_label.pack()
+
+def archive_notes_row(data_id, destroyed_frame):
+    mycursor.execute("SELECT * FROM Notes_Data WHERE data_id = %s", (data_id,))
+    row = mycursor.fetchone()
+    if row:
+        mycursor.execute("""
+            INSERT INTO Archive_Notes_Data (data_id, AccountID, Notes_title, Notes_body)
+            VALUES (%s, %s, %s, %s)""", row)
+
+        mycursor.execute("DELETE FROM Notes_Data WHERE data_id = %s", (data_id,))
+        login_database.commit()
+
+        destroyed_frame.destroy()
+
+def delete_notes_row(data_id, destroyed_frame):
+    mycursor.execute("SELECT * FROM Notes_Data WHERE data_id = %s", (data_id,))
+    row = mycursor.fetchone()
+    if row:
+        mycursor.execute("DELETE FROM Notes_Data WHERE data_id = %s", (data_id,))
+        login_database.commit()
+
+        destroyed_frame.destroy()
+
 
 
 def close_Notes_page():
@@ -519,10 +540,10 @@ def open_archive_page():
             entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame = entry_frame: archive_row(d))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame = entry_frame: remove_password_row(d, frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_row(d,frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_password_row(d,frame))
             delete_button.pack(side="left", padx=5)
     else:
         no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No password and account data found.")
@@ -544,10 +565,10 @@ def open_archive_page():
             entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame = entry_frame: archive_row(d, frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame = entry_frame: remove_banking_row(d, frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_row(d,  frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_banking_row(d,  frame))
             delete_button.pack(side="left", padx=5)
     else:
         no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No banking card data found.")
@@ -568,13 +589,37 @@ def open_archive_page():
             entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame = entry_frame: archive_row(d, frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame = entry_frame: remove_network_row(d, frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_row(d,  frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_network_row(d,  frame))
             delete_button.pack(side="left", padx=5)
     else:
         no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No network data found.")
+        no_data_label.pack()
+
+    mycursor.execute(
+        "SELECT data_id, Notes_title, Notes_body FROM Archive_Notes_Data WHERE AccountID = %s",
+        (account_id,))
+    notes_data = mycursor.fetchall()
+
+    if notes_data:
+        for index, row in enumerate(notes_data, start=len(network_data) + 1):
+            data_id, notes_title, notes_body = row
+
+            entry_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color="#A9A9A9")
+            entry_frame.pack(fill="x", padx=10, pady=5)
+
+            entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
+            entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
+
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame = entry_frame: remove_notes_row(d, frame))
+            archive_button.pack(side="left", padx=5)
+
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame = entry_frame: delete_archive_notes_row(d, frame))
+            delete_button.pack(side="left", padx=5)
+    else:
+        no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No notes data found.")
         no_data_label.pack()
 
     back_button = customtkinter.CTkButton(ArchiveBorder_Frame, text="Back", command=close_archive_page)
@@ -582,6 +627,94 @@ def open_archive_page():
 
     main_frame.grid_forget()
     MainArchive_Frame.grid(row=1, column=1, sticky="nsew")
+
+    def remove_password_row(data_id, destroyed_frame):
+        mycursor.execute("SELECT * FROM Archive_Data_Password WHERE data_id = %s", (data_id,))
+        row = mycursor.fetchone()
+        if row:
+            mycursor.execute("""
+                INSERT INTO Account_Data_Password (data_id, AccountID, Title, Username, Email, Password)
+                VALUES (%s, %s, %s, %s, %s, %s)""", row)
+
+            mycursor.execute("DELETE FROM Archive_Data_Password WHERE data_id = %s", (data_id,))
+            login_database.commit()
+
+            destroyed_frame.destroy()
+
+    def remove_banking_row(data_id, destroyed_frame):
+        mycursor.execute("SELECT * FROM Archive_Banking_Card WHERE data_id = %s", (data_id,))
+        row = mycursor.fetchone()
+        if row:
+            mycursor.execute("""
+                INSERT INTO Banking_Card (data_id, AccountID, Card_Title, Card_Number, Expire_Date, CVV)
+                VALUES (%s, %s, %s, %s, %s, %s)""", row)
+
+            mycursor.execute("DELETE FROM Archive_Banking_Card WHERE data_id = %s", (data_id,))
+            login_database.commit()
+
+            destroyed_frame.destroy()
+
+    def remove_network_row(data_id, destroyed_frame):
+        mycursor.execute("SELECT * FROM Archive_Network_Data WHERE data_id = %s", (data_id,))
+        row = mycursor.fetchone()
+        if row:
+            mycursor.execute("""
+                INSERT INTO Network_Data (data_id, AccountID, Network_Title, Network, IP_Address, Password)
+                VALUES (%s, %s, %s, %s, %s, %s)""", row)
+
+            mycursor.execute("DELETE FROM Archive_Network_Data WHERE data_id = %s", (data_id,))
+            login_database.commit()
+
+            destroyed_frame.destroy()
+
+    def remove_notes_row(data_id, destroyed_frame):
+        mycursor.execute("SELECT * FROM Archive_Notes_Data WHERE data_id = %s", (data_id,))
+        row = mycursor.fetchone()
+        if row:
+            mycursor.execute("""
+                INSERT INTO Notes_Data (data_id, AccountID, Notes_title, Notes_body)
+                VALUES (%s, %s, %s, %s)""", row)
+
+            mycursor.execute("DELETE FROM Archive_Notes_Data WHERE data_id = %s", (data_id,))
+            login_database.commit()
+
+            destroyed_frame.destroy()
+
+    def delete_archive_password_row(data_id, destroyed_frame):
+        mycursor.execute("SELECT * FROM Archive_Data_Password WHERE data_id = %s", (data_id,))
+        row = mycursor.fetchone()
+        if row:
+            mycursor.execute("DELETE FROM Archive_Data_Password WHERE data_id = %s", (data_id,))
+            login_database.commit()
+
+            destroyed_frame.destroy()
+
+    def delete_archive_banking_row(data_id, destroyed_frame):
+        mycursor.execute("SELECT * FROM Archive_Banking_Card WHERE data_id = %s", (data_id,))
+        row = mycursor.fetchone()
+        if row:
+            mycursor.execute("DELETE FROM Archive_Banking_Card WHERE data_id = %s", (data_id,))
+            login_database.commit()
+
+            destroyed_frame.destroy()
+
+    def delete_archive_network_row(data_id, destroyed_frame):
+        mycursor.execute("SELECT * FROM Archive_Network_Data WHERE data_id = %s", (data_id,))
+        row = mycursor.fetchone()
+        if row:
+            mycursor.execute("DELETE FROM Archive_Network_Data WHERE data_id = %s", (data_id,))
+            login_database.commit()
+
+            destroyed_frame.destroy()
+
+    def delete_archive_notes_row(data_id, destroyed_frame):
+        mycursor.execute("SELECT * FROM Archive_Notes_Data WHERE data_id = %s", (data_id,))
+        row = mycursor.fetchone()
+        if row:
+            mycursor.execute("DELETE FROM Archive_Notes_Data WHERE data_id = %s", (data_id,))
+            login_database.commit()
+
+            destroyed_frame.destroy()
 
 
 def close_archive_page():
@@ -685,8 +818,8 @@ profile_box_label.pack(expand=True)
 
 
 # New Settings Button at Bottom
-def open_settings_page():    
-    acc2.opening_settings(update_main_theme)  
+def open_settings_page():
+    acc2.opening_settings(update_main_theme)
     settings_window = acc2.SettingsApp(parent = window)
     settings_window.mainloop()
 
