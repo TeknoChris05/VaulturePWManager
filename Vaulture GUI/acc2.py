@@ -34,6 +34,8 @@ class SettingsApp(customtkinter.CTkToplevel):
         self.maxsize(1920, 1080)
         self.theme_color = "#2C2F33"
         self.text_color = "white"
+        self.current_font = ("Segoe UI", 16)
+        self.load_font_color()
         self.current_frame = None
         self._create_sidebar()
         self.show_Intro_page()
@@ -52,7 +54,6 @@ class SettingsApp(customtkinter.CTkToplevel):
         
         buttons = [
             ("👤 Account", self.show_account_page),
-            ("🔒 Security", self.show_security_page),
             ("🎨 Themes", self.show_themes_page),
             ("ℹ️ Help", self.show_Help_page),
             ("✉️ Contact", self.show_Contact_page),
@@ -92,12 +93,12 @@ class SettingsApp(customtkinter.CTkToplevel):
             self.current_frame.configure(fg_color=new_color)
             for widget in self.current_frame.winfo_children():
                 if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkSwitch)):
-                    widget.configure(fg_color=self.theme_color, text_color="black" if self.theme_color == "#FFFFFF" else "white")
+                    widget.configure(fg_color=self.theme_color,text_color=self.text_color )
                 elif isinstance(widget, customtkinter.CTkFrame):
                     widget.configure(fg_color=self.theme_color)
 
         self.refresh_current_frame()
-    
+
     def refresh_current_frame(self):
         # Recreate Frame and Apply changes
         if self.current_frame:
@@ -112,9 +113,6 @@ class SettingsApp(customtkinter.CTkToplevel):
     def show_account_page(self):
         self._switch_frame(AccountFrame)
 
-    def show_security_page(self):
-        self._switch_frame(SecurityFrame)
-
     def show_themes_page(self):
         self._switch_frame(ThemesFrame)
 
@@ -123,7 +121,8 @@ class SettingsApp(customtkinter.CTkToplevel):
 
     def show_Contact_page(self):
         self._switch_frame(ContactFrame)       
-        
+ #######################################################################################################################################
+# Modified the existing code with ai link down below           
     def _switch_frame(self, frame_class):
         if self.current_frame:
             self.current_frame.destroy()
@@ -135,13 +134,19 @@ class SettingsApp(customtkinter.CTkToplevel):
 
         self.current_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-        # Theme Color Update
+        # Apply background and text color to the current frame widgets
         self.current_frame.configure(fg_color=self.theme_color)
+        
         for widget in self.current_frame.winfo_children():
             if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel)):
-                widget.configure(fg_color=self.theme_color, text_color="black" if self.theme_color == "#FFFFFF" else "white")
+                widget.configure(fg_color=self.theme_color, text_color=self.text_color)
             elif isinstance(widget, customtkinter.CTkFrame):
                 widget.configure(fg_color=self.theme_color)
+
+        # 🔥 ALSO update sidebar text color every time you switch frame
+        for widget in self.sidebar.winfo_children():
+            if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel)):
+                widget.configure(text_color=self.text_color)
 
     def save_theme_(self):
         with open("theme_settings.txt", "w") as file:
@@ -161,13 +166,50 @@ class SettingsApp(customtkinter.CTkToplevel):
         self.save_theme_()
         if self.update_callback:
             try:
-                self.update_callback(self.theme_color)
+                self.update_callback(self.theme_color, self.text_color)
             except Exception as e:
                 print("Failed to update main theme:", e)
+
+        # 🛠 Force main_frame to refresh its color
+        if self.parent:
+            try:
+                self.parent.saved_mainframe_color = self.parent.load_saved_mainframe_color()
+                self.parent.main_frame.configure(fg_color=self.parent.saved_mainframe_color)
+            except Exception as e:
+                print("Failed to update main frame color:", e)
+
         self.destroy()
+
+    def save_font_color(self):
+        try:
+            with open("font_color.txt", "w") as file:
+                file.write(self.text_color)
+        except Exception as e:
+            print(f"Failed to save font color: {e}")
+
+    def load_font_color(self):
+        try:
+            with open("font_color.txt", "r") as file:
+                saved_color = file.read().strip()
+                if saved_color:
+                    self.text_color = saved_color
+        except FileNotFoundError:
+            self.text_color = "white"
+    def save_mainframe_theme(self, color):
+        with open("mainframe_theme.txt", "w") as file:
+            file.write(color)
+
+    def load_mainframe_theme(self):
+        try:
+            with open("mainframe_theme.txt", "r") as file:
+                saved_color = file.read().strip()
+                if saved_color:
+                    return saved_color
+        except FileNotFoundError:
+            return "#A9A9A9"  # Default main frame color
+    
+                
 #######################################################################################################################################
-
-
 class IntroFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
@@ -179,7 +221,7 @@ class IntroFrame(customtkinter.CTkFrame):
 
         contact_text = """Welcome to the settings page! """
 
-        label = customtkinter.CTkLabel(self, text=contact_text, text_color="white",  justify="left", font=("Segoe UI", 16), wraplength=600)
+        label = customtkinter.CTkLabel(self, text=contact_text, text_color=master.text_color,  justify="left", font=("Segoe UI", 16), wraplength=600)
         label.pack(pady=20, padx=20)
 
 class AccountFrame(customtkinter.CTkFrame):
@@ -263,30 +305,6 @@ class AccountFrame(customtkinter.CTkFrame):
             command=confirm_window.destroy
         )
         no_button.pack(side="left", padx=10)
-        
-
-class SecurityFrame(customtkinter.CTkFrame):
-    def __init__(self, master):
-        super().__init__(master)
-        self.configure(fg_color=master.theme_color, border_width=0, border_color="#7289DA")
-
-        title = customtkinter.CTkLabel(self, text="Security Settings", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
-        title.pack(fill="x")
-        label = customtkinter.CTkLabel(self, text="Enable Two-Factor Authentication (2FA)", font=("Segoe UI", 18), text_color="white")
-        label.pack(pady=20)
-        
-        self.twofa_frame = customtkinter.CTkFrame(self, fg_color=master.theme_color, border_width=2, border_color="#7289DA", corner_radius=10)
-        self.twofa_frame.pack(pady=10, padx=20, fill="x")
-        
-        self.twofa_switch = customtkinter.CTkSwitch(self.twofa_frame, text="Enable 2FA", fg_color=master.theme_color, text_color=master.text_color)
-        self.twofa_switch.pack(pady=10, padx=10)
-
-        self.recovery_code_button = customtkinter.CTkButton(self, text="Generate Recovery Codes", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color,corner_radius=10, border_width=2, border_color="#7289DA")
-        self.recovery_code_button.pack(pady=10)
-
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
-        back_button.pack(pady=20)
-        
 
 class ThemesFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -300,12 +318,14 @@ class ThemesFrame(customtkinter.CTkFrame):
         self.color_button = customtkinter.CTkButton(self, text="Pick Theme Color", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.pick_color)
         self.color_button.pack(pady=10)
 
-        self.Font_button = customtkinter.CTkButton(self, text="Change Font Color", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color)
+        self.MainF_button = customtkinter.CTkButton(self, text="Change Main_Frame Color", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.pick_mainframe_color)
+        self.MainF_button.pack(pady=10)
+
+        self.Font_button = customtkinter.CTkButton(self, text="Change Font Color", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.pick_font_color)
         self.Font_button.pack(pady=10)
 
         self.reset_button = customtkinter.CTkButton(self, text="Click For Default Theme", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.reset_theme)
         self.reset_button.pack(pady=10)
-
 
         back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=20)  
@@ -314,12 +334,88 @@ class ThemesFrame(customtkinter.CTkFrame):
         color_code = colorchooser.askcolor(title="Choose Theme Color")[1]
         if color_code:
             self.master.update_theme(color_code)
-    
+#######################################################################################################################################
+#All font and mainframe related code here is ai the rest was existing code
+    def pick_font_color(self):
+        color_code = colorchooser.askcolor(title="Choose Font Color")[1]
+        if color_code:
+            try:
+                self.master.text_color = color_code
+                self.master.save_font_color()
+
+                # Update sidebar (left buttons)
+                for widget in self.master.sidebar.winfo_children():
+                    if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel)):
+                        widget.configure(text_color=self.master.text_color)
+
+                # Update current frame (right content area)
+                if self.master.current_frame:
+                    for widget in self.master.current_frame.winfo_children():
+                        if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkEntry, customtkinter.CTkSwitch, customtkinter.CTkTextbox, customtkinter.CTkScrollableFrame)):
+                            widget.configure(text_color=self.master.text_color)
+
+                print(f"Font color changed and saved: {color_code}")
+            except Exception as e:
+                print(f"Failed to apply font color: {e}")
+
+    def pick_mainframe_color(self):
+        color_code = colorchooser.askcolor(title="Choose Main Frame Color")[1]
+        if color_code:
+            try:
+                self.master.save_mainframe_theme(color_code)
+                print(f"Main Frame color changed and saved: {color_code}")
+            except Exception as e:
+                print(f"Failed to apply main frame color: {e}")
+
 # This will Reset the theme to the original color 
     def reset_theme(self):
-        # Og Color for settings page
+        # 🔥 Reset Settings window color to default
         OG_settings_color = "#2C2F33" 
         self.master.update_theme(OG_settings_color)
+
+        # 🔥 Reset font color to white
+        with open("font_color.txt", "w") as file:
+            file.write("white")
+        self.master.text_color = "white"
+
+        # 🔥 Reset Main Frame color to default A9A9A9
+        default_mainframe_color = "#A9A9A9"
+        self.master.save_mainframe_theme(default_mainframe_color)
+
+        # 🔥 Force Vaulture's main_frame to update immediately if open
+        if self.master.parent:
+            try:
+                self.master.parent.saved_mainframe_color = default_mainframe_color
+                self.master.parent.main_frame.configure(fg_color=default_mainframe_color)
+            except Exception as e:
+                print("Failed to reset main frame color:", e)
+
+    def pick_font(self):
+        from tkinter import simpledialog
+
+        font_choice = simpledialog.askstring("Pick Font", "Enter font (e.g., 'Arial', 'Courier', 'Verdana'):")
+        if font_choice:
+            try:
+                self.master.current_font = (font_choice, 16)  # Example: ("Arial", 16)
+
+                # Save the font choice
+                self.master.save_font()
+
+                # Update sidebar
+                for widget in self.master.sidebar.winfo_children():
+                    if isinstance(widget, customtkinter.CTkButton) or isinstance(widget, customtkinter.CTkLabel):
+                        widget.configure(font=self.master.current_font)
+
+                # Update current frame
+                if self.master.current_frame:
+                    for widget in self.master.current_frame.winfo_children():
+                        if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkEntry, customtkinter.CTkSwitch, customtkinter.CTkTextbox)):
+                            widget.configure(font=self.master.current_font)
+
+                print(f"Font changed and saved: {font_choice}")
+            except Exception as e:
+                print(f"Failed to apply font: {e}")
+#######################################################################################################################################
 
 class HelpFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -339,7 +435,7 @@ class HelpFrame(customtkinter.CTkFrame):
         help_message_frame.pack(padx=20, pady=(10, 20), fill="x")
 
 
-        help_message_label = customtkinter.CTkLabel(help_message_frame, text=help_message, text_color="white", font=("Segoe UI", 20, "bold"), fg_color=master.theme_color)
+        help_message_label = customtkinter.CTkLabel(help_message_frame, text=help_message,  text_color=master.text_color, font=("Segoe UI", 20, "bold"), fg_color=master.theme_color)
         help_message_label.pack(pady=10, padx=20)
 
         # Adding a border around tips menu
@@ -363,11 +459,11 @@ class HelpFrame(customtkinter.CTkFrame):
         # Question will make bold answer will stay regular
         for question, answer in contact_text:
             # If question it will make bold
-            question_label = customtkinter.CTkLabel(text_frame, text=f"• {question}", text_color="white", font=("Segoe UI", 16, "bold"), fg_color=master.theme_color, anchor="w")
+            question_label = customtkinter.CTkLabel(text_frame, text=f"• {question}", text_color=master.text_color, font=("Segoe UI", 16, "bold"), fg_color=master.theme_color, anchor="w")
             question_label.pack(pady=(10, 0), padx=20, fill="x")
 
             # If answer it will stay regular font
-            answer_label = customtkinter.CTkLabel(text_frame, text=answer, text_color="white", font=("Segoe UI", 16), fg_color=master.theme_color, anchor="w")
+            answer_label = customtkinter.CTkLabel(text_frame, text=answer,  text_color=master.text_color, font=("Segoe UI", 16), fg_color=master.theme_color, anchor="w")
             answer_label.pack(pady=(5, 10), padx=40, fill="x")
 
             # Horizontal Lines
@@ -412,7 +508,7 @@ class ContactFrame(customtkinter.CTkFrame):
         ]
         
         for email in email_list:
-            email_label = customtkinter.CTkLabel(email_frame, text=email, text_color="white", font=("Segoe UI", 14), fg_color=master.theme_color, height=40)
+            email_label = customtkinter.CTkLabel(email_frame, text=email, text_color=master.text_color, font=("Segoe UI", 14), fg_color=master.theme_color, height=40)
             email_label.pack(fill="x", padx=20, pady=5)
         
         # Back Button

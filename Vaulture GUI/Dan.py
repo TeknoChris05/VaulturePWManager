@@ -53,11 +53,6 @@ window.rowconfigure(1, weight=2)
 # BottomBar
 window.rowconfigure(3, weight=0)
 
-# Main content frame
-main_frame = customtkinter.CTkFrame(window, fg_color="#A9A9A9")
-main_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
-
-
 #######################################################################################################################################
 # AI -Assisted Code: Theme Color Update Feature - Marteno Romaya ,https://chatgpt.com/share/67f19bc3-4ab8-800a-bfaa-5ae77d2372a2
 def load_saved_theme_color():
@@ -69,11 +64,36 @@ def load_saved_theme_color():
             return saved_color
     except FileNotFoundError:
         return "#133f61"  # Default if no file exists
-
-
+    
+def load_saved_font_color():
+    try:
+        with open("font_color.txt", "r") as file:
+            saved_color = file.read().strip()
+            if not saved_color:
+                return "white"  # Default
+            return saved_color
+    except FileNotFoundError:
+        return "white"
+    
+def load_saved_mainframe_color():
+    try:
+        with open("mainframe_theme.txt", "r") as file:
+            saved_color = file.read().strip()
+            if not saved_color:
+                return "#A9A9A9"  # Default
+            return saved_color
+    except FileNotFoundError:
+        return "#A9A9A9"
+        
+saved_font_color = load_saved_font_color()
+saved_mainframe_color = load_saved_mainframe_color()
 saved_theme_color = load_saved_theme_color()
 #######################################################################################################################################
 
+# Main content frame
+new_saved_mainframe_color = load_saved_mainframe_color()
+main_frame = customtkinter.CTkFrame(window, fg_color=new_saved_mainframe_color)
+main_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
 # Left sidebar
 sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color=saved_theme_color, border_width=8, border_color="black")
 sidebar.grid(row=0, column=0, rowspan=2, sticky="nsw")
@@ -101,52 +121,81 @@ bottom_bar.grid(row=2, column=1, columnspan=2, sticky="ew")
 
 #######################################################################################################################################
 # AI -Assisted Code: Theme Color Update Feature - Marteno Romaya, https://chatgpt.com/share/67f19bc3-4ab8-800a-bfaa-5ae77d2372a2
-def update_main_theme(new_color):
-    # If the settings page is default gray, make sidebar and bottom_bar blue
+def update_main_theme(new_color, new_font_color=None):
+    global saved_font_color
+
+    if new_font_color:
+        saved_font_color = new_font_color
+    else:
+        saved_font_color = load_saved_font_color()
+
     if new_color.lower() == "#2c2f33":
-        actual_color = "#133f61"  # Vaulture default blue
+        actual_color = "#133f61"
     else:
         actual_color = new_color
 
-    # Update sidebar and bottom bar color
+    # Update sidebar and bottom bar
     sidebar.configure(fg_color=actual_color)
     bottom_bar.configure(fg_color=actual_color)
 
-    # Only update the Vaulture picture label and Storage Options label
+    # Update sidebar widgets
     for widget in sidebar.winfo_children():
         if widget == vulture_label or widget == Title_Spot:
             widget.configure(fg_color=actual_color)
 
+    # Update bottom bar labels
     for widget in bottom_bar.winfo_children():
         if isinstance(widget, customtkinter.CTkLabel):
             widget.configure(fg_color=actual_color)
 
     hamburger_button.configure(fg_color=actual_color)
 
+    # 🆕 🔥 Update Main Frame separately
+    saved_mainframe_color = load_saved_mainframe_color()
+    main_frame.configure(fg_color=saved_mainframe_color)
+
+    # 🔥 Update font color instantly
+    refresh_font_color()
+
+def refresh_font_color():
+    global saved_font_color
+    saved_font_color = load_saved_font_color()
+
+    # Update sidebar buttons
+    for widget in sidebar.winfo_children():
+        if isinstance(widget, customtkinter.CTkButton) or isinstance(widget, customtkinter.CTkLabel):
+            widget.configure(text_color=saved_font_color)
+
+    # Update bottom bar buttons
+    for widget in bottom_bar.winfo_children():
+        if isinstance(widget, customtkinter.CTkButton) or isinstance(widget, customtkinter.CTkLabel):
+            widget.configure(text_color=saved_font_color)
+
+    # Update main frame buttons (like hamburger button)
+    hamburger_button.configure(text_color=saved_font_color)
+    Settings_button.configure(text_color=saved_font_color)         
 
 #######################################################################################################################################
 
 # Sidebar buttons (These will appear when the sidebar is toggled)
 # Hamburger Icon
-hamburger_button = customtkinter.CTkButton(main_frame, text="☰", width=60, height=60, corner_radius=10, fg_color="#0e3161", border_width=3, border_color="black", font=("Arial", 24),
-                                           command=lambda: toggle_sidebar())
+hamburger_button = customtkinter.CTkButton(main_frame, text="☰", width=60, height=60, corner_radius=10, fg_color="#0e3161", border_width=3, border_color="black", font=("Arial", 24), command=lambda: toggle_sidebar())
 hamburger_button.grid(row=0, column=0, padx=20, pady=30)
-hamburger_button.configure(fg_color=saved_theme_color)
+hamburger_button.configure(new_saved_mainframe_color)
 
-Title_Spot = customtkinter.CTkLabel(sidebar, text="Storage Options", text_color="White", font=("Segoe UI", 28, "bold"),
-                                    height=60)
+Title_Spot = customtkinter.CTkLabel(sidebar, text="Storage Options", text_color=saved_font_color, font=("Segoe UI", 28, "bold"), height=60)
 Title_Spot.grid(row=0, column=0, padx=30, pady=10, sticky="nsew")
 
-Passwords_button = customtkinter.CTkButton(sidebar, text="Passwords🔒", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_passwordMaker_page())
+Passwords_button = customtkinter.CTkButton(sidebar, text="Passwords🔒", text_color=saved_font_color, width=150, height=20, corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_passwordMaker_page())
 Passwords_button.grid(row=1, column=0, padx=30, pady=10, sticky="nsew")
 
-Notes_button = customtkinter.CTkButton(sidebar, text="Notes📝", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_notes_page())
+Notes_button = customtkinter.CTkButton(sidebar, text="Notes📝", text_color=saved_font_color, width=150, height=20, corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_notes_page())
 Notes_button.grid(row=2, column=0, padx=30, pady=10, sticky="nsew")
 
-Banking_button = customtkinter.CTkButton(sidebar, text="Banking Cards💳", width=150, height=20, corner_radius=5,fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_banking_cards_page())
+Banking_button = customtkinter.CTkButton(sidebar, text="Banking Cards💳", text_color=saved_font_color , width=150, height=20, corner_radius=5,fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_banking_cards_page())
 Banking_button.grid(row=3, column=0, padx=30, pady=10, sticky="nsew")
 
-Network_button = customtkinter.CTkButton(sidebar, text="Network 🛜", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_Network_page())
+Network_button = customtkinter.CTkButton(sidebar, text="Network 🛜", width=150, height=20, corner_radius=5,text_color=saved_font_color , fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_Network_page())
 Network_button.grid(row=4, column=0, padx=30, pady=20, sticky="nsew")
 
 script_dir = Path(__file__).parent
@@ -173,7 +222,7 @@ sidebar.rowconfigure(5, weight=2)
 sidebar.rowconfigure(6, weight=2)
 
 # Bottom bar buttons
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Home 🏠", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: go_to_home_page())
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Home 🏠", text_color=saved_font_color, width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: go_to_home_page())
 ValtureP_button.grid(row=0, column=0, pady=30)
 
 # Function to go to home page
@@ -200,31 +249,36 @@ def go_to_home_page():
 
     # Bring back main home frame
     main_frame.grid(row=1, column=1, sticky="nsew")
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Passwords 🐦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwords_page())
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Passwords 🐦",text_color=saved_font_color, width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwords_page())
 ValtureP_button.grid(row=0, column=1, pady=30)
 
 
 # Passwords
 def open_passwords_page():
     global MainPasswords_Frame
-    if "MainPasswords_Fram" in globals() and MainPasswords_Frame.winfo_exists():
+    if "MainPasswords_Frame" in globals() and MainPasswords_Frame.winfo_exists():
         MainPasswords_Frame.destroy()
 
     #  The creation of the frame and border
+    new_saved_mainframe_color = load_saved_mainframe_color()
     MainPasswords_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     MainPasswords_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-    PasswordBorder_Frame = customtkinter.CTkFrame(MainPasswords_Frame, fg_color="#A9A9A9")
+    PasswordBorder_Frame = customtkinter.CTkFrame(MainPasswords_Frame, fg_color=new_saved_mainframe_color)
     PasswordBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    label = customtkinter.CTkLabel(PasswordBorder_Frame, text="Passwords", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(PasswordBorder_Frame, text="Passwords", font=("Verdana", 20), text_color=saved_font_color)
     label.pack(pady=20)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(PasswordBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(PasswordBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     PasswordBorder_Frame = scroll_frame
 
+    # Hamburger Button 
+    passwords_hamburger = customtkinter.CTkButton(MainPasswords_Frame, text="☰", width=60, height=60, corner_radius=10, fg_color= new_saved_mainframe_color, border_width=3, border_color="black", font=("Arial", 24), command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10) 
+
     # Search Bar inside Passwords Page
-    search_frame = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color="#A9A9A9", height=50, width=480)
+    search_frame = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color=new_saved_mainframe_color, height=50, width=480)
     search_frame.pack(pady=10)
     searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
     searching.pack(pady=10)
@@ -252,7 +306,7 @@ def open_passwords_page():
         for index, row in enumerate(data):
             data_id, title, username, email, password = row
 
-            entry_frame = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
             entry_label = customtkinter.CTkLabel(entry_frame,
@@ -276,7 +330,7 @@ def open_passwords_page():
         for index, row in enumerate(banking_data, start=len(data) + 1):
             data_id, card_name, card_number, expiry_date, cvv = row
 
-            entry_frame = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
             entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}", anchor="w", justify="left", font=("Courier", 14), text_color="black" )
@@ -295,7 +349,7 @@ def open_passwords_page():
         for index, row in enumerate(network_data, start=len(banking_data) + 1):
             data_id, network_name, network_type, ip_address, password = row
 
-            entry_frame = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
             entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
@@ -410,7 +464,7 @@ def close_passwords_page():
 
 
 # Notes button in bottom bar
-Notes_button = customtkinter.CTkButton(bottom_bar, text="Notes 📝", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray",command=lambda: open_Notes_page())
+Notes_button = customtkinter.CTkButton(bottom_bar, text="Notes 📝",text_color=saved_font_color, width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray",command=lambda: open_Notes_page())
 Notes_button.grid(row=0, column=2, pady=30, )
 
 
@@ -421,20 +475,27 @@ def open_Notes_page():
         MainNotes_Frame.destroy()
 
     #  The creation of the frame and border
+    new_saved_mainframe_color = load_saved_mainframe_color()
     MainNotes_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     MainNotes_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-    NotesBorder_Frame = customtkinter.CTkFrame(MainNotes_Frame, fg_color="#A9A9A9")
+
+    NotesBorder_Frame = customtkinter.CTkFrame(MainNotes_Frame, fg_color=new_saved_mainframe_color)
     NotesBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(NotesBorder_Frame, fg_color="#A9A9A9")
+    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes List", font=("Verdana", 20), text_color=saved_font_color)
+    label.pack(pady=20)
+    
+    scroll_frame = customtkinter.CTkScrollableFrame(NotesBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
+
     NotesBorder_Frame = scroll_frame
 
-    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes List", font=("Verdana", 20))
-    label.pack(pady=20)
+    # Hamburger Button 
+    passwords_hamburger = customtkinter.CTkButton(MainNotes_Frame, text="☰", width=60, height=60, corner_radius=10, fg_color= new_saved_mainframe_color, border_width=3, border_color="black", font=("Arial", 24), command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10) 
 
     # Search Bar inside Passwords Page
-    search_frame = customtkinter.CTkFrame(NotesBorder_Frame, fg_color="#A9A9A9", height=50, width=480)
+    search_frame = customtkinter.CTkFrame(NotesBorder_Frame, fg_color=new_saved_mainframe_color, height=50, width=480)
     search_frame.pack(pady=10)
     searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
     searching.pack(pady=10)
@@ -451,7 +512,7 @@ def open_Notes_page():
         for index, row in enumerate(notes_data):
             data_id, notes_title, notes_body = row
 
-            entry_frame = customtkinter.CTkFrame(NotesBorder_Frame, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(NotesBorder_Frame, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
             entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
@@ -495,7 +556,7 @@ def close_Notes_page():
     main_frame.grid(row=1, column=1, sticky="nsew")
 
 
-Archive_button = customtkinter.CTkButton(bottom_bar, text="Archive 📦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_archive_page())
+Archive_button = customtkinter.CTkButton(bottom_bar, text="Archive 📦", text_color=saved_font_color, width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_archive_page())
 Archive_button.grid(row=0, column=3, pady=30, )
 
 
@@ -506,20 +567,25 @@ def open_archive_page():
         MainArchive_Frame.destroy()
 
     #  The creation of the frame and border
-    MainArchive_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
+    new_saved_mainframe_color = load_saved_mainframe_color()
+    MainArchive_Frame= customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     MainArchive_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-    ArchiveBorder_Frame = customtkinter.CTkFrame(MainArchive_Frame, fg_color="#A9A9A9")
+    ArchiveBorder_Frame = customtkinter.CTkFrame(MainArchive_Frame, fg_color=new_saved_mainframe_color)
     ArchiveBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(ArchiveBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(ArchiveBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     ArchiveBorder_Frame = scroll_frame
 
-    label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="Archived Passwords", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="Archived Passwords", font=("Verdana", 20), text_color=saved_font_color)
     label.pack(pady=20)
 
+    # Hamburger Button 
+    passwords_hamburger = customtkinter.CTkButton(MainArchive_Frame, text="☰", width=60, height=60, corner_radius=10, fg_color= new_saved_mainframe_color, border_width=3, border_color="black", font=("Arial", 24), command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10) 
+
     # Search Bar inside Passwords Page
-    search_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color="#A9A9A9", height=50, width=480)
+    search_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color=new_saved_mainframe_color, height=50, width=480)
     search_frame.pack(pady=10)
     searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
     searching.pack(pady=10)
@@ -534,7 +600,7 @@ def open_archive_page():
         for index, row in enumerate(data):
             data_id, title, username, email, password = row
 
-            entry_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
             entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
@@ -559,7 +625,7 @@ def open_archive_page():
         for index, row in enumerate(banking_data, start=len(data) + 1):
             data_id, card_name, card_number, expiry_date, cvv = row
 
-            entry_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
             entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
@@ -583,7 +649,7 @@ def open_archive_page():
         for index, row in enumerate(network_data, start=len(banking_data) + 1):
             data_id, network_name, network_type, ip_address, password = row
 
-            entry_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
             entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
@@ -607,7 +673,7 @@ def open_archive_page():
         for index, row in enumerate(notes_data, start=len(network_data) + 1):
             data_id, notes_title, notes_body = row
 
-            entry_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
             entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
@@ -723,7 +789,7 @@ def close_archive_page():
 
 
 # Profile button in bottom bar
-Profile_button = customtkinter.CTkButton(bottom_bar, text="Profile 👥", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_Profile_Page())
+Profile_button = customtkinter.CTkButton(bottom_bar, text="Profile 👥", text_color=saved_font_color, width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_Profile_Page())
 Profile_button.grid(row=0, column=4, pady=5)
 
 
@@ -735,20 +801,25 @@ def open_Profile_Page():
 
     # Makes the frame if its not already made
     if "Profile_Frame" not in globals():
+        new_saved_mainframe_color = load_saved_mainframe_color()
         Profile_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
         Profile_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
 
-        Profile_Border_Frame = customtkinter.CTkFrame(Profile_Frame, fg_color="#A9A9A9")
+        Profile_Border_Frame = customtkinter.CTkFrame(Profile_Frame, fg_color=new_saved_mainframe_color)
         Profile_Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-        scroll_frame = customtkinter.CTkScrollableFrame(Profile_Border_Frame, fg_color="#A9A9A9")
+        scroll_frame = customtkinter.CTkScrollableFrame(Profile_Border_Frame, fg_color=new_saved_mainframe_color)
         scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
         Profile_Border_Frame = scroll_frame
 
-        label = customtkinter.CTkLabel(Profile_Border_Frame, text="Profile Page", font=("Verdana", 30), text_color="black")
+        label = customtkinter.CTkLabel(Profile_Border_Frame, text="Profile Page", font=("Verdana", 30), text_color=saved_font_color)
         label.pack(pady=20)
 
-        PImage_label = customtkinter.CTkLabel(Profile_Border_Frame, text="Please put a picture!", width=300, height=300, fg_color="black")
+        # Hamburger Button 
+        passwords_hamburger = customtkinter.CTkButton(Profile_Frame, text="☰", width=60, height=60, corner_radius=10, fg_color= new_saved_mainframe_color, border_width=3, border_color="black", font=("Arial", 24), command=lambda: toggle_sidebar())
+        passwords_hamburger.place(x=10, y=10) 
+
+        PImage_label = customtkinter.CTkLabel(Profile_Border_Frame, text="Please put a picture!", width=300, height=300, text_color="white" , fg_color="black")
         PImage_label.pack(pady=10)
 
         UploadingI = customtkinter.CTkButton(Profile_Border_Frame, text="Upload Image", command=upload_profile_image)
@@ -820,10 +891,8 @@ profile_box_label.pack(expand=True)
 # New Settings Button at Bottom
 def open_settings_page():
     acc2.opening_settings(update_main_theme)
-    settings_window = acc2.SettingsApp(parent = window)
-    settings_window.mainloop()
 
-Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
+Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", text_color=saved_font_color, width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
 Settings_button.grid(row=0, column=5, pady=5)
 
 # Bottom Bar Setup
@@ -852,42 +921,47 @@ def open_passwordMaker_page(*args, **kwargs):
         window.maxsize(1920, 1080)
 
     # Main frame and border setup
+    new_saved_mainframe_color = load_saved_mainframe_color()
     PasswordMaking_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     PasswordMaking_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-    PasswordMakingBorder_Frame = customtkinter.CTkFrame(PasswordMaking_Frame, fg_color="#A9A9A9")
+    PasswordMakingBorder_Frame = customtkinter.CTkFrame(PasswordMaking_Frame, fg_color=new_saved_mainframe_color)
     PasswordMakingBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
-    scroll_frame = customtkinter.CTkScrollableFrame(PasswordMakingBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(PasswordMakingBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     PasswordMakingBorder_Frame = scroll_frame
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Maker", font=("Verdana", 20), text_color="black")
+    # Hamburger Button 
+    passwords_hamburger = customtkinter.CTkButton(PasswordMaking_Frame, text="☰", width=60, height=60, corner_radius=10, fg_color= new_saved_mainframe_color, border_width=3, border_color="black", font=("Arial", 24), command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10) 
+
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Maker", font=("Verdana", 20), text_color=saved_font_color)
     label.grid(row=0, column=2, pady=(10, 20), sticky="nsew")
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Title", text_color="black")
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Title", text_color=saved_font_color)
     label.grid(row=1, column=2, pady=10, sticky="nsew")
 
     Title_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Title")
     Title_entry.grid(row=2, column=2, pady=10, sticky="nsew")
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Username", text_color="black")
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Username", text_color=saved_font_color)
     label.grid(row=3, column=2, pady=10, sticky="nsew")
 
     Username_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Username")
     Username_entry.grid(row=4, column=2, pady=10, sticky="nsew")
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Email", text_color="black")
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Email", text_color=saved_font_color)
     label.grid(row=5, column=2, pady=10, sticky="nsew")
 
     Email_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Email")
     Email_entry.grid(row=6, column=2, pady=10, sticky="nsew")
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password", text_color="black")
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password", text_color=saved_font_color)
     label.grid(row=7, column=2, pady=10, sticky="nsew")
 
     Password_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Password")
     Password_entry.grid(row=8, column=2, pady=10, sticky="nsew")
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Generation Checklist", text_color="black")
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Generation Checklist", text_color=saved_font_color)
     label.grid(row=9, column=2, pady=10, sticky="nsew")
     #######################################################################################################################################################
     # AI-Assisted Code: Password Generation Feature - Marteno Romaya
@@ -903,16 +977,16 @@ def open_passwordMaker_page(*args, **kwargs):
 
     # Checkboxes for user selection
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Special Characters", variable=use_special,
-                              text_color="black").grid(row=10, column=2, pady=5, sticky="nsew")
+                              text_color=saved_font_color).grid(row=10, column=2, pady=5, sticky="nsew")
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Numbers", variable=use_numbers,
-                              text_color="black").grid(row=11, column=2, pady=5, sticky="nsew")
+                              text_color=saved_font_color).grid(row=11, column=2, pady=5, sticky="nsew")
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Uppercase Letters", variable=use_upper,
-                              text_color="black").grid(row=10, column=3, pady=5, sticky="nsew")
+                              text_color=saved_font_color).grid(row=10, column=3, pady=5, sticky="nsew")
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Lowercase Letters", variable=use_lower,
-                              text_color="black").grid(row=11, column=3, pady=5, sticky="nsew")
+                              text_color=saved_font_color).grid(row=11, column=3, pady=5, sticky="nsew")
 
     # Label to display the result
-    result_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="", text_color="black")
+    result_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="", text_color=saved_font_color)
     result_label.grid(row=12, column=2, pady=10, sticky="nsew")
 
     # Password generator function
@@ -984,22 +1058,27 @@ def open_notes_page():
     if "Notes_Frame" in globals() and Notes_Frame.winfo_exists():
         Notes_Frame.destroy()
 
+    new_saved_mainframe_color = load_saved_mainframe_color()
     Notes_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     Notes_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-    NotesBorder_Frame = customtkinter.CTkFrame(Notes_Frame, fg_color="#A9A9A9")
+    NotesBorder_Frame = customtkinter.CTkFrame(Notes_Frame, fg_color=new_saved_mainframe_color)
     NotesBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(NotesBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(NotesBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     NotesBorder_Frame = scroll_frame
 
-    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes Maker", font=("Verdana", 20,), text_color="black")
+    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes Maker", font=("Verdana", 20,), text_color=saved_font_color)
     label.grid(row=0, column=2, pady=10, sticky="ew")
+
+    # Hamburger Button 
+    passwords_hamburger = customtkinter.CTkButton(Notes_Frame, text="☰", width=60, height=60, corner_radius=10, fg_color= new_saved_mainframe_color, border_width=3, border_color="black", font=("Arial", 24), command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10) 
 
     Notes_title_entry = customtkinter.CTkEntry(NotesBorder_Frame, placeholder_text="Enter Title")
     Notes_title_entry.grid(row=1, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Enter Notes", text_color="black")
+    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Enter Notes", text_color=saved_font_color)
     label.grid(row=3, column=2, pady=10, sticky="ew")
 
     Notes_body = customtkinter.CTkTextbox(NotesBorder_Frame, height=150)
@@ -1051,38 +1130,43 @@ def open_banking_cards_page():
     if "Banking_Cards_Frame" in globals() and Banking_Cards_Frame.winfo_exists():
         Banking_Cards_Frame.destroy()
 
+    new_saved_mainframe_color = load_saved_mainframe_color()
     Banking_Cards_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     Banking_Cards_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
 
-    BankBorder_Frame = customtkinter.CTkFrame(Banking_Cards_Frame, fg_color="#A9A9A9")
+    BankBorder_Frame = customtkinter.CTkFrame(Banking_Cards_Frame, fg_color=new_saved_mainframe_color)
     BankBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(BankBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(BankBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     BankBorder_Frame = scroll_frame
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Banking Cards Maker", font=("Verdana", 20), text_color="black")
+    # Hamburger Button 
+    passwords_hamburger = customtkinter.CTkButton(Banking_Cards_Frame, text="☰", width=60, height=60, corner_radius=10, fg_color= new_saved_mainframe_color, border_width=3, border_color="black", font=("Arial", 24), command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10) 
+
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Banking Cards Maker", font=("Verdana", 20),text_color=saved_font_color)
     label.grid(row=0, column=2, pady=(10, 20), sticky="n")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Title", text_color="black")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Title", text_color=saved_font_color)
     label.grid(row=1, column=2, pady=10, sticky="ew")
 
     Card_Title_entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter Title")
     Card_Title_entry.grid(row=2, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Number", text_color="black")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Number", text_color=saved_font_color)
     label.grid(row=3, column=2, pady=10, sticky="ew")
 
     Card_Number_Entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter Card Number")
     Card_Number_Entry.grid(row=4, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Expire Date", text_color="black")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Expire Date", text_color=saved_font_color)
     label.grid(row=5, column=2, pady=10, sticky="ew")
 
     Expiration_Date_entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter Expiration Date (EX: 03-2025)")
     Expiration_Date_entry.grid(row=6, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="CVV", text_color="black")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="CVV", text_color=saved_font_color)
     label.grid(row=7, column=2, pady=10, sticky="ew")
 
     CVV_entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter CVV")
@@ -1136,38 +1220,43 @@ def open_Network_page():
     if "One_Time_Password_Frame" in globals() and Network_Frame.winfo_exists():
         Network_Frame.destroy()
 
+    new_saved_mainframe_color = load_saved_mainframe_color()
     Network_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     Network_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
 
-    Network_Border_Frame = customtkinter.CTkFrame(Network_Frame, fg_color="#A9A9A9")
+    Network_Border_Frame = customtkinter.CTkFrame(Network_Frame, fg_color=new_saved_mainframe_color)
     Network_Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(Network_Border_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(Network_Border_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     Network_Border_Frame = scroll_frame
 
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Password Maker", font=("Verdana", 20), text_color="black")
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Password Maker", font=("Verdana", 20), text_color=saved_font_color)
     label.grid(row=0, column=2, pady=(10, 20), sticky="n")
+    
+    # Hamburger Button 
+    passwords_hamburger = customtkinter.CTkButton(Network_Frame, text="☰", width=60, height=60, corner_radius=10, fg_color= new_saved_mainframe_color, border_width=3, border_color="black", font=("Arial", 24), command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10) 
 
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Title", text_color="black")
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Title", text_color=saved_font_color)
     label.grid(row=1, column=2, pady=10, sticky="ew")
 
     Network_title_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter Network Title")
     Network_title_entry.grid(row=2, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network", text_color="black")
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network", text_color=saved_font_color)
     label.grid(row=3, column=2, pady=10, sticky="ew")
 
     Network_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter Network")
     Network_entry.grid(row=4, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Ip Address", text_color="black")
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Ip Address", text_color=saved_font_color)
     label.grid(row=5, column=2, pady=10, sticky="ew")
 
     ip_address_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter IP Address")
     ip_address_entry.grid(row=6, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Password", text_color="black")
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Password", text_color=saved_font_color)
     label.grid(row=7, column=2, pady=10, sticky="ew")
 
     network_password_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter Network password")
