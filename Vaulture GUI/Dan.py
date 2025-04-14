@@ -53,10 +53,6 @@ window.rowconfigure(1, weight=2)
 # BottomBar
 window.rowconfigure(3, weight=0)
 
-# Main content frame
-main_frame = customtkinter.CTkFrame(window, fg_color="#A9A9A9")
-main_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
-
 
 #######################################################################################################################################
 # AI -Assisted Code: Theme Color Update Feature - Marteno Romaya ,https://chatgpt.com/share/67f19bc3-4ab8-800a-bfaa-5ae77d2372a2
@@ -71,11 +67,40 @@ def load_saved_theme_color():
         return "#133f61"  # Default if no file exists
 
 
+def load_saved_font_color():
+    try:
+        with open("font_color.txt", "r") as file:
+            saved_color = file.read().strip()
+            if not saved_color:
+                return "white"  # Default
+            return saved_color
+    except FileNotFoundError:
+        return "white"
+
+
+def load_saved_mainframe_color():
+    try:
+        with open("mainframe_theme.txt", "r") as file:
+            saved_color = file.read().strip()
+            if not saved_color:
+                return "#A9A9A9"  # Default
+            return saved_color
+    except FileNotFoundError:
+        return "#A9A9A9"
+
+
+saved_font_color = load_saved_font_color()
+saved_mainframe_color = load_saved_mainframe_color()
 saved_theme_color = load_saved_theme_color()
 #######################################################################################################################################
 
+# Main content frame
+new_saved_mainframe_color = load_saved_mainframe_color()
+main_frame = customtkinter.CTkFrame(window, fg_color=new_saved_mainframe_color)
+main_frame.grid(row=1, column=1, padx=0, pady=0, sticky="nsew")
 # Left sidebar
-sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color=saved_theme_color, border_width=8, border_color="black")
+sidebar = customtkinter.CTkFrame(window, width=200, corner_radius=20, fg_color=saved_theme_color, border_width=8,
+                                 border_color="black")
 sidebar.grid(row=0, column=0, rowspan=2, sticky="nsw")
 sidebar.grid_forget()
 
@@ -101,52 +126,94 @@ bottom_bar.grid(row=2, column=1, columnspan=2, sticky="ew")
 
 #######################################################################################################################################
 # AI -Assisted Code: Theme Color Update Feature - Marteno Romaya, https://chatgpt.com/share/67f19bc3-4ab8-800a-bfaa-5ae77d2372a2
-def update_main_theme(new_color):
-    # If the settings page is default gray, make sidebar and bottom_bar blue
+def update_main_theme(new_color, new_font_color=None):
+    global saved_font_color
+
+    if new_font_color:
+        saved_font_color = new_font_color
+    else:
+        saved_font_color = load_saved_font_color()
+
     if new_color.lower() == "#2c2f33":
-        actual_color = "#133f61"  # Vaulture default blue
+        actual_color = "#133f61"
     else:
         actual_color = new_color
 
-    # Update sidebar and bottom bar color
+    # Update sidebar and bottom bar
     sidebar.configure(fg_color=actual_color)
     bottom_bar.configure(fg_color=actual_color)
 
-    # Only update the Vaulture picture label and Storage Options label
+    # Update sidebar widgets
     for widget in sidebar.winfo_children():
         if widget == vulture_label or widget == Title_Spot:
             widget.configure(fg_color=actual_color)
 
+    # Update bottom bar labels
     for widget in bottom_bar.winfo_children():
         if isinstance(widget, customtkinter.CTkLabel):
             widget.configure(fg_color=actual_color)
 
     hamburger_button.configure(fg_color=actual_color)
 
+    # 🆕 🔥 Update Main Frame separately
+    saved_mainframe_color = load_saved_mainframe_color()
+    main_frame.configure(fg_color=saved_mainframe_color)
+
+    # 🔥 Update font color instantly
+    refresh_font_color()
+
+
+def refresh_font_color():
+    global saved_font_color
+    saved_font_color = load_saved_font_color()
+
+    # Update sidebar buttons
+    for widget in sidebar.winfo_children():
+        if isinstance(widget, customtkinter.CTkButton) or isinstance(widget, customtkinter.CTkLabel):
+            widget.configure(text_color=saved_font_color)
+
+    # Update bottom bar buttons
+    for widget in bottom_bar.winfo_children():
+        if isinstance(widget, customtkinter.CTkButton) or isinstance(widget, customtkinter.CTkLabel):
+            widget.configure(text_color=saved_font_color)
+
+    # Update main frame buttons (like hamburger button)
+    hamburger_button.configure(text_color=saved_font_color)
+    Settings_button.configure(text_color=saved_font_color)
+
 
 #######################################################################################################################################
 
 # Sidebar buttons (These will appear when the sidebar is toggled)
 # Hamburger Icon
-hamburger_button = customtkinter.CTkButton(main_frame, text="☰", width=60, height=60, corner_radius=10, fg_color="#0e3161", border_width=3, border_color="black", font=("Arial", 24),
+hamburger_button = customtkinter.CTkButton(main_frame, text="☰", width=60, height=60, corner_radius=10,
+                                           fg_color="#0e3161", border_width=3, border_color="black", font=("Arial", 24),
                                            command=lambda: toggle_sidebar())
 hamburger_button.grid(row=0, column=0, padx=20, pady=30)
-hamburger_button.configure(fg_color=saved_theme_color)
+hamburger_button.configure(new_saved_mainframe_color)
 
-Title_Spot = customtkinter.CTkLabel(sidebar, text="Storage Options", text_color="White", font=("Segoe UI", 28, "bold"),
-                                    height=60)
+Title_Spot = customtkinter.CTkLabel(sidebar, text="Storage Options", text_color=saved_font_color,
+                                    font=("Segoe UI", 28, "bold"), height=60)
 Title_Spot.grid(row=0, column=0, padx=30, pady=10, sticky="nsew")
 
-Passwords_button = customtkinter.CTkButton(sidebar, text="Passwords🔒", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_passwordMaker_page())
+Passwords_button = customtkinter.CTkButton(sidebar, text="Passwords🔒", text_color=saved_font_color, width=150,
+                                           height=20, corner_radius=5, fg_color="#282929", border_width=3,
+                                           border_color="#bbbdbf", command=lambda: open_passwordMaker_page())
 Passwords_button.grid(row=1, column=0, padx=30, pady=10, sticky="nsew")
 
-Notes_button = customtkinter.CTkButton(sidebar, text="Notes📝", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_notes_page())
+Notes_button = customtkinter.CTkButton(sidebar, text="Notes📝", text_color=saved_font_color, width=150, height=20,
+                                       corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf",
+                                       command=lambda: open_notes_page())
 Notes_button.grid(row=2, column=0, padx=30, pady=10, sticky="nsew")
 
-Banking_button = customtkinter.CTkButton(sidebar, text="Banking Cards💳", width=150, height=20, corner_radius=5,fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_banking_cards_page())
+Banking_button = customtkinter.CTkButton(sidebar, text="Banking Cards💳", text_color=saved_font_color, width=150,
+                                         height=20, corner_radius=5, fg_color="#282929", border_width=3,
+                                         border_color="#bbbdbf", command=lambda: open_banking_cards_page())
 Banking_button.grid(row=3, column=0, padx=30, pady=10, sticky="nsew")
 
-Network_button = customtkinter.CTkButton(sidebar, text="Network 🛜", width=150, height=20, corner_radius=5, fg_color="#282929", border_width=3, border_color="#bbbdbf", command=lambda: open_Network_page())
+Network_button = customtkinter.CTkButton(sidebar, text="Network 🛜", width=150, height=20, corner_radius=5,
+                                         text_color=saved_font_color, fg_color="#282929", border_width=3,
+                                         border_color="#bbbdbf", command=lambda: open_Network_page())
 Network_button.grid(row=4, column=0, padx=30, pady=20, sticky="nsew")
 
 script_dir = Path(__file__).parent
@@ -173,12 +240,15 @@ sidebar.rowconfigure(5, weight=2)
 sidebar.rowconfigure(6, weight=2)
 
 # Bottom bar buttons
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Home 🏠", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: go_to_home_page())
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Home 🏠", text_color=saved_font_color, width=60, height=70,
+                                          corner_radius=900, fg_color="#282929", border_width=2, border_color="gray",
+                                          command=lambda: go_to_home_page())
 ValtureP_button.grid(row=0, column=0, pady=30)
+
 
 # Function to go to home page
 def go_to_home_page():
-# Sidebar Frames
+    # Sidebar Frames
     if 'PasswordMaking_Frame' in globals() and PasswordMaking_Frame.winfo_exists():
         PasswordMaking_Frame.grid_forget()
     if 'Notes_Frame' in globals() and Notes_Frame.winfo_exists():
@@ -188,7 +258,7 @@ def go_to_home_page():
     if 'Network_Frame' in globals() and Network_Frame.winfo_exists():
         Network_Frame.grid_forget()
 
-# Bottom Bar Frames
+    # Bottom Bar Frames
     if 'MainPasswords_Frame' in globals() and MainPasswords_Frame.winfo_exists():
         MainPasswords_Frame.grid_forget()
     if 'MainNotes_Frame' in globals() and MainNotes_Frame.winfo_exists():
@@ -200,83 +270,105 @@ def go_to_home_page():
 
     # Bring back main home frame
     main_frame.grid(row=1, column=1, sticky="nsew")
-ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Passwords 🐦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_passwords_page())
+
+
+ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Passwords 🐦", text_color=saved_font_color, width=60,
+                                          height=70, corner_radius=900, fg_color="#282929", border_width=2,
+                                          border_color="gray", command=lambda: open_passwords_page())
 ValtureP_button.grid(row=0, column=1, pady=30)
 
 
 # Passwords
 def open_passwords_page():
     global MainPasswords_Frame, searching, entries_container
-    if "MainPasswords_Fram" in globals() and MainPasswords_Frame.winfo_exists():
+    if "MainPasswords_Frame" in globals() and MainPasswords_Frame.winfo_exists():
         MainPasswords_Frame.destroy()
 
     #  The creation of the frame and border
+    new_saved_mainframe_color = load_saved_mainframe_color()
     MainPasswords_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     MainPasswords_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-    PasswordBorder_Frame = customtkinter.CTkFrame(MainPasswords_Frame, fg_color="#A9A9A9")
+    PasswordBorder_Frame = customtkinter.CTkFrame(MainPasswords_Frame, fg_color=new_saved_mainframe_color)
     PasswordBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    label = customtkinter.CTkLabel(PasswordBorder_Frame, text="Passwords", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(PasswordBorder_Frame, text="Passwords", font=("Verdana", 20),
+                                   text_color=saved_font_color)
     label.pack(pady=20)
 
-    controls_container = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color="#A9A9A9")
+    controls_container = customtkinter.CTkFrame(PasswordBorder_Frame, fg_color=new_saved_mainframe_color)
     controls_container.pack(side="top", fill="x", padx=5, pady=5)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(PasswordBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(PasswordBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     PasswordBorder_Frame = scroll_frame
 
-    entries_container = customtkinter.CTkFrame(scroll_frame, fg_color="#A9A9A9")
+    entries_container = customtkinter.CTkFrame(scroll_frame, fg_color=new_saved_mainframe_color)
     entries_container.pack(fill="both", expand=True, padx=5, pady=5)
 
+    # Hamburger Button
+    passwords_hamburger = customtkinter.CTkButton(MainPasswords_Frame, text="☰", width=60, height=60, corner_radius=10,
+                                                  fg_color=new_saved_mainframe_color, border_width=3,
+                                                  border_color="black", font=("Arial", 24),
+                                                  command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10)
+
     # Search Bar inside Passwords Page
-    search_frame = customtkinter.CTkFrame(controls_container, fg_color="#A9A9A9", height=50, width=480)
+    search_frame = customtkinter.CTkFrame(controls_container, fg_color=new_saved_mainframe_color, height=50, width=480)
     search_frame.pack(pady=10)
     searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
     searching.pack(pady=10)
 
     searching.bind("<KeyRelease>", search)
 
-    back_button = customtkinter.CTkButton(controls_container, text="Back", command=close_passwords_page)
+    back_button = customtkinter.CTkButton(PasswordBorder_Frame, text="Back", text_color=saved_font_color,
+                                          command=close_passwords_page)
     back_button.pack(pady=20)
+
+    searching.bind("<KeyRelease>", search)
 
     main_frame.grid_forget()
     MainPasswords_Frame.grid(row=1, column=1, sticky="nsew")
 
-    mycursor.execute("SELECT data_id, Title, Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s", (account_id,))
+    mycursor.execute("SELECT data_id, Title, Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s",
+                     (account_id,))
 
     data = mycursor.fetchall()
 
-    mycursor.execute("SELECT data_id, Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE AccountID = %s", (account_id,))
+    mycursor.execute("SELECT data_id, Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE AccountID = %s",
+                     (account_id,))
     banking_data = mycursor.fetchall()
 
     mycursor.execute(
-        "SELECT data_id, Network_Title, Network, IP_Address, Password FROM Network_Data WHERE AccountID = %s", (account_id,))
+        "SELECT data_id, Network_Title, Network, IP_Address, Password FROM Network_Data WHERE AccountID = %s",
+        (account_id,))
     network_data = mycursor.fetchall()
 
-# (AI GENERATED)
-#********************************************************************************************************************
+    # (AI GENERATED)
+    # ********************************************************************************************************************
     if data:
         for index, row in enumerate(data):
             data_id, title, username, email, password = row
 
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
             entry_label = customtkinter.CTkLabel(entry_frame,
                                                  text=f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}",
-                                                 anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                                                 anchor="w", justify="left", font=("Courier", 14),
+                                                 text_color=saved_font_color
                                                  )
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
             archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
-                                                  command=lambda d=data_id, frame = entry_frame: archive_row(d, frame))
+                                                     command=lambda d=data_id, frame=entry_frame: archive_row(d, frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame = entry_frame: delete_row(d, frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id, frame=entry_frame: delete_row(d, frame))
             delete_button.pack(side="left", padx=5)
     else:
-        no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No password and account data found.")
+        no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No password and account data found.",
+                                               text_color=saved_font_color)
         no_data_label.pack()
     # **********************************************************************************************
 
@@ -284,38 +376,54 @@ def open_passwords_page():
         for index, row in enumerate(banking_data, start=len(data) + 1):
             data_id, card_name, card_number, expiry_date, cvv = row
 
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
-            entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}", anchor="w", justify="left", font=("Courier", 14), text_color="black" )
+            entry_label = customtkinter.CTkLabel(entry_frame,
+                                                 text=f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}",
+                                                 anchor="w", justify="left", font=("Courier", 14),
+                                                 text_color=saved_font_color)
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame = entry_frame: archive_banking_row(d, frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: archive_banking_row(d,
+                                                                                                                      frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame = entry_frame: delete_banking_row(d, frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id, frame=entry_frame: delete_banking_row(d,
+                                                                                                                    frame))
             delete_button.pack(side="left", padx=5)
     else:
-        no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No banking card data found.")
+        no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No banking card data found.",
+                                               text_color=saved_font_color)
         no_data_label.pack()
 
     if network_data:
         for index, row in enumerate(network_data, start=len(banking_data) + 1):
             data_id, network_name, network_type, ip_address, password = row
 
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
-            entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
+            entry_label = customtkinter.CTkLabel(entry_frame,
+                                                 text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}",
+                                                 anchor="w", justify="left", font=("Courier", 14),
+                                                 text_color=saved_font_color)
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame = entry_frame: archive_network_row(d, frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: archive_network_row(d,
+                                                                                                                      frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame = entry_frame: delete_network_row(d, frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id, frame=entry_frame: delete_network_row(d,
+                                                                                                                    frame))
             delete_button.pack(side="left", padx=5)
     else:
-        no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No network data found.")
+        no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No network data found.",
+                                               text_color=saved_font_color)
         no_data_label.pack()
 
 
@@ -332,8 +440,11 @@ def delete_row(data_id, destroyed_frame):
 
         destroyed_frame.destroy()
 
+
 def archive_row(data_id, destroyed_frame):
-    mycursor.execute("SELECT data_id, AccountID, Title, Username, Email, Password FROM Account_Data_Password WHERE data_id = %s", (data_id,))
+    mycursor.execute(
+        "SELECT data_id, AccountID, Title, Username, Email, Password FROM Account_Data_Password WHERE data_id = %s",
+        (data_id,))
     row = mycursor.fetchone()
     if row:
         mycursor.execute("""
@@ -344,6 +455,7 @@ def archive_row(data_id, destroyed_frame):
         login_database.commit()
 
         destroyed_frame.destroy()
+
 
 def delete_banking_row(data_id, destroyed_frame):
     mycursor.execute("SELECT * FROM Banking_Card WHERE data_id = %s", (data_id,))
@@ -356,8 +468,8 @@ def delete_banking_row(data_id, destroyed_frame):
 
 
 def archive_banking_row(data_id, destroyed_frame):
-#(AI GENERATED)
-#****************************************************************************************************************
+    # (AI GENERATED)
+    # ****************************************************************************************************************
     # Check if it's already archived
     mycursor.execute("SELECT 1 FROM Archive_Banking_Card WHERE data_id = %s", (data_id,))
     if mycursor.fetchone():
@@ -365,9 +477,11 @@ def archive_banking_row(data_id, destroyed_frame):
         return  # or optionally delete from Banking_Card anyway
 
     # Get the original data
-    mycursor.execute("SELECT data_id, AccountID, Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE data_id = %s", (data_id,))
+    mycursor.execute(
+        "SELECT data_id, AccountID, Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE data_id = %s",
+        (data_id,))
     row = mycursor.fetchone()
-#*************************************************************************************************************
+    # *************************************************************************************************************
 
     if row:
         # Insert into archive table
@@ -381,6 +495,7 @@ def archive_banking_row(data_id, destroyed_frame):
 
         destroyed_frame.destroy()
 
+
 def delete_network_row(data_id, destroyed_frame):
     mycursor.execute("SELECT * FROM Network_Data WHERE data_id = %s", (data_id,))
     row = mycursor.fetchone()
@@ -390,6 +505,7 @@ def delete_network_row(data_id, destroyed_frame):
 
         destroyed_frame.destroy()
 
+
 def archive_network_row(data_id, destroyed_frame):
     # Check if it's already archived
     mycursor.execute("SELECT 1 FROM Archive_Network_Data WHERE data_id = %s", (data_id,))
@@ -398,7 +514,9 @@ def archive_network_row(data_id, destroyed_frame):
         return  # or optionally delete from Banking_Card anyway
 
     # Get the original data
-    mycursor.execute("SELECT data_id, AccountID, Network_Title, Network, IP_Address, Password FROM Network_Data WHERE data_id = %s", (data_id,))
+    mycursor.execute(
+        "SELECT data_id, AccountID, Network_Title, Network, IP_Address, Password FROM Network_Data WHERE data_id = %s",
+        (data_id,))
     row = mycursor.fetchone()
     if row:
         mycursor.execute("""
@@ -411,8 +529,8 @@ def archive_network_row(data_id, destroyed_frame):
         destroyed_frame.destroy()
 
 
-#(AI GENERATED)
-#*************************************************************************************************************************
+# (AI GENERATED)
+# *************************************************************************************************************************
 def search(event):
     query = searching.get().lower().strip()
     print("Search query:", query)
@@ -427,130 +545,152 @@ def search(event):
     )
     password_data = mycursor.fetchall()
 
-    mycursor.execute("SELECT data_id, Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE AccountID = %s", (account_id,))
+    mycursor.execute("SELECT data_id, Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE AccountID = %s",
+                     (account_id,))
     banking_data = mycursor.fetchall()
 
     mycursor.execute(
-        "SELECT data_id, Network_Title, Network, IP_Address, Password FROM Network_Data WHERE AccountID = %s", (account_id,))
+        "SELECT data_id, Network_Title, Network, IP_Address, Password FROM Network_Data WHERE AccountID = %s",
+        (account_id,))
     network_data = mycursor.fetchall()
 
     if query == "":
         for index, row in enumerate(password_data):
             data_id, title, username, email, password = row
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
             entry_label = customtkinter.CTkLabel(
                 entry_frame,
                 text=f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}",
-                anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
             )
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_row(d, frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: archive_row(d, frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_row(d, frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id, frame=entry_frame: delete_row(d, frame))
             delete_button.pack(side="left", padx=5)
 
         # (NOT AI GENERATED)
         for index, row in enumerate(banking_data):
             data_id, card_name, card_number, expiry_date, cvv = row
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
             entry_label = customtkinter.CTkLabel(
                 entry_frame,
                 text=f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}",
-                anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
             )
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_banking_row(d,frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: archive_banking_row(d,
+                                                                                                                      frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_banking_row(d,frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id, frame=entry_frame: delete_banking_row(d,
+                                                                                                                    frame))
             delete_button.pack(side="left", padx=5)
 
         # (NOT AI GENERATED)
         for index, row in enumerate(network_data):
             data_id, network_name, network_type, ip_address, password = row
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
             entry_label = customtkinter.CTkLabel(
                 entry_frame,
                 text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}",
-                anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
             )
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_network_row(d,frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: archive_network_row(d,
+                                                                                                                      frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_network_row(d,frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id, frame=entry_frame: delete_network_row(d,
+                                                                                                                    frame))
             delete_button.pack(side="left", padx=5)
     else:
         for index, row in enumerate(password_data):
             data_id, title, username, email, password = row
             display_text = f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}"
             if query in display_text.lower():
-                entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+                entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
                 entry_frame.pack(fill="x", padx=10, pady=5)
                 entry_label = customtkinter.CTkLabel(
                     entry_frame,
                     text=display_text,
-                    anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                    anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
                 )
                 entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_row(d,frame))
+                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
+                                                         command=lambda d=data_id, frame=entry_frame: archive_row(d,
+                                                                                                                  frame))
                 archive_button.pack(side="left", padx=5)
 
-                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_row(d,frame))
+                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                        command=lambda d=data_id, frame=entry_frame: delete_row(d,
+                                                                                                                frame))
                 delete_button.pack(side="left", padx=5)
 
         for index, row in enumerate(banking_data):
             data_id, card_name, card_number, expiry_date, cvv = row
             display_text_banking = f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}"
             if query in display_text_banking.lower():
-                entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+                entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
                 entry_frame.pack(fill="x", padx=10, pady=5)
                 entry_label = customtkinter.CTkLabel(
                     entry_frame,
                     text=display_text_banking,
-                    anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                    anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
                 )
                 entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_banking_row(d,frame))
+                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
+                                                         command=lambda d=data_id,
+                                                                        frame=entry_frame: archive_banking_row(d,
+                                                                                                               frame))
                 archive_button.pack(side="left", padx=5)
 
-                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_banking_row(d, frame))
+                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                        command=lambda d=data_id, frame=entry_frame: delete_banking_row(
+                                                            d, frame))
                 delete_button.pack(side="left", padx=5)
 
         for index, row in enumerate(network_data):
             data_id, network_name, network_type, ip_address, password = row
             display_text_network = f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}"
             if query in display_text_network.lower():
-                entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+                entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
                 entry_frame.pack(fill="x", padx=10, pady=5)
                 entry_label = customtkinter.CTkLabel(
                     entry_frame,
                     text=display_text_network,
-                    anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                    anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
                 )
                 entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_network_row(d,frame))
+                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
+                                                         command=lambda d=data_id,
+                                                                        frame=entry_frame: archive_network_row(d,
+                                                                                                               frame))
                 archive_button.pack(side="left", padx=5)
 
-                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_network_row(d, frame))
+                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                        command=lambda d=data_id, frame=entry_frame: delete_network_row(
+                                                            d, frame))
                 delete_button.pack(side="left", padx=5)
 
 
-#********************************************************************************************************************************
-
-
-
-
+# ********************************************************************************************************************************
 
 # Closing the page
 def close_passwords_page():
@@ -559,7 +699,9 @@ def close_passwords_page():
 
 
 # Notes button in bottom bar
-Notes_button = customtkinter.CTkButton(bottom_bar, text="Notes 📝", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray",command=lambda: open_Notes_page())
+Notes_button = customtkinter.CTkButton(bottom_bar, text="Notes 📝", text_color=saved_font_color, width=60, height=70,
+                                       corner_radius=900, fg_color="#282929", border_width=2, border_color="gray",
+                                       command=lambda: open_Notes_page())
 Notes_button.grid(row=0, column=2, pady=30, )
 
 
@@ -570,33 +712,44 @@ def open_Notes_page():
         MainNotes_Frame.destroy()
 
     #  The creation of the frame and border
+    new_saved_mainframe_color = load_saved_mainframe_color()
     MainNotes_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     MainNotes_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-    NotesBorder_Frame = customtkinter.CTkFrame(MainNotes_Frame, fg_color="#A9A9A9")
+
+    NotesBorder_Frame = customtkinter.CTkFrame(MainNotes_Frame, fg_color=new_saved_mainframe_color)
     NotesBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes List", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes List", font=("Verdana", 20),
+                                   text_color=saved_font_color)
     label.pack(pady=20)
 
-    controls_container = customtkinter.CTkFrame(NotesBorder_Frame, fg_color="#A9A9A9")
+    controls_container = customtkinter.CTkFrame(NotesBorder_Frame, fg_color=new_saved_mainframe_color)
     controls_container.pack(side="top", fill="x", padx=5, pady=5)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(NotesBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(NotesBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     NotesBorder_Frame = scroll_frame
 
-    entries_container = customtkinter.CTkFrame(scroll_frame, fg_color="#A9A9A9")
+    entries_container = customtkinter.CTkFrame(scroll_frame, fg_color=new_saved_mainframe_color)
     entries_container.pack(fill="both", expand=True, padx=5, pady=5)
 
     # Search Bar inside Passwords Page
-    search_frame = customtkinter.CTkFrame(controls_container, fg_color="#A9A9A9", height=50, width=480)
+    search_frame = customtkinter.CTkFrame(controls_container, fg_color=new_saved_mainframe_color, height=50, width=480)
     search_frame.pack(pady=10)
     searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
     searching.pack(pady=10)
 
     searching.bind("<KeyRelease>", search_notes)
 
-    back_button = customtkinter.CTkButton(controls_container, text="Back", command=close_Notes_page)
+    # Hamburger Button
+    passwords_hamburger = customtkinter.CTkButton(MainNotes_Frame, text="☰", width=60, height=60, corner_radius=10,
+                                                  fg_color=new_saved_mainframe_color, border_width=3,
+                                                  border_color="black", font=("Arial", 24),
+                                                  command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10)
+
+    back_button = customtkinter.CTkButton(NotesBorder_Frame, text="Back", text_color=saved_font_color,
+                                          command=close_Notes_page)
     back_button.pack(pady=20)
 
     mycursor.execute(
@@ -608,25 +761,33 @@ def open_Notes_page():
         for index, row in enumerate(notes_data):
             data_id, notes_title, notes_body = row
 
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
-            entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
+            entry_label = customtkinter.CTkLabel(entry_frame,
+                                                 text=f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}",
+                                                 anchor="w", justify="left", font=("Courier", 14),
+                                                 text_color=saved_font_color)
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
             archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
-                                                  command=lambda d=data_id, frame = entry_frame: archive_notes_row(d, frame))
+                                                     command=lambda d=data_id, frame=entry_frame: archive_notes_row(d,
+                                                                                                                    frame))
             archive_button.pack(side="left", padx=5)
 
             delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
-                                                    command=lambda d=data_id, frame = entry_frame: delete_notes_row(d, frame))
+                                                    command=lambda d=data_id, frame=entry_frame: delete_notes_row(d,
+                                                                                                                  frame))
             delete_button.pack(side="left", padx=5)
     else:
-        no_data_label = customtkinter.CTkLabel(NotesBorder_Frame, text="No notes data found.")
+        no_data_label = customtkinter.CTkLabel(NotesBorder_Frame, text="No notes data found.",
+                                               text_color=saved_font_color)
         no_data_label.pack()
 
+
 def archive_notes_row(data_id, destroyed_frame):
-    mycursor.execute("SELECT data_id, AccountID, Notes_title, Notes_body FROM Notes_Data WHERE data_id = %s", (data_id,))
+    mycursor.execute("SELECT data_id, AccountID, Notes_title, Notes_body FROM Notes_Data WHERE data_id = %s",
+                     (data_id,))
     row = mycursor.fetchone()
     if row:
         mycursor.execute("""
@@ -638,6 +799,7 @@ def archive_notes_row(data_id, destroyed_frame):
 
         destroyed_frame.destroy()
 
+
 def delete_notes_row(data_id, destroyed_frame):
     mycursor.execute("SELECT * FROM Notes_Data WHERE data_id = %s", (data_id,))
     row = mycursor.fetchone()
@@ -646,6 +808,7 @@ def delete_notes_row(data_id, destroyed_frame):
         login_database.commit()
 
         destroyed_frame.destroy()
+
 
 def search_notes(event):
     query = searching.get().lower().strip()
@@ -663,19 +826,23 @@ def search_notes(event):
     if query == "":
         for index, row in enumerate(notes_data):
             data_id, notes_title, notes_body = row
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
             entry_label = customtkinter.CTkLabel(
                 entry_frame,
                 text=f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}",
-                anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
             )
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame = entry_frame: archive_notes_row(d, frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: archive_notes_row(d,
+                                                                                                                    frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame = entry_frame: delete_notes_row(d, frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id, frame=entry_frame: delete_notes_row(d,
+                                                                                                                  frame))
             delete_button.pack(side="left", padx=5)
 
     else:
@@ -683,21 +850,24 @@ def search_notes(event):
             data_id, notes_title, notes_body = row
             display_text_notes = f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}"
             if query in display_text_notes.lower():
-                entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+                entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
                 entry_frame.pack(fill="x", padx=10, pady=5)
                 entry_label = customtkinter.CTkLabel(
                     entry_frame,
                     text=display_text_notes,
-                    anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                    anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
                 )
                 entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_notes_row(d, frame))
+                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60,
+                                                         command=lambda d=data_id, frame=entry_frame: archive_notes_row(
+                                                             d, frame))
                 archive_button.pack(side="left", padx=5)
 
-                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_notes_row(d,frame))
+                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                        command=lambda d=data_id, frame=entry_frame: delete_notes_row(d,
+                                                                                                                      frame))
                 delete_button.pack(side="left", padx=5)
-
 
 
 def close_Notes_page():
@@ -705,7 +875,9 @@ def close_Notes_page():
     main_frame.grid(row=1, column=1, sticky="nsew")
 
 
-Archive_button = customtkinter.CTkButton(bottom_bar, text="Archive 📦", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_archive_page())
+Archive_button = customtkinter.CTkButton(bottom_bar, text="Archive 📦", text_color=saved_font_color, width=60, height=70,
+                                         corner_radius=900, fg_color="#282929", border_width=2, border_color="gray",
+                                         command=lambda: open_archive_page())
 Archive_button.grid(row=0, column=3, pady=30, )
 
 
@@ -716,31 +888,40 @@ def open_archive_page():
         MainArchive_Frame.destroy()
 
     #  The creation of the frame and border
+    new_saved_mainframe_color = load_saved_mainframe_color()
     MainArchive_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     MainArchive_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-    ArchiveBorder_Frame = customtkinter.CTkFrame(MainArchive_Frame, fg_color="#A9A9A9")
+    ArchiveBorder_Frame = customtkinter.CTkFrame(MainArchive_Frame, fg_color=new_saved_mainframe_color)
     ArchiveBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(ArchiveBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(ArchiveBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     ArchiveBorder_Frame = scroll_frame
 
-    label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="Archived Passwords", font=("Verdana", 20))
+    label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="Archived Passwords", font=("Verdana", 20),
+                                   text_color=saved_font_color)
     label.pack(pady=20)
 
-    controls_container = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color="#A9A9A9")
+    controls_container = customtkinter.CTkFrame(ArchiveBorder_Frame, fg_color=new_saved_mainframe_color)
     controls_container.pack(side="top", fill="x", padx=5, pady=5)
 
-    entries_container = customtkinter.CTkFrame(scroll_frame, fg_color="#A9A9A9")
+    entries_container = customtkinter.CTkFrame(scroll_frame, fg_color=new_saved_mainframe_color)
     entries_container.pack(fill="both", expand=True, padx=5, pady=5)
 
     # Search Bar inside Passwords Page
-    search_frame = customtkinter.CTkFrame(controls_container, fg_color="#A9A9A9", height=50, width=480)
+    search_frame = customtkinter.CTkFrame(controls_container, fg_color=new_saved_mainframe_color, height=50, width=480)
     search_frame.pack(pady=10)
     searching = customtkinter.CTkEntry(search_frame, placeholder_text="Search here...", width=450)
     searching.pack(pady=10)
 
     searching.bind("<KeyRelease>", search_archive)
+
+    # Hamburger Button
+    passwords_hamburger = customtkinter.CTkButton(MainArchive_Frame, text="☰", width=60, height=60, corner_radius=10,
+                                                  fg_color=new_saved_mainframe_color, border_width=3,
+                                                  border_color="black", font=("Arial", 24),
+                                                  command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10)
 
     mycursor.execute(
         "SELECT data_id, Title, Username, Email, Password FROM Archive_Data_Password WHERE AccountID = %s",
@@ -752,19 +933,28 @@ def open_archive_page():
         for index, row in enumerate(data):
             data_id, title, username, email, password = row
 
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
-            entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
+            entry_label = customtkinter.CTkLabel(entry_frame,
+                                                 text=f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}",
+                                                 anchor="w", justify="left", font=("Courier", 14),
+                                                 text_color=saved_font_color)
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame = entry_frame: remove_password_row(d, frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: remove_password_row(d,
+                                                                                                                      frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_password_row(d,frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id,
+                                                                   frame=entry_frame: delete_archive_password_row(d,
+                                                                                                                  frame))
             delete_button.pack(side="left", padx=5)
     else:
-        no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No password and account data found.")
+        no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No password and account data found.",
+                                               text_color=saved_font_color)
         no_data_label.pack()
 
     mycursor.execute(
@@ -777,19 +967,28 @@ def open_archive_page():
         for index, row in enumerate(banking_data, start=len(data) + 1):
             data_id, card_name, card_number, expiry_date, cvv = row
 
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
-            entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
+            entry_label = customtkinter.CTkLabel(entry_frame,
+                                                 text=f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}",
+                                                 anchor="w", justify="left", font=("Courier", 14),
+                                                 text_color=saved_font_color)
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame = entry_frame: remove_banking_row(d, frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: remove_banking_row(d,
+                                                                                                                     frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_banking_row(d,  frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id,
+                                                                   frame=entry_frame: delete_archive_banking_row(d,
+                                                                                                                 frame))
             delete_button.pack(side="left", padx=5)
     else:
-        no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No banking card data found.")
+        no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No banking card data found.",
+                                               text_color=saved_font_color)
         no_data_label.pack()
 
     mycursor.execute(
@@ -801,19 +1000,28 @@ def open_archive_page():
         for index, row in enumerate(network_data, start=len(banking_data) + 1):
             data_id, network_name, network_type, ip_address, password = row
 
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
-            entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
+            entry_label = customtkinter.CTkLabel(entry_frame,
+                                                 text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}",
+                                                 anchor="w", justify="left", font=("Courier", 14),
+                                                 text_color=saved_font_color)
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame = entry_frame: remove_network_row(d, frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: remove_network_row(d,
+                                                                                                                     frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_network_row(d,  frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id,
+                                                                   frame=entry_frame: delete_archive_network_row(d,
+                                                                                                                 frame))
             delete_button.pack(side="left", padx=5)
     else:
-        no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No network data found.")
+        no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No network data found.",
+                                               text_color=saved_font_color)
         no_data_label.pack()
 
     mycursor.execute(
@@ -825,29 +1033,42 @@ def open_archive_page():
         for index, row in enumerate(notes_data, start=len(network_data) + 1):
             data_id, notes_title, notes_body = row
 
-            entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
 
-            entry_label = customtkinter.CTkLabel(entry_frame, text=f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}", anchor="w", justify="left", font=("Courier", 14), text_color="black")
+            entry_label = customtkinter.CTkLabel(entry_frame,
+                                                 text=f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}",
+                                                 anchor="w", justify="left", font=("Courier", 14),
+                                                 text_color=saved_font_color)
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame = entry_frame: remove_notes_row(d, frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: remove_notes_row(d,
+                                                                                                                   frame))
             archive_button.pack(side="left", padx=5)
 
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame = entry_frame: delete_archive_notes_row(d, frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id,
+                                                                   frame=entry_frame: delete_archive_notes_row(d,
+                                                                                                               frame))
             delete_button.pack(side="left", padx=5)
     else:
-        no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No notes data found.")
+        no_data_label = customtkinter.CTkLabel(ArchiveBorder_Frame, text="No notes data found.",
+                                               text_color=saved_font_color)
         no_data_label.pack()
 
-    back_button = customtkinter.CTkButton(controls_container, text="Back", command=close_archive_page)
+    back_button = customtkinter.CTkButton(controls_container, text="Back", text_color=saved_font_color,
+                                          command=close_archive_page)
     back_button.pack(pady=10)
 
     main_frame.grid_forget()
     MainArchive_Frame.grid(row=1, column=1, sticky="nsew")
 
+
 def remove_password_row(data_id, destroyed_frame):
-    mycursor.execute("SELECT data_id, AccountID, Title, Username, Email, Password FROM Archive_Data_Password WHERE data_id = %s", (data_id,))
+    mycursor.execute(
+        "SELECT data_id, AccountID, Title, Username, Email, Password FROM Archive_Data_Password WHERE data_id = %s",
+        (data_id,))
     row = mycursor.fetchone()
     if row:
         mycursor.execute("""
@@ -859,8 +1080,11 @@ def remove_password_row(data_id, destroyed_frame):
 
         destroyed_frame.destroy()
 
+
 def remove_banking_row(data_id, destroyed_frame):
-    mycursor.execute("SELECT data_id, AccountID, Card_Title, Card_Number, Expire_Date, CVV FROM Archive_Banking_Card WHERE data_id = %s", (data_id,))
+    mycursor.execute(
+        "SELECT data_id, AccountID, Card_Title, Card_Number, Expire_Date, CVV FROM Archive_Banking_Card WHERE data_id = %s",
+        (data_id,))
     row = mycursor.fetchone()
     if row:
         mycursor.execute("""
@@ -872,8 +1096,11 @@ def remove_banking_row(data_id, destroyed_frame):
 
         destroyed_frame.destroy()
 
+
 def remove_network_row(data_id, destroyed_frame):
-    mycursor.execute("SELECT data_id, AccountID, Network_Title, Network, IP_Address, Password FROM Archive_Network_Data WHERE data_id = %s", (data_id,))
+    mycursor.execute(
+        "SELECT data_id, AccountID, Network_Title, Network, IP_Address, Password FROM Archive_Network_Data WHERE data_id = %s",
+        (data_id,))
     row = mycursor.fetchone()
     if row:
         mycursor.execute("""
@@ -885,8 +1112,10 @@ def remove_network_row(data_id, destroyed_frame):
 
         destroyed_frame.destroy()
 
+
 def remove_notes_row(data_id, destroyed_frame):
-    mycursor.execute("SELECT data_id, AccountID, Notes_title, Notes_body FROM Archive_Notes_Data WHERE data_id = %s", (data_id,))
+    mycursor.execute("SELECT data_id, AccountID, Notes_title, Notes_body FROM Archive_Notes_Data WHERE data_id = %s",
+                     (data_id,))
     row = mycursor.fetchone()
     if row:
         mycursor.execute("""
@@ -898,6 +1127,7 @@ def remove_notes_row(data_id, destroyed_frame):
 
         destroyed_frame.destroy()
 
+
 def delete_archive_password_row(data_id, destroyed_frame):
     mycursor.execute("SELECT * FROM Archive_Data_Password WHERE data_id = %s", (data_id,))
     row = mycursor.fetchone()
@@ -906,6 +1136,7 @@ def delete_archive_password_row(data_id, destroyed_frame):
         login_database.commit()
 
         destroyed_frame.destroy()
+
 
 def delete_archive_banking_row(data_id, destroyed_frame):
     mycursor.execute("SELECT * FROM Archive_Banking_Card WHERE data_id = %s", (data_id,))
@@ -916,6 +1147,7 @@ def delete_archive_banking_row(data_id, destroyed_frame):
 
         destroyed_frame.destroy()
 
+
 def delete_archive_network_row(data_id, destroyed_frame):
     mycursor.execute("SELECT * FROM Archive_Network_Data WHERE data_id = %s", (data_id,))
     row = mycursor.fetchone()
@@ -924,6 +1156,7 @@ def delete_archive_network_row(data_id, destroyed_frame):
         login_database.commit()
 
         destroyed_frame.destroy()
+
 
 def delete_archive_notes_row(data_id, destroyed_frame):
     mycursor.execute("SELECT * FROM Archive_Notes_Data WHERE data_id = %s", (data_id,))
@@ -934,183 +1167,223 @@ def delete_archive_notes_row(data_id, destroyed_frame):
 
         destroyed_frame.destroy()
 
+
 def search_archive(event):
-        query = searching.get().lower().strip()
-        print("Search query:", query)
+    query = searching.get().lower().strip()
+    print("Search query:", query)
 
-        # Clear only the entries container
-        for widget in entries_container.winfo_children():
-            widget.destroy()
+    # Clear only the entries container
+    for widget in entries_container.winfo_children():
+        widget.destroy()
 
-        mycursor.execute(
-            "SELECT data_id, Title, Username, Email, Password FROM Archive_Data_Password WHERE AccountID = %s",
-            (account_id,))
+    mycursor.execute(
+        "SELECT data_id, Title, Username, Email, Password FROM Archive_Data_Password WHERE AccountID = %s",
+        (account_id,))
 
-        archive_password_data = mycursor.fetchall()
+    archive_password_data = mycursor.fetchall()
 
-        mycursor.execute(
-            "SELECT data_id, Card_Title, Card_Number, Expire_Date, CVV FROM Archive_Banking_Card WHERE AccountID = %s",
-            (account_id,))
+    mycursor.execute(
+        "SELECT data_id, Card_Title, Card_Number, Expire_Date, CVV FROM Archive_Banking_Card WHERE AccountID = %s",
+        (account_id,))
 
-        archive_banking_data = mycursor.fetchall()
+    archive_banking_data = mycursor.fetchall()
 
-        mycursor.execute(
-            "SELECT data_id, Network_Title, Network, IP_Address, Password FROM Archive_Network_Data WHERE AccountID = %s",
-            (account_id,))
-        archive_network_data = mycursor.fetchall()
+    mycursor.execute(
+        "SELECT data_id, Network_Title, Network, IP_Address, Password FROM Archive_Network_Data WHERE AccountID = %s",
+        (account_id,))
+    archive_network_data = mycursor.fetchall()
 
-        mycursor.execute(
-            "SELECT data_id, Notes_title, Notes_body FROM Archive_Notes_Data WHERE AccountID = %s",
-            (account_id,))
-        archive_notes_data = mycursor.fetchall()
+    mycursor.execute(
+        "SELECT data_id, Notes_title, Notes_body FROM Archive_Notes_Data WHERE AccountID = %s",
+        (account_id,))
+    archive_notes_data = mycursor.fetchall()
 
-        if query == "":
-            for index, row in enumerate(archive_password_data):
-                data_id, title, username, email, password = row
-                entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+    if query == "":
+        for index, row in enumerate(archive_password_data):
+            data_id, title, username, email, password = row
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
+            entry_frame.pack(fill="x", padx=10, pady=5)
+            entry_label = customtkinter.CTkLabel(
+                entry_frame,
+                text=f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}",
+                anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
+            )
+            entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
+
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: remove_password_row(d,
+                                                                                                                      frame))
+            archive_button.pack(side="left", padx=5)
+
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id,
+                                                                   frame=entry_frame: delete_archive_password_row(d,
+                                                                                                                  frame))
+            delete_button.pack(side="left", padx=5)
+
+        # (NOT AI GENERATED)
+        for index, row in enumerate(archive_banking_data):
+            data_id, card_name, card_number, expiry_date, cvv = row
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
+            entry_frame.pack(fill="x", padx=10, pady=5)
+            entry_label = customtkinter.CTkLabel(
+                entry_frame,
+                text=f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}",
+                anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
+            )
+            entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
+
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: remove_banking_row(d,
+                                                                                                                     frame))
+            archive_button.pack(side="left", padx=5)
+
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id,
+                                                                   frame=entry_frame: delete_archive_banking_row(d,
+                                                                                                                 frame))
+            delete_button.pack(side="left", padx=5)
+
+        # (NOT AI GENERATED)
+        for index, row in enumerate(archive_network_data):
+            data_id, network_name, network_type, ip_address, password = row
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
+            entry_frame.pack(fill="x", padx=10, pady=5)
+            entry_label = customtkinter.CTkLabel(
+                entry_frame,
+                text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}",
+                anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
+            )
+            entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
+
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: remove_network_row(d,
+                                                                                                                     frame))
+            archive_button.pack(side="left", padx=5)
+
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id,
+                                                                   frame=entry_frame: delete_archive_network_row(d,
+                                                                                                                 frame))
+            delete_button.pack(side="left", padx=5)
+
+        for index, row in enumerate(archive_notes_data):
+            data_id, notes_title, notes_body = row
+            entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
+            entry_frame.pack(fill="x", padx=10, pady=5)
+            entry_label = customtkinter.CTkLabel(
+                entry_frame,
+                text=f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}",
+                anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
+            )
+            entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
+
+            archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60,
+                                                     command=lambda d=data_id, frame=entry_frame: remove_notes_row(d,
+                                                                                                                   frame))
+            archive_button.pack(side="left", padx=5)
+
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                    command=lambda d=data_id,
+                                                                   frame=entry_frame: delete_archive_notes_row(d,
+                                                                                                               frame))
+            delete_button.pack(side="left", padx=5)
+    else:
+        for index, row in enumerate(archive_password_data):
+            data_id, title, username, email, password = row
+            display_text_archive = f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}"
+            if query in display_text_archive.lower():
+                entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
                 entry_frame.pack(fill="x", padx=10, pady=5)
                 entry_label = customtkinter.CTkLabel(
                     entry_frame,
-                    text=f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}",
-                    anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                    text=display_text_archive,
+                    anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
                 )
                 entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-                archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id,frame=entry_frame: remove_password_row(d, frame))
+                archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id,
+                                                                                                              frame=entry_frame: remove_password_row(
+                    d, frame))
                 archive_button.pack(side="left", padx=5)
 
-                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_password_row(d,frame))
+                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                        command=lambda d=data_id,
+                                                                       frame=entry_frame: delete_archive_password_row(d,
+                                                                                                                      frame))
                 delete_button.pack(side="left", padx=5)
 
-
-            # (NOT AI GENERATED)
-            for index, row in enumerate(archive_banking_data):
-                data_id, card_name, card_number, expiry_date, cvv = row
-                entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+        for index, row in enumerate(archive_banking_data):
+            data_id, card_name, card_number, expiry_date, cvv = row
+            display_text_archive_banking = f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}"
+            if query in display_text_archive_banking.lower():
+                entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
                 entry_frame.pack(fill="x", padx=10, pady=5)
                 entry_label = customtkinter.CTkLabel(
                     entry_frame,
-                    text=f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}",
-                    anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                    text=display_text_archive_banking,
+                    anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
                 )
                 entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-                archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame=entry_frame: remove_banking_row(d, frame))
+                archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id,
+                                                                                                              frame=entry_frame: remove_banking_row(
+                    d, frame))
                 archive_button.pack(side="left", padx=5)
 
-                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_banking_row(d,frame))
+                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                        command=lambda d=data_id,
+                                                                       frame=entry_frame: delete_archive_banking_row(d,
+                                                                                                                     frame))
                 delete_button.pack(side="left", padx=5)
 
-            # (NOT AI GENERATED)
-            for index, row in enumerate(archive_network_data):
-                data_id, network_name, network_type, ip_address, password = row
-                entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+        for index, row in enumerate(archive_network_data):
+            data_id, network_name, network_type, ip_address, password = row
+            display_text_archive_network = f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}"
+            if query in display_text_archive_network.lower():
+                entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
                 entry_frame.pack(fill="x", padx=10, pady=5)
                 entry_label = customtkinter.CTkLabel(
                     entry_frame,
-                    text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}",
-                    anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                    text=display_text_archive_network,
+                    anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
                 )
                 entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-                archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame=entry_frame: remove_network_row(d, frame))
+                archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id,
+                                                                                                              frame=entry_frame: remove_network_row(
+                    d, frame))
                 archive_button.pack(side="left", padx=5)
 
-                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_network_row(d,frame))
+                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                        command=lambda d=data_id,
+                                                                       frame=entry_frame: delete_archive_network_row(d,
+                                                                                                                     frame))
                 delete_button.pack(side="left", padx=5)
 
-            for index, row in enumerate(archive_notes_data):
-                data_id, notes_title, notes_body = row
-                entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
+        for index, row in enumerate(archive_notes_data):
+            data_id, notes_title, notes_body = row
+            display_text_archive_notes = f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}"
+            if query in display_text_archive_notes.lower():
+                entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
                 entry_frame.pack(fill="x", padx=10, pady=5)
                 entry_label = customtkinter.CTkLabel(
                     entry_frame,
-                    text=f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}",
-                    anchor="w", justify="left", font=("Courier", 14), text_color="black"
+                    text=display_text_archive_notes,
+                    anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
                 )
                 entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
-                archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame=entry_frame: remove_notes_row(d, frame))
+                archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60,
+                                                         command=lambda d=data_id, frame=entry_frame: remove_notes_row(
+                                                             d, frame))
                 archive_button.pack(side="left", padx=5)
 
-                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_notes_row(d,frame))
+                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
+                                                        command=lambda d=data_id,
+                                                                       frame=entry_frame: delete_archive_notes_row(d,
+                                                                                                                   frame))
                 delete_button.pack(side="left", padx=5)
-        else:
-            for index, row in enumerate(archive_password_data):
-                data_id, title, username, email, password = row
-                display_text_archive = f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}"
-                if query in display_text_archive.lower():
-                    entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
-                    entry_frame.pack(fill="x", padx=10, pady=5)
-                    entry_label = customtkinter.CTkLabel(
-                        entry_frame,
-                        text=display_text_archive,
-                        anchor="w", justify="left", font=("Courier", 14), text_color="black"
-                    )
-                    entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
-
-                    archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame=entry_frame: remove_password_row(d,frame))
-                    archive_button.pack(side="left", padx=5)
-
-                    delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_password_row(d, frame))
-                    delete_button.pack(side="left", padx=5)
-
-            for index, row in enumerate(archive_banking_data):
-                data_id, card_name, card_number, expiry_date, cvv = row
-                display_text_archive_banking = f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}"
-                if query in display_text_archive_banking.lower():
-                    entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
-                    entry_frame.pack(fill="x", padx=10, pady=5)
-                    entry_label = customtkinter.CTkLabel(
-                        entry_frame,
-                        text=display_text_archive_banking,
-                        anchor="w", justify="left", font=("Courier", 14), text_color="black"
-                    )
-                    entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
-
-                    archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame=entry_frame: remove_banking_row(d,frame))
-                    archive_button.pack(side="left", padx=5)
-
-                    delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_banking_row(d, frame))
-                    delete_button.pack(side="left", padx=5)
-
-            for index, row in enumerate(archive_network_data):
-                data_id, network_name, network_type, ip_address, password = row
-                display_text_archive_network = f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}"
-                if query in display_text_archive_network.lower():
-                    entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
-                    entry_frame.pack(fill="x", padx=10, pady=5)
-                    entry_label = customtkinter.CTkLabel(
-                        entry_frame,
-                        text=display_text_archive_network,
-                        anchor="w", justify="left", font=("Courier", 14), text_color="black"
-                    )
-                    entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
-
-                    archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame=entry_frame: remove_network_row(d,frame))
-                    archive_button.pack(side="left", padx=5)
-
-                    delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_network_row(d, frame))
-                    delete_button.pack(side="left", padx=5)
-
-            for index, row in enumerate(archive_notes_data):
-                data_id, notes_title, notes_body = row
-                display_text_archive_notes = f"{index}. Notes Title: {notes_title} | Notes Body: {notes_body}"
-                if query in display_text_archive_notes.lower():
-                    entry_frame = customtkinter.CTkFrame(entries_container, fg_color="#A9A9A9")
-                    entry_frame.pack(fill="x", padx=10, pady=5)
-                    entry_label = customtkinter.CTkLabel(
-                        entry_frame,
-                        text=display_text_archive_notes,
-                        anchor="w", justify="left", font=("Courier", 14), text_color="black"
-                    )
-                    entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
-
-                    archive_button = customtkinter.CTkButton(entry_frame, text="Remove", width=60, command=lambda d=data_id, frame=entry_frame: remove_notes_row(d,frame))
-                    archive_button.pack(side="left", padx=5)
-
-                    delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_archive_notes_row(d, frame))
-                    delete_button.pack(side="left", padx=5)
 
 
 def close_archive_page():
@@ -1119,7 +1392,9 @@ def close_archive_page():
 
 
 # Profile button in bottom bar
-Profile_button = customtkinter.CTkButton(bottom_bar, text="Profile 👥", width=60, height=70, corner_radius=900, fg_color="#282929", border_width=2, border_color="gray", command=lambda: open_Profile_Page())
+Profile_button = customtkinter.CTkButton(bottom_bar, text="Profile 👥", text_color=saved_font_color, width=60, height=70,
+                                         corner_radius=900, fg_color="#282929", border_width=2, border_color="gray",
+                                         command=lambda: open_Profile_Page())
 Profile_button.grid(row=0, column=4, pady=5)
 
 
@@ -1131,35 +1406,49 @@ def open_Profile_Page():
 
     # Makes the frame if its not already made
     if "Profile_Frame" not in globals():
+        new_saved_mainframe_color = load_saved_mainframe_color()
         Profile_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
         Profile_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
 
-        Profile_Border_Frame = customtkinter.CTkFrame(Profile_Frame, fg_color="#A9A9A9")
+        Profile_Border_Frame = customtkinter.CTkFrame(Profile_Frame, fg_color=new_saved_mainframe_color)
         Profile_Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-        scroll_frame = customtkinter.CTkScrollableFrame(Profile_Border_Frame, fg_color="#A9A9A9")
+        scroll_frame = customtkinter.CTkScrollableFrame(Profile_Border_Frame, fg_color=new_saved_mainframe_color)
         scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
         Profile_Border_Frame = scroll_frame
 
-        label = customtkinter.CTkLabel(Profile_Border_Frame, text="Profile Page", font=("Verdana", 30), text_color="black")
+        label = customtkinter.CTkLabel(Profile_Border_Frame, text="Profile Page", font=("Verdana", 30),
+                                       text_color=saved_font_color)
         label.pack(pady=20)
 
-        PImage_label = customtkinter.CTkLabel(Profile_Border_Frame, text="Please put a picture!", width=300, height=300, fg_color="black")
+        # Hamburger Button
+        passwords_hamburger = customtkinter.CTkButton(Profile_Frame, text="☰", width=60, height=60, corner_radius=10,
+                                                      fg_color=new_saved_mainframe_color, border_width=3,
+                                                      border_color="black", font=("Arial", 24),
+                                                      command=lambda: toggle_sidebar())
+        passwords_hamburger.place(x=10, y=10)
+
+        PImage_label = customtkinter.CTkLabel(Profile_Border_Frame, text="Please put a picture!", width=300, height=300,
+                                              text_color="white", fg_color="black")
         PImage_label.pack(pady=10)
 
-        UploadingI = customtkinter.CTkButton(Profile_Border_Frame, text="Upload Image", command=upload_profile_image)
+        UploadingI = customtkinter.CTkButton(Profile_Border_Frame, text="Upload Image", text_color=saved_font_color,
+                                             command=upload_profile_image)
         UploadingI.pack(pady=30)
 
         # Profile Name Input Field
         Profile_Name = customtkinter.StringVar()
-        name_entry = customtkinter.CTkEntry(Profile_Border_Frame, textvariable=Profile_Name, width=250, placeholder_text="Enter your name")
+        name_entry = customtkinter.CTkEntry(Profile_Border_Frame, textvariable=Profile_Name, width=250,
+                                            placeholder_text="Enter your name")
         name_entry.pack(pady=20)
 
-        Save_button = customtkinter.CTkButton(Profile_Border_Frame, text="Save Name", command=save_profile_name)
+        Save_button = customtkinter.CTkButton(Profile_Border_Frame, text="Save Name", text_color=saved_font_color,
+                                              command=save_profile_name)
         Save_button.pack(pady=5)
 
         # Back Button
-        back_button = customtkinter.CTkButton(Profile_Border_Frame, text="Back", command=close_Profile_Page)
+        back_button = customtkinter.CTkButton(Profile_Border_Frame, text="Back", text_color=saved_font_color,
+                                              command=close_Profile_Page)
         back_button.pack(pady=20)
 
     # Show the Profile Frame
@@ -1205,7 +1494,8 @@ def close_Profile_Page():
 
 
 # Profile Picture Box inside main_frame (Top-Right Corner)
-profile_box = customtkinter.CTkFrame(main_frame, fg_color="#282929", border_width=2, border_color="gray", width=50, height=50)
+profile_box = customtkinter.CTkFrame(main_frame, fg_color="#282929", border_width=2, border_color="gray", width=50,
+                                     height=50)
 profile_box.place(relx=1.0, rely=0.0, anchor="ne", x=-10, y=10)
 
 # The image label inside the profile box
@@ -1215,15 +1505,16 @@ profile_box_label.pack(expand=True)
 
 # New Settings Button at Bottom
 def open_settings_page():
-    acc2.opening_settings(update_main_theme)
-    settings_window = acc2.SettingsApp(parent = window)
-    settings_window.mainloop()
+    acc2.opening_settings(account_id, update_main_theme)
 
-Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
+
+Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", text_color=saved_font_color, width=10,
+                                          height=70, corner_radius=900, fg_color="#282929", border_width=1,
+                                          border_color="gray", command=lambda: open_settings_page())
 Settings_button.grid(row=0, column=5, pady=5)
 
 # Bottom Bar Setup
-#🏠
+# 🏠
 bottom_bar.columnconfigure(0, weight=2)
 # 🐦
 bottom_bar.columnconfigure(1, weight=2)
@@ -1248,42 +1539,52 @@ def open_passwordMaker_page(*args, **kwargs):
         window.maxsize(1920, 1080)
 
     # Main frame and border setup
+    new_saved_mainframe_color = load_saved_mainframe_color()
     PasswordMaking_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     PasswordMaking_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-    PasswordMakingBorder_Frame = customtkinter.CTkFrame(PasswordMaking_Frame, fg_color="#A9A9A9")
+    PasswordMakingBorder_Frame = customtkinter.CTkFrame(PasswordMaking_Frame, fg_color=new_saved_mainframe_color)
     PasswordMakingBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
-    scroll_frame = customtkinter.CTkScrollableFrame(PasswordMakingBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(PasswordMakingBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     PasswordMakingBorder_Frame = scroll_frame
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Maker", font=("Verdana", 20), text_color="black")
+    # Hamburger Button
+    passwords_hamburger = customtkinter.CTkButton(PasswordMaking_Frame, text="☰", width=60, height=60, corner_radius=10,
+                                                  fg_color=new_saved_mainframe_color, border_width=3,
+                                                  border_color="black", font=("Arial", 24),
+                                                  command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10)
+
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Maker", font=("Verdana", 20),
+                                   text_color=saved_font_color)
     label.grid(row=0, column=2, pady=(10, 20), sticky="nsew")
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Title", text_color="black")
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Title", text_color=saved_font_color)
     label.grid(row=1, column=2, pady=10, sticky="nsew")
 
     Title_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Title")
     Title_entry.grid(row=2, column=2, pady=10, sticky="nsew")
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Username", text_color="black")
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Username", text_color=saved_font_color)
     label.grid(row=3, column=2, pady=10, sticky="nsew")
 
     Username_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Username")
     Username_entry.grid(row=4, column=2, pady=10, sticky="nsew")
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Email", text_color="black")
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Email", text_color=saved_font_color)
     label.grid(row=5, column=2, pady=10, sticky="nsew")
 
     Email_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Email")
     Email_entry.grid(row=6, column=2, pady=10, sticky="nsew")
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password", text_color="black")
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password", text_color=saved_font_color)
     label.grid(row=7, column=2, pady=10, sticky="nsew")
 
     Password_entry = customtkinter.CTkEntry(PasswordMakingBorder_Frame, placeholder_text="Enter Password")
     Password_entry.grid(row=8, column=2, pady=10, sticky="nsew")
 
-    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Generation Checklist", text_color="black")
+    label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Password Generation Checklist",
+                                   text_color=saved_font_color)
     label.grid(row=9, column=2, pady=10, sticky="nsew")
     #######################################################################################################################################################
     # AI-Assisted Code: Password Generation Feature - Marteno Romaya
@@ -1299,16 +1600,16 @@ def open_passwordMaker_page(*args, **kwargs):
 
     # Checkboxes for user selection
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Special Characters", variable=use_special,
-                              text_color="black").grid(row=10, column=2, pady=5, sticky="nsew")
+                              text_color=saved_font_color).grid(row=10, column=2, pady=5, sticky="nsew")
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Numbers", variable=use_numbers,
-                              text_color="black").grid(row=11, column=2, pady=5, sticky="nsew")
+                              text_color=saved_font_color).grid(row=11, column=2, pady=5, sticky="nsew")
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Uppercase Letters", variable=use_upper,
-                              text_color="black").grid(row=10, column=3, pady=5, sticky="nsew")
+                              text_color=saved_font_color).grid(row=10, column=3, pady=5, sticky="nsew")
     customtkinter.CTkCheckBox(PasswordMakingBorder_Frame, text="Lowercase Letters", variable=use_lower,
-                              text_color="black").grid(row=11, column=3, pady=5, sticky="nsew")
+                              text_color=saved_font_color).grid(row=11, column=3, pady=5, sticky="nsew")
 
     # Label to display the result
-    result_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="", text_color="black")
+    result_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="", text_color=saved_font_color)
     result_label.grid(row=12, column=2, pady=10, sticky="nsew")
 
     # Password generator function
@@ -1327,7 +1628,8 @@ def open_passwordMaker_page(*args, **kwargs):
         result_label.configure(text=f"Generated: {generated}")
 
     # Button to trigger password generation
-    customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Generate Password", command=generate_password).grid(
+    customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Generate Password", text_color=saved_font_color,
+                            command=generate_password).grid(
         row=13, column=2, pady=10, sticky="nsew")
 
     #######################################################################################################################################################
@@ -1347,15 +1649,18 @@ def open_passwordMaker_page(*args, **kwargs):
             "INSERT INTO Account_Data_Password (AccountID, Title, Username, Email, Password) VALUES (%s,%s,%s,%s,%s)",
             (account_id, title, username, email, password))
         login_database.commit()
-        created_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Successfully created", font=("Courier", 14, "bold"), text_color="green")
+        created_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Successfully created",
+                                               font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
 
     # Save Button
-    create_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Create", command=store_password_data)
+    create_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Create", text_color=saved_font_color,
+                                            command=store_password_data)
     create_button.grid(row=14, column=2, pady=(30, 10), sticky="nsew")
 
     # Back Button
-    back_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Back", command=close_passwordMaker_page)
+    back_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Back", text_color=saved_font_color,
+                                          command=close_passwordMaker_page)
     back_button.grid(row=15, column=2, pady=(30, 10), sticky="nsew")
 
     main_frame.grid_forget()
@@ -1380,22 +1685,31 @@ def open_notes_page():
     if "Notes_Frame" in globals() and Notes_Frame.winfo_exists():
         Notes_Frame.destroy()
 
+    new_saved_mainframe_color = load_saved_mainframe_color()
     Notes_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     Notes_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
-    NotesBorder_Frame = customtkinter.CTkFrame(Notes_Frame, fg_color="#A9A9A9")
+    NotesBorder_Frame = customtkinter.CTkFrame(Notes_Frame, fg_color=new_saved_mainframe_color)
     NotesBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(NotesBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(NotesBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     NotesBorder_Frame = scroll_frame
 
-    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes Maker", font=("Verdana", 20,), text_color="black")
+    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Notes Maker", font=("Verdana", 20,),
+                                   text_color=saved_font_color)
     label.grid(row=0, column=2, pady=10, sticky="ew")
+
+    # Hamburger Button
+    passwords_hamburger = customtkinter.CTkButton(Notes_Frame, text="☰", width=60, height=60, corner_radius=10,
+                                                  fg_color=new_saved_mainframe_color, border_width=3,
+                                                  border_color="black", font=("Arial", 24),
+                                                  command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10)
 
     Notes_title_entry = customtkinter.CTkEntry(NotesBorder_Frame, placeholder_text="Enter Title")
     Notes_title_entry.grid(row=1, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Enter Notes", text_color="black")
+    label = customtkinter.CTkLabel(NotesBorder_Frame, text="Enter Notes", text_color=saved_font_color)
     label.grid(row=3, column=2, pady=10, sticky="ew")
 
     Notes_body = customtkinter.CTkTextbox(NotesBorder_Frame, height=150)
@@ -1415,13 +1729,16 @@ def open_notes_page():
             "INSERT INTO Notes_Data (AccountID, Notes_title, Notes_body) VALUES (%s,%s,%s)",
             (account_id, notes_title, notes_body))
         login_database.commit()
-        created_label = customtkinter.CTkLabel(NotesBorder_Frame, text="Successfully created", font=("Courier", 14, "bold"), text_color="green")
+        created_label = customtkinter.CTkLabel(NotesBorder_Frame, text="Successfully created",
+                                               font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
 
-    create_button = customtkinter.CTkButton(NotesBorder_Frame, text="Create", command=store_notes_data)
+    create_button = customtkinter.CTkButton(NotesBorder_Frame, text="Create", text_color=saved_font_color,
+                                            command=store_notes_data)
     create_button.grid(row=5, column=2, pady=(30, 10), sticky="ew")
 
-    back_button = customtkinter.CTkButton(NotesBorder_Frame, text="Back", command=close_notes_page)
+    back_button = customtkinter.CTkButton(NotesBorder_Frame, text="Back", text_color=saved_font_color,
+                                          command=close_notes_page)
     back_button.grid(row=6, column=2, pady=10, sticky="ew")
 
     main_frame.grid_forget()
@@ -1447,38 +1764,48 @@ def open_banking_cards_page():
     if "Banking_Cards_Frame" in globals() and Banking_Cards_Frame.winfo_exists():
         Banking_Cards_Frame.destroy()
 
+    new_saved_mainframe_color = load_saved_mainframe_color()
     Banking_Cards_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     Banking_Cards_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
 
-    BankBorder_Frame = customtkinter.CTkFrame(Banking_Cards_Frame, fg_color="#A9A9A9")
+    BankBorder_Frame = customtkinter.CTkFrame(Banking_Cards_Frame, fg_color=new_saved_mainframe_color)
     BankBorder_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(BankBorder_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(BankBorder_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     BankBorder_Frame = scroll_frame
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Banking Cards Maker", font=("Verdana", 20), text_color="black")
+    # Hamburger Button
+    passwords_hamburger = customtkinter.CTkButton(Banking_Cards_Frame, text="☰", width=60, height=60, corner_radius=10,
+                                                  fg_color=new_saved_mainframe_color, border_width=3,
+                                                  border_color="black", font=("Arial", 24),
+                                                  command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10)
+
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Banking Cards Maker", font=("Verdana", 20),
+                                   text_color=saved_font_color)
     label.grid(row=0, column=2, pady=(10, 20), sticky="n")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Title", text_color="black")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Title", text_color=saved_font_color)
     label.grid(row=1, column=2, pady=10, sticky="ew")
 
     Card_Title_entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter Title")
     Card_Title_entry.grid(row=2, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Number", text_color="black")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Card Number", text_color=saved_font_color)
     label.grid(row=3, column=2, pady=10, sticky="ew")
 
     Card_Number_Entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter Card Number")
     Card_Number_Entry.grid(row=4, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="Expire Date", text_color="black")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="Expire Date", text_color=saved_font_color)
     label.grid(row=5, column=2, pady=10, sticky="ew")
 
-    Expiration_Date_entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter Expiration Date (EX: 03-2025)")
+    Expiration_Date_entry = customtkinter.CTkEntry(BankBorder_Frame,
+                                                   placeholder_text="Enter Expiration Date (EX: 03-2025)")
     Expiration_Date_entry.grid(row=6, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(BankBorder_Frame, text="CVV", text_color="black")
+    label = customtkinter.CTkLabel(BankBorder_Frame, text="CVV", text_color=saved_font_color)
     label.grid(row=7, column=2, pady=10, sticky="ew")
 
     CVV_entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter CVV")
@@ -1500,13 +1827,16 @@ def open_banking_cards_page():
             "INSERT INTO Banking_Card (AccountID, Card_Title, Card_Number, Expire_Date, CVV) VALUES (%s,%s,%s,%s,%s)",
             (account_id, card_title, card_number, expiration_date, cvv))
         login_database.commit()
-        created_label = customtkinter.CTkLabel(BankBorder_Frame, text="Successfully created", font=("Courier", 14, "bold"), text_color="green")
+        created_label = customtkinter.CTkLabel(BankBorder_Frame, text="Successfully created",
+                                               font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
 
-    create_button = customtkinter.CTkButton(BankBorder_Frame, text="Create", command=store_bank_data)
+    create_button = customtkinter.CTkButton(BankBorder_Frame, text="Create", text_color=saved_font_color,
+                                            command=store_bank_data)
     create_button.grid(row=9, column=2, pady=(30, 10), sticky="ew")
 
-    back_button = customtkinter.CTkButton(BankBorder_Frame, text="Back", command=close_banking_cards_page)
+    back_button = customtkinter.CTkButton(BankBorder_Frame, text="Back", text_color=saved_font_color,
+                                          command=close_banking_cards_page)
     back_button.grid(row=10, column=2, pady=10, sticky="ew")
 
     main_frame.grid_forget()
@@ -1532,38 +1862,47 @@ def open_Network_page():
     if "One_Time_Password_Frame" in globals() and Network_Frame.winfo_exists():
         Network_Frame.destroy()
 
+    new_saved_mainframe_color = load_saved_mainframe_color()
     Network_Frame = customtkinter.CTkFrame(window, fg_color="black", border_width=3)
     Network_Frame.grid(row=1, column=1, sticky="nsew", padx=20, pady=20)
 
-    Network_Border_Frame = customtkinter.CTkFrame(Network_Frame, fg_color="#A9A9A9")
+    Network_Border_Frame = customtkinter.CTkFrame(Network_Frame, fg_color=new_saved_mainframe_color)
     Network_Border_Frame.pack(fill="both", expand=True, padx=5, pady=5)
 
-    scroll_frame = customtkinter.CTkScrollableFrame(Network_Border_Frame, fg_color="#A9A9A9")
+    scroll_frame = customtkinter.CTkScrollableFrame(Network_Border_Frame, fg_color=new_saved_mainframe_color)
     scroll_frame.pack(fill="both", expand=True, padx=5, pady=5)
     Network_Border_Frame = scroll_frame
 
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Password Maker", font=("Verdana", 20), text_color="black")
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Password Maker", font=("Verdana", 20),
+                                   text_color=saved_font_color)
     label.grid(row=0, column=2, pady=(10, 20), sticky="n")
 
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Title", text_color="black")
+    # Hamburger Button
+    passwords_hamburger = customtkinter.CTkButton(Network_Frame, text="☰", width=60, height=60, corner_radius=10,
+                                                  fg_color=new_saved_mainframe_color, border_width=3,
+                                                  border_color="black", font=("Arial", 24),
+                                                  command=lambda: toggle_sidebar())
+    passwords_hamburger.place(x=10, y=10)
+
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network Title", text_color=saved_font_color)
     label.grid(row=1, column=2, pady=10, sticky="ew")
 
     Network_title_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter Network Title")
     Network_title_entry.grid(row=2, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network", text_color="black")
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Network", text_color=saved_font_color)
     label.grid(row=3, column=2, pady=10, sticky="ew")
 
     Network_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter Network")
     Network_entry.grid(row=4, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Ip Address", text_color="black")
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Ip Address", text_color=saved_font_color)
     label.grid(row=5, column=2, pady=10, sticky="ew")
 
     ip_address_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter IP Address")
     ip_address_entry.grid(row=6, column=2, pady=10, sticky="ew")
 
-    label = customtkinter.CTkLabel(Network_Border_Frame, text="Password", text_color="black")
+    label = customtkinter.CTkLabel(Network_Border_Frame, text="Password", text_color=saved_font_color)
     label.grid(row=7, column=2, pady=10, sticky="ew")
 
     network_password_entry = customtkinter.CTkEntry(Network_Border_Frame, placeholder_text="Enter Network password")
@@ -1585,13 +1924,16 @@ def open_Network_page():
             "INSERT INTO Network_Data (AccountID, Network_Title, Network, IP_Address, Password) VALUES (%s,%s,%s,%s,%s)",
             (account_id, network_title, network, ip_address, network_password))
         login_database.commit()
-        created_label = customtkinter.CTkLabel(Network_Border_Frame, text="Successfully created", font=("Courier", 14, "bold"), text_color="green")
+        created_label = customtkinter.CTkLabel(Network_Border_Frame, text="Successfully created",
+                                               font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
 
-    create_button = customtkinter.CTkButton(Network_Border_Frame, text="Create", command=store_network_data)
+    create_button = customtkinter.CTkButton(Network_Border_Frame, text="Create", text_color=saved_font_color,
+                                            command=store_network_data)
     create_button.grid(row=9, column=2, pady=(30, 10), sticky="ew")
 
-    back_button = customtkinter.CTkButton(Network_Border_Frame, text="Back", command=close_network_page)
+    back_button = customtkinter.CTkButton(Network_Border_Frame, text="Back", text_color=saved_font_color,
+                                          command=close_network_page)
     back_button.grid(row=10, column=2, pady=10, sticky="ew")
 
     main_frame.grid_forget()

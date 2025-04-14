@@ -412,7 +412,7 @@ class Login_Page(customtkinter.CTk):
                 port='25060',
                 database="Vaulturedb"
             )
-            self.mycursor = self.login_database.cursor()
+            self.mycursor = self.login_database.cursor(buffered=True)
             query = "SELECT AccountID, Password, TwoFA_Secret FROM Account WHERE Username = %s"
             self.mycursor.execute(query, (login_username,))
             result = self.mycursor.fetchone()
