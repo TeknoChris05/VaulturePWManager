@@ -1,14 +1,12 @@
 import customtkinter
 import subprocess
 import sys
+import os
 import colorsys
 from tkinter import colorchooser
-
 import mysql.connector
 from PIL import Image, ImageTk
 from PIL._tkinter_finder import tk
-
-account_id = sys.argv[1] if len(sys.argv) > 1 else None
 
 login_database = mysql.connector.connect(
     host="db-mysql-nyc3-37387-do-user-15222509-0.l.db.ondigitalocean.com",
@@ -213,8 +211,9 @@ class AccountFrame(customtkinter.CTkFrame):
         self.load_Account_Info()
 
         Erase_button = customtkinter.CTkButton(self, text="Erase Account?", fg_color=master.theme_color,
-                                               hover_color="#d4af37", text_color=master.text_color, corner_radius=10,
-                                               border_width=2, border_color="#7289DA", width=60, height=70)
+                                               hover_color="#FF6666", text_color=master.text_color,
+                                               command=self.confirm_erase, corner_radius=10, border_width=2,
+                                               border_color="#FF6666", width=60, height=70)
         Erase_button.pack(pady=20)
 
         logout_button = customtkinter.CTkButton(self, text="Logout", fg_color=master.theme_color, hover_color="#d4af37",
@@ -228,43 +227,62 @@ class AccountFrame(customtkinter.CTkFrame):
         back_button.pack(pady=20)
 
     def load_Account_Info(self):
-        mycursor.execute(
-            "SELECT Username, Email, Password FROM Account WHERE AccountID = %s",
-            (account_id,))
-
-        data = mycursor.fetchall()
-
-        if data:
-            for index, row in enumerate(data):
-                username, email, password = row
-                display_password_text = f"{index + 1}. Username: {username} | Email: {email} | Password: {password}"
-                self.text_widget.insert("end", display_password_text)
+        try:
+            with open("Account_info", "r") as file:
+                content = file.read()
+                self.text_widget.delete("1.0", "end")
+                self.text_widget.insert("end", content)
+        except FileNotFoundError:
+            self.text_widget.insert("end", "No account info file found.")
 
     def logout(self):
         try:
-            # Launch the login page when logging out
             subprocess.Popen([sys.executable, "Initial_GUI_Design.py"])
         except Exception as e:
             print(f"Error launching login page: {e}")
-
-        # Destroy both windows
         try:
             if hasattr(self, "master") and self.master.winfo_exists():
                 self.master.destroy()
         except Exception as e:
             print(f"Error closing master window: {e}")
-
         try:
             self.destroy()
         except Exception as e:
             print(f"Error closing current window: {e}")
-
         try:
             if self.parent:
                 self.parent.quit()
                 self.parent.destroy()
         except Exception as e:
-            print(f"Error closing parent window: {e}")
+            print(f"Error closing parent window (Dan.py): {e}")
+
+    def confirm_erase(self):
+        confirm_window = customtkinter.CTkToplevel(self)
+        confirm_window.title("Confirm")
+        confirm_window.geometry("400x200")
+        confirm_window.configure(fg_color="#2C2F33")
+        confirm_window.grab_set()
+
+        label = customtkinter.CTkLabel(
+            confirm_window, text="Are you sure you want to erase everything?",
+            text_color="white", font=("Segoe UI", 16, "bold")
+        )
+        label.pack(pady=30)
+
+        button_frame = customtkinter.CTkFrame(confirm_window, fg_color="#2C2F33")
+        button_frame.pack(pady=10)
+
+        yes_button = customtkinter.CTkButton(
+            button_frame, text="Yes", fg_color="red", hover_color="#ff6666",
+            command=lambda: self.erase_account(confirm_window)
+        )
+        yes_button.pack(side="left", padx=10)
+
+        no_button = customtkinter.CTkButton(
+            button_frame, text="No", fg_color="gray", hover_color="#a9a9a9",
+            command=confirm_window.destroy
+        )
+        no_button.pack(side="left", padx=10)
 
 
 class SecurityFrame(customtkinter.CTkFrame):
