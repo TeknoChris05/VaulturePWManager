@@ -280,7 +280,8 @@ class AccountFrame(customtkinter.CTkFrame):
                 display_password_text = f"{index + 1}. Username: {username} | Email: {email} | Password: {password}"
                 self.text_widget.insert("end", display_password_text)
 
-    
+ ################################################################################################################
+ # made using ai 
     def logout(self):
         try:
             # Launch login page
@@ -307,7 +308,7 @@ class AccountFrame(customtkinter.CTkFrame):
                 self.parent.destroy() # Destroy the main window
         except Exception as e:
             print(f"Error closing parent window (Dan.py): {e}")
-
+ ################################################################################################################
     def confirm_erase(self):
         confirm_window = customtkinter.CTkToplevel(self)
         confirm_window.title("Confirm")

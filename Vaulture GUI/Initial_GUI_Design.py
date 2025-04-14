@@ -12,6 +12,7 @@ import sys
 import pyotp
 import qrcode
 
+
 #NOTICE: Some Sections of Code are AI GENERATED. The sections will be labeled (AI GENERATED) in its comment
 
 class Login_Page(customtkinter.CTk):
