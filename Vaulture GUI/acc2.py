@@ -259,24 +259,33 @@ class AccountFrame(customtkinter.CTkFrame):
 
     def logout(self):
         try:
+            # Launch login page
             subprocess.Popen([sys.executable, "Vaulture GUI/Initial_GUI_Design.py"])
         except Exception as e:
             print(f"Error launching login page: {e}")
+
+        # Destroy the settings page and current window
         try:
             if hasattr(self, "master") and self.master.winfo_exists():
-                self.master.destroy() 
+                self.master.destroy()  # Close the settings window
         except Exception as e:
             print(f"Error closing master window: {e}")
+
         try:
-            self.destroy()  
+            self.destroy()  # Close the current (account) window
         except Exception as e:
             print(f"Error closing current window: {e}")
+
+        # Close the main window (from Dan.py)
         try:
             if self.parent:
-                self.parent.quit()   
-                self.parent.destroy()
+                self.parent.quit()    # Quit the main event loop
+                self.parent.destroy() # Destroy the main window
         except Exception as e:
             print(f"Error closing parent window (Dan.py): {e}")
+
+
+
 
     def confirm_erase(self):
         confirm_window = customtkinter.CTkToplevel(self)
@@ -516,6 +525,6 @@ class ContactFrame(customtkinter.CTkFrame):
         back_button.pack(pady=(20, 30))  
 
 # This update_callback=None was used by ai to make it so it can be used in the main.py file to update the theme color in the main.py file
-def opening_settings(update_callback=None): 
-    app = SettingsApp(update_callback)
-    app.resizable(False, False)
+def opening_settings(update_callback=None, parent=None):
+    settings_app = SettingsApp(update_callback=update_callback, parent=parent)
+    settings_app.mainloop()

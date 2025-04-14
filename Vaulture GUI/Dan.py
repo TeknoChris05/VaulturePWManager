@@ -1282,11 +1282,11 @@ profile_box_label.pack(expand=True)
 
 # New Settings Button at Bottom
 def open_settings_page():
-    acc2.opening_settings(update_main_theme)
+    acc2.opening_settings(update_main_theme, window)
 
 Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", text_color=saved_font_color, width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
 Settings_button.grid(row=0, column=5, pady=5)
-
+ 
 # Bottom Bar Setup
 #🏠
 bottom_bar.columnconfigure(0, weight=2)
