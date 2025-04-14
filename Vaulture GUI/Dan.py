@@ -1505,7 +1505,7 @@ profile_box_label.pack(expand=True)
 
 # New Settings Button at Bottom
 def open_settings_page():
-    acc2.opening_settings(account_id, update_main_theme)
+    acc2.opening_settings(account_id, update_main_theme, window)
 
 
 Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", text_color=saved_font_color, width=10,

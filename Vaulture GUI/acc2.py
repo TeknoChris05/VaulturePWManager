@@ -288,22 +288,22 @@ class AccountFrame(customtkinter.CTkFrame):
         except Exception as e:
             print(f"Error launching login page: {e}")
 
-        # Destroy both windows
+        # Destroy the settings page and current window
         try:
             if hasattr(self, "master") and self.master.winfo_exists():
-                self.master.destroy()  # Close the settings page (master window)
+                self.master.destroy()  # Close the settings window
         except Exception as e:
             print(f"Error closing master window: {e}")
 
         try:
-            self.destroy()  # Close the current window
+            self.destroy()  # Close the current (account) window
         except Exception as e:
             print(f"Error closing current window: {e}")
 
-        # Close the main window (Dan.py)
+        # Close the main window (from Dan.py)
         try:
             if self.parent:
-                self.parent.quit()  # Quit the main window's event loop
+                self.parent.quit()  # Quit the main event loop
                 self.parent.destroy()  # Destroy the main window
         except Exception as e:
             print(f"Error closing parent window (Dan.py): {e}")
@@ -343,6 +343,10 @@ class AccountFrame(customtkinter.CTkFrame):
             mycursor.execute("DELETE FROM Banking_Card WHERE AccountID = %s", (self.account_id,))
             mycursor.execute("DELETE FROM Network_Data WHERE AccountID = %s", (self.account_id,))
             mycursor.execute("DELETE FROM Notes_Data WHERE AccountID = %s", (self.account_id,))
+            mycursor.execute("DELETE FROM Archive_Data_Password WHERE AccountID = %s", (self.account_id,))
+            mycursor.execute("DELETE FROM Archive_Banking_Card WHERE AccountID = %s", (self.account_id,))
+            mycursor.execute("DELETE FROM Archive_Network_Data WHERE AccountID = %s", (self.account_id,))
+            mycursor.execute("DELETE FROM Archive_Notes_Data WHERE AccountID = %s", (self.account_id,))
             login_database.commit()
 
             # Now, delete the account (parent row).
@@ -612,9 +616,8 @@ class ContactFrame(customtkinter.CTkFrame):
                                               corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=(20, 30))
 
-    # This update_callback=None was used by ai to make it so it can be used in the main.py file to update the theme color in the main.py file
 
-
-def opening_settings(account_id, update_callback = None):
-    app = SettingsApp(account_id, update_callback)
-    app.resizable(False, False)
+# This update_callback=None was used by ai to make it so it can be used in the main.py file to update the theme color in the main.py file
+def opening_settings(account_id, update_callback=None, parent=None):
+    settings_app = SettingsApp(account_id, update_callback=update_callback, parent=parent)
+    settings_app.mainloop()
