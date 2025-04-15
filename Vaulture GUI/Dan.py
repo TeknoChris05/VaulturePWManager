@@ -13,6 +13,8 @@ import string
 import tkinter as tk
 import mysql.connector
 import sys
+import pyotp
+
 
 # AI GENERATED
 # ********************************************************
@@ -331,6 +333,10 @@ def open_passwords_page():
 
             delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame = entry_frame: delete_row(d, frame))
             delete_button.pack(side="left", padx=5)
+
+            edit_button = customtkinter.CTkButton(entry_frame, text="Edit", width=60, command=lambda d=data_id: edit_password_entry(d))
+            edit_button.pack(side="left", padx=5)
+
     else:
         no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No password and account data found.", text_color=saved_font_color)
         no_data_label.pack()
@@ -351,6 +357,10 @@ def open_passwords_page():
 
             delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame = entry_frame: delete_banking_row(d, frame))
             delete_button.pack(side="left", padx=5)
+
+            edit_button = customtkinter.CTkButton(entry_frame, text="Edit", width=60, command=lambda d=data_id: edit_banking_entry(d))
+            edit_button.pack(side="left", padx=5)
+
     else:
         no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No banking card data found.", text_color=saved_font_color)
         no_data_label.pack()
@@ -370,6 +380,10 @@ def open_passwords_page():
 
             delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame = entry_frame: delete_network_row(d, frame))
             delete_button.pack(side="left", padx=5)
+
+            edit_button = customtkinter.CTkButton(entry_frame, text="Edit", width=60, command=lambda d=data_id: edit_network_entry (d))
+            edit_button.pack(side="left", padx=5)
+
     else:
         no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No network data found.", text_color=saved_font_color)
         no_data_label.pack()
@@ -473,42 +487,38 @@ def search(event):
     query = searching.get().lower().strip()
     print("Search query:", query)
 
-    # Clear only the entries container
     for widget in entries_container.winfo_children():
         widget.destroy()
 
-    mycursor.execute(
-        "SELECT data_id, Title, Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s",
-        (account_id,)
-    )
+    mycursor.execute("SELECT data_id, Title, Username, Email, Password FROM Account_Data_Password WHERE AccountID = %s", (account_id,))
     password_data = mycursor.fetchall()
 
     mycursor.execute("SELECT data_id, Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE AccountID = %s", (account_id,))
     banking_data = mycursor.fetchall()
 
-    mycursor.execute(
-        "SELECT data_id, Network_Title, Network, IP_Address, Password FROM Network_Data WHERE AccountID = %s", (account_id,))
+    mycursor.execute("SELECT data_id, Network_Title, Network, IP_Address, Password FROM Network_Data WHERE AccountID = %s", (account_id,))
     network_data = mycursor.fetchall()
 
     if query == "":
         for index, row in enumerate(password_data):
-            data_id, title, username, email, password = row
+            data_id, title, username, email, password_val = row
             entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
             entry_label = customtkinter.CTkLabel(
                 entry_frame,
-                text=f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}",
+                text=f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password_val}",
                 anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
+           
             )
-            entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
 
+            entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
             archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_row(d, frame))
             archive_button.pack(side="left", padx=5)
-
             delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_row(d, frame))
             delete_button.pack(side="left", padx=5)
-
-        # (NOT AI GENERATED)
+            edit_button = customtkinter.CTkButton(entry_frame, text="Edit", width=60, command=lambda d=data_id: edit_password_entry(d))
+            edit_button.pack(side="left", padx=5)
+       
         for index, row in enumerate(banking_data):
             data_id, card_name, card_number, expiry_date, cvv = row
             entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
@@ -517,87 +527,78 @@ def search(event):
                 entry_frame,
                 text=f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}",
                 anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
+            
             )
+
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
-
-            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_banking_row(d,frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_banking_row(d, frame))
             archive_button.pack(side="left", padx=5)
-
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_banking_row(d,frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_banking_row(d, frame))
             delete_button.pack(side="left", padx=5)
-
-        # (NOT AI GENERATED)
+            edit_button = customtkinter.CTkButton(entry_frame, text="Edit", width=60, command=lambda d=data_id: edit_banking_entry(d))
+            edit_button.pack(side="left", padx=5)
+       
         for index, row in enumerate(network_data):
-            data_id, network_name, network_type, ip_address, password = row
+            data_id, network_name, network_type, ip_address, password_val = row
             entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
             entry_frame.pack(fill="x", padx=10, pady=5)
             entry_label = customtkinter.CTkLabel(
                 entry_frame,
-                text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}",
+                text=f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password_val}",
                 anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
             )
             entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
-
-            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_network_row(d,frame))
+            archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_network_row(d, frame))
             archive_button.pack(side="left", padx=5)
-
-            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_network_row(d,frame))
+            delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_network_row(d, frame))
             delete_button.pack(side="left", padx=5)
+            edit_button = customtkinter.CTkButton(entry_frame, text="Edit", width=60, command=lambda d=data_id: edit_banking_entry(d))
+            edit_button.pack(side="left", padx=5)
     else:
+
         for index, row in enumerate(password_data):
-            data_id, title, username, email, password = row
-            display_text = f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password}"
+            data_id, title, username, email, password_val = row
+            display_text = f"{index + 1}. Title: {title} | Username: {username} | Email: {email} | Password: {password_val}"
+           
             if query in display_text.lower():
                 entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
                 entry_frame.pack(fill="x", padx=10, pady=5)
-                entry_label = customtkinter.CTkLabel(
-                    entry_frame,
-                    text=display_text,
-                    anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
-                )
+                entry_label = customtkinter.CTkLabel(entry_frame, text=display_text, anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color)
                 entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
-
-                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_row(d,frame))
+                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_row(d, frame))
                 archive_button.pack(side="left", padx=5)
-
-                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_row(d,frame))
+                delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_row(d, frame))
                 delete_button.pack(side="left", padx=5)
+                edit_button = customtkinter.CTkButton(entry_frame, text="Edit", width=60, command=lambda d=data_id: edit_password_entry(d))
+                edit_button.pack(side="left", padx=5)
 
         for index, row in enumerate(banking_data):
             data_id, card_name, card_number, expiry_date, cvv = row
             display_text_banking = f"{index}. Card Name: {card_name} | Card Number: {card_number} | Expiry: {expiry_date} | CVV: {cvv}"
+           
             if query in display_text_banking.lower():
                 entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
                 entry_frame.pack(fill="x", padx=10, pady=5)
-                entry_label = customtkinter.CTkLabel(
-                    entry_frame,
-                    text=display_text_banking,
-                    anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
-                )
+                entry_label = customtkinter.CTkLabel(entry_frame, text=display_text_banking, anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color)
                 entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
-
-                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_banking_row(d,frame))
+                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_banking_row(d, frame))
                 archive_button.pack(side="left", padx=5)
-
                 delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_banking_row(d, frame))
                 delete_button.pack(side="left", padx=5)
+                edit_button = customtkinter.CTkButton(entry_frame, text="Edit", width=60, command=lambda d=data_id: edit_banking_entry(d))
+                edit_button.pack(side="left", padx=5)
 
         for index, row in enumerate(network_data):
-            data_id, network_name, network_type, ip_address, password = row
-            display_text_network = f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password}"
+            data_id, network_name, network_type, ip_address, password_val = row
+            display_text_network = f"{index}. Network Name: {network_name} | Network Type: {network_type} | IP Address: {ip_address} | Network Password: {password_val}"
+           
             if query in display_text_network.lower():
                 entry_frame = customtkinter.CTkFrame(entries_container, fg_color=new_saved_mainframe_color)
                 entry_frame.pack(fill="x", padx=10, pady=5)
-                entry_label = customtkinter.CTkLabel(
-                    entry_frame,
-                    text=display_text_network,
-                    anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color
-                )
+                entry_label = customtkinter.CTkLabel(entry_frame, text=display_text_network, anchor="w", justify="left", font=("Courier", 14), text_color=saved_font_color)
                 entry_label.pack(side="left", fill="x", expand=True, padx=(0, 10))
-
-                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_network_row(d,frame))
+                archive_button = customtkinter.CTkButton(entry_frame, text="Archive", width=60, command=lambda d=data_id, frame=entry_frame: archive_network_row(d, frame))
                 archive_button.pack(side="left", padx=5)
-
                 delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_network_row(d, frame))
                 delete_button.pack(side="left", padx=5)
 
@@ -679,6 +680,9 @@ def open_Notes_page():
             delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red",
                                                     command=lambda d=data_id, frame = entry_frame: delete_notes_row(d, frame))
             delete_button.pack(side="left", padx=5)
+
+            edit_button = customtkinter.CTkButton(entry_frame, text="Edit", width=60, command=lambda d=data_id: edit_notes_entry(d))
+            edit_button.pack(side="left", padx=5)
     else:
         no_data_label = customtkinter.CTkLabel(NotesBorder_Frame, text="No notes data found.",  text_color=saved_font_color)
         no_data_label.pack()
@@ -736,6 +740,9 @@ def search_notes(event):
             delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame = entry_frame: delete_notes_row(d, frame))
             delete_button.pack(side="left", padx=5)
 
+            edit_button = customtkinter.CTkButton(entry_frame, text="Edit", width=60, command=lambda d=data_id: edit_notes_entry(d))
+            edit_button.pack(side="left", padx=5)
+
     else:
         for index, row in enumerate(notes_data):
             data_id, notes_title, notes_body = row
@@ -756,6 +763,8 @@ def search_notes(event):
                 delete_button = customtkinter.CTkButton(entry_frame, text="Delete", width=60, fg_color="red", command=lambda d=data_id, frame=entry_frame: delete_notes_row(d,frame))
                 delete_button.pack(side="left", padx=5)
 
+                edit_button = customtkinter.CTkButton(entry_frame, text="Edit", width=60, command=lambda d=data_id: edit_notes_entry(d))
+                edit_button.pack(side="left", padx=5)
 
 def close_Notes_page():
     MainNotes_Frame.destroy()
@@ -1282,7 +1291,7 @@ profile_box_label.pack(expand=True)
 
 # New Settings Button at Bottom
 def open_settings_page():
-    acc2.opening_settings(account_id, update_main_theme, window)
+    acc2.SettingsApp(account_id, update_main_theme, window)
 
 Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", text_color=saved_font_color, width=10, height=70, corner_radius=900, fg_color="#282929", border_width=1, border_color="gray", command=lambda: open_settings_page())
 Settings_button.grid(row=0, column=5, pady=5)
@@ -1694,7 +1703,182 @@ def open_Network_page():
 def close_network_page():
     Network_Frame.destroy()
     main_frame.grid(row=1, column=1, sticky="nsew")
+#######################################################################################################################################
+# AI -Assisted Code: New Edit Functions
+def edit_password_entry(data_id):
+    mycursor.execute("SELECT Title, Username, Email, Password FROM Account_Data_Password WHERE data_id = %s", (data_id,))
+    row = mycursor.fetchone()
+    if row:
+        title, username, email, password_val = row
+        edit_window = customtkinter.CTkToplevel(window)
+        edit_window.title("Edit Password Entry")
+        edit_window.lift()
+        edit_window.focus_force()
+        edit_window.grab_set()
+        title_label = customtkinter.CTkLabel(edit_window, text="Title:")
+        title_label.grid(row=0, column=0, padx=10, pady=10)
+        title_entry = customtkinter.CTkEntry(edit_window)
+        title_entry.insert(0, title)
+        title_entry.grid(row=0, column=1, padx=10, pady=10)
+        username_label = customtkinter.CTkLabel(edit_window, text="Username:")
+        username_label.grid(row=1, column=0, padx=10, pady=10)
+        username_entry = customtkinter.CTkEntry(edit_window)
+        username_entry.insert(0, username)
+        username_entry.grid(row=1, column=1, padx=10, pady=10)
+        email_label = customtkinter.CTkLabel(edit_window, text="Email:")
+        email_label.grid(row=2, column=0, padx=10, pady=10)
+        email_entry = customtkinter.CTkEntry(edit_window)
+        email_entry.insert(0, email)
+        email_entry.grid(row=2, column=1, padx=10, pady=10)
+        password_label = customtkinter.CTkLabel(edit_window, text="Password:")
+        password_label.grid(row=3, column=0, padx=10, pady=10)
+        password_entry = customtkinter.CTkEntry(edit_window)
+        password_entry.insert(0, password_val)
+        password_entry.grid(row=3, column=1, padx=10, pady=10)
+        def save_password_changes():
+            new_title = title_entry.get()
+            new_username = username_entry.get()
+            new_email = email_entry.get()
+            new_password = password_entry.get()
+            mycursor.execute("UPDATE Account_Data_Password SET Title = %s, Username = %s, Email = %s, Password = %s WHERE data_id = %s",
+                             (new_title, new_username, new_email, new_password, data_id))
+            login_database.commit()
+            edit_window.destroy()
+            open_passwords_page()
+        save_button = customtkinter.CTkButton(edit_window, text="Save", command=save_password_changes)
+        save_button.grid(row=4, column=0, columnspan=2, pady=10)
 
+def edit_banking_entry(data_id):
+    mycursor.execute("SELECT Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE data_id = %s", (data_id,))
+    row = mycursor.fetchone()
+    if row:
+        card_title, card_number, expire_date, cvv = row
+        edit_window = customtkinter.CTkToplevel(window)
+        edit_window.title("Edit Banking Entry")
+        edit_window.lift()
+        edit_window.focus_force()
+        edit_window.grab_set()
+        title_label = customtkinter.CTkLabel(edit_window, text="Card Title:")
+        title_label.grid(row=0, column=0, padx=10, pady=10)
+        title_entry = customtkinter.CTkEntry(edit_window)
+        title_entry.insert(0, card_title)
+        title_entry.grid(row=0, column=1, padx=10, pady=10)
+        number_label = customtkinter.CTkLabel(edit_window, text="Card Number:")
+        number_label.grid(row=1, column=0, padx=10, pady=10)
+        number_entry = customtkinter.CTkEntry(edit_window)
+        number_entry.insert(0, card_number)
+        number_entry.grid(row=1, column=1, padx=10, pady=10)
+        expiry_label = customtkinter.CTkLabel(edit_window, text="Expiry Date:")
+        expiry_label.grid(row=2, column=0, padx=10, pady=10)
+        expiry_entry = customtkinter.CTkEntry(edit_window)
+        expiry_entry.insert(0, expire_date)
+        expiry_entry.grid(row=2, column=1, padx=10, pady=10)
+        cvv_label = customtkinter.CTkLabel(edit_window, text="CVV:")
+        cvv_label.grid(row=3, column=0, padx=10, pady=10)
+        cvv_entry = customtkinter.CTkEntry(edit_window)
+        cvv_entry.insert(0, cvv)
+        cvv_entry.grid(row=3, column=1, padx=10, pady=10)
+        def save_changes():
+            new_title = title_entry.get()
+            new_number = number_entry.get()
+            new_expiry = expiry_entry.get()
+            new_cvv = cvv_entry.get()
+            mycursor.execute("UPDATE Banking_Card SET Card_Title = %s, Card_Number = %s, Expire_Date = %s, CVV = %s WHERE data_id = %s", 
+                             (new_title, new_number, new_expiry, new_cvv, data_id))
+            login_database.commit()
+            edit_window.destroy()
+            open_passwords_page()
+        save_button = customtkinter.CTkButton(edit_window, text="Save", command=save_changes)
+        save_button.grid(row=4, column=0, columnspan=2, pady=10)
+
+def edit_notes_entry(data_id):
+    mycursor.execute("SELECT Notes_title, Notes_body FROM Notes_Data WHERE data_id = %s", (data_id,))
+    row = mycursor.fetchone()
+    if row:
+        notes_title, notes_body = row
+        edit_window = customtkinter.CTkToplevel(window)
+        edit_window.title("Edit Note")
+        edit_window.lift()
+        edit_window.focus_force()
+        edit_window.grab_set()
+        title_label = customtkinter.CTkLabel(edit_window, text="Note Title:")
+        title_label.grid(row=0, column=0, padx=10, pady=10)
+        title_entry = customtkinter.CTkEntry(edit_window)
+        title_entry.insert(0, notes_title)
+        title_entry.grid(row=0, column=1, padx=10, pady=10)
+        body_label = customtkinter.CTkLabel(edit_window, text="Note Body:")
+        body_label.grid(row=1, column=0, padx=10, pady=10)
+        body_entry = customtkinter.CTkEntry(edit_window)
+        body_entry.insert(0, notes_body)
+        body_entry.grid(row=1, column=1, padx=10, pady=10)
+        def save_note_changes():
+            new_title = title_entry.get()
+            new_body = body_entry.get()
+            mycursor.execute("UPDATE Notes_Data SET Notes_title = %s, Notes_body = %s WHERE data_id = %s", 
+                             (new_title, new_body, data_id))
+            login_database.commit()
+            edit_window.destroy()
+            open_Notes_page()
+        save_button = customtkinter.CTkButton(edit_window, text="Save", command=save_note_changes)
+        save_button.grid(row=2, column=0, columnspan=2, pady=10)
+
+def edit_network_entry(data_id):
+    mycursor.execute("SELECT Network_Title, Network, IP_Address, Password FROM Network_Data WHERE data_id = %s", (data_id,))
+    row = mycursor.fetchone()
+    if not row:
+        print("No network entry found.")
+        return
+
+    network_title, network_type, ip_address, password_val = row
+
+    edit_window = customtkinter.CTkToplevel(window)
+    edit_window.title("Edit Network Entry")
+    edit_window.geometry("400x300")
+    edit_window.lift()
+    edit_window.focus_force()
+    edit_window.grab_set()
+
+    title_label = customtkinter.CTkLabel(edit_window, text="Network Title:")
+    title_label.grid(row=0, column=0, padx=10, pady=10)
+    title_entry = customtkinter.CTkEntry(edit_window)
+    title_entry.insert(0, network_title)
+    title_entry.grid(row=0, column=1, padx=10, pady=10)
+
+    type_label = customtkinter.CTkLabel(edit_window, text="Network Type:")
+    type_label.grid(row=1, column=0, padx=10, pady=10)
+    type_entry = customtkinter.CTkEntry(edit_window)
+    type_entry.insert(0, network_type)
+    type_entry.grid(row=1, column=1, padx=10, pady=10)
+
+    ip_label = customtkinter.CTkLabel(edit_window, text="IP Address:")
+    ip_label.grid(row=2, column=0, padx=10, pady=10)
+    ip_entry = customtkinter.CTkEntry(edit_window)
+    ip_entry.insert(0, ip_address)
+    ip_entry.grid(row=2, column=1, padx=10, pady=10)
+
+    password_label = customtkinter.CTkLabel(edit_window, text="Password:")
+    password_label.grid(row=3, column=0, padx=10, pady=10)
+    password_entry = customtkinter.CTkEntry(edit_window)
+    password_entry.insert(0, password_val)
+    password_entry.grid(row=3, column=1, padx=10, pady=10)
+
+    def save_changes():
+        new_title = title_entry.get()
+        new_type = type_entry.get()
+        new_ip = ip_entry.get()
+        new_password = password_entry.get()
+        mycursor.execute("""
+            UPDATE Network_Data
+            SET Network_Title = %s, Network = %s, IP_Address = %s, Password = %s
+            WHERE data_id = %s
+        """, (new_title, new_type, new_ip, new_password, data_id))
+        login_database.commit()
+        edit_window.destroy()
+        open_passwords_page()
+
+    save_btn = customtkinter.CTkButton(edit_window, text="Save", command=save_changes)
+    save_btn.grid(row=4, column=0, columnspan=2, pady=20)
+#######################################################################################################################################
 
 # Make it not change size
 window.resizable(False, False)
