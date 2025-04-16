@@ -2,7 +2,7 @@ from importlib.metadata import entry_points
 import customtkinter
 from PIL import Image
 import tkinter
-import acc2
+import Settings
 import os
 from customtkinter import CTkImage
 from tkinter import filedialog
@@ -15,7 +15,7 @@ import mysql.connector
 import sys
 import pyotp
 
-# AI GENERATED
+# AI GENERATED: fetches account ID from account table
 # ********************************************************
 account_id = sys.argv[1] if len(sys.argv) > 1 else None
 
@@ -1530,7 +1530,7 @@ profile_box_label.pack(expand=True)
 
 # New Settings Button at Bottom
 def open_settings_page():
-    acc2.SettingsApp(account_id, update_main_theme, window)
+    Settings.SettingsApp(account_id, update_main_theme, window)
 
 
 Settings_button = customtkinter.CTkButton(bottom_bar, text="Settings ⚙️", text_color=saved_font_color, width=10,

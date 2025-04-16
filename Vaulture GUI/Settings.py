@@ -165,7 +165,7 @@ class SettingsApp(customtkinter.CTkToplevel):
             pass
 
     #######################################################################################################################################
-    # Used ai to edit what i already had here to make it so it saves to dan.py as well https://chatgpt.com/share/67f19bc3-4ab8-800a-bfaa-5ae77d2372a2
+    # Used ai to edit what i already had here to make it so it saves to Main_Menu.py as well https://chatgpt.com/share/67f19bc3-4ab8-800a-bfaa-5ae77d2372a2
     def Saving(self):
         self.save_theme_()
         if self.update_callback:
@@ -272,7 +272,7 @@ class AccountFrame(customtkinter.CTkFrame):
     def logout(self):
         try:
             # Launch login page
-            subprocess.Popen([sys.executable, "Initial_GUI_Design.py"])
+            subprocess.Popen([sys.executable, "Login_Page.py"])
         except Exception as e:
             print(f"Error launching login page: {e}")
 
@@ -288,13 +288,13 @@ class AccountFrame(customtkinter.CTkFrame):
         except Exception as e:
             print(f"Error closing current window: {e}")
 
-        # Close the main window (from Dan.py)
+        # Close the main window (from Main_Menu.py)
         try:
             if self.parent:
                 self.parent.quit()    # Quit the main event loop
                 self.parent.destroy() # Destroy the main window
         except Exception as e:
-            print(f"Error closing parent window (Dan.py): {e}")
+            print(f"Error closing parent window (Main_Meny.py): {e}")
  ################################################################################################################
     def confirm_erase(self):
         confirm_window = customtkinter.CTkToplevel(self)
