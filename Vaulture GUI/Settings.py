@@ -8,6 +8,8 @@ import mysql.connector
 from PIL import Image, ImageTk
 from PIL._tkinter_finder import tk
 
+#NOTICE: ANY BLOCKS OF CODE SEPARATED BY "*" OR "#", AND HAVE, "AI GENERATED" WRITTEN ARE AI ASSISTED CODE
+
 login_database = mysql.connector.connect(
     host="db-mysql-nyc3-37387-do-user-15222509-0.l.db.ondigitalocean.com",
     user="doadmin",
@@ -324,6 +326,8 @@ class AccountFrame(customtkinter.CTkFrame):
         )
         no_button.pack(side="left", padx=10)
 
+    #(AI GENERATED) erases account and account data
+    #****************************************************************************************************************************
     def erase_account(self, confirm_window):
         try:
             # First, delete associated child records.
@@ -349,7 +353,7 @@ class AccountFrame(customtkinter.CTkFrame):
             self.master.destroy()  # Exit the application or redirect as needed.
         except mysql.connector.Error as e:
             print("Error deleting account:", e)
-
+    #***************************************************************************************************************************
 
 class ThemesFrame(customtkinter.CTkFrame):
     def __init__(self, master):
@@ -526,7 +530,7 @@ class HelpFrame(customtkinter.CTkFrame):
         back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=(20, 30))
 
-
+#Creates contact frame where it displays our contacts
 class ContactFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)

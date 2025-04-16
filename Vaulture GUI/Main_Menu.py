@@ -15,6 +15,8 @@ import mysql.connector
 import sys
 import pyotp
 
+#NOTICE: ANY BLOCKS OF CODE SEPARATED BY "*" OR "#", AND HAVE, "AI GENERATED" WRITTEN ARE AI ASSISTED CODE
+
 # AI GENERATED: fetches account ID from account table
 # ********************************************************
 account_id = sys.argv[1] if len(sys.argv) > 1 else None
@@ -279,7 +281,7 @@ ValtureP_button = customtkinter.CTkButton(bottom_bar, text="Passwords 🐦", tex
 ValtureP_button.grid(row=0, column=1, pady=30)
 
 
-# Passwords
+# Opens Passwords page and displays recorded entries
 def open_passwords_page():
     global MainPasswords_Frame, searching, entries_container
     if "MainPasswords_Frame" in globals() and MainPasswords_Frame.winfo_exists():
@@ -344,7 +346,7 @@ def open_passwords_page():
         (account_id,))
     network_data = mycursor.fetchall()
 
-    # (AI GENERATED)
+    # (AI GENERATED) fetches data from tables and displays them
     # ********************************************************************************************************************
     if data:
         for index, row in enumerate(data):
@@ -378,6 +380,8 @@ def open_passwords_page():
         no_data_label.pack()
     # **********************************************************************************************
 
+    # Modified from the AI ASSISTED Code above
+    #***********************************************************************************************************************
     if banking_data:
         for index, row in enumerate(banking_data, start=len(data) + 1):
             data_id, card_name, card_number, expiry_date, cvv = row
@@ -441,7 +445,7 @@ def open_passwords_page():
         no_data_label = customtkinter.CTkLabel(PasswordBorder_Frame, text="No network data found.",
                                                text_color=saved_font_color)
         no_data_label.pack()
-
+    #***************************************************************************************************************************************
 
 def delete_row(data_id, destroyed_frame):
     mycursor.execute("SELECT * FROM Account_Data_Password WHERE data_id = %s", (data_id,))
@@ -1424,6 +1428,7 @@ Profile_button.grid(row=0, column=4, pady=5)
 
 
 # This is the profile page settings here you can upload an image and your name and save it!
+# Links to sources in reference page in report
 def open_Profile_Page():
     window.minsize(800, 600)
     window.maxsize(1920, 1080)
@@ -1658,6 +1663,9 @@ def open_passwordMaker_page(*args, **kwargs):
         row=13, column=2, pady=10, sticky="nsew")
 
     #######################################################################################################################################################
+
+    # (AI GENERATED) Stores data in password table
+    #*******************************************************************************************************************
     def store_password_data():
         global account_id
 
@@ -1677,6 +1685,7 @@ def open_passwordMaker_page(*args, **kwargs):
         created_label = customtkinter.CTkLabel(PasswordMakingBorder_Frame, text="Successfully created",
                                                font=("Courier", 14, "bold"), text_color="green")
         created_label.grid(row=5, column=0, sticky="w", padx=10, pady=5)
+    #*******************************************************************************************************************
 
     # Save Button
     create_button = customtkinter.CTkButton(PasswordMakingBorder_Frame, text="Create", text_color=saved_font_color,
@@ -1836,6 +1845,7 @@ def open_banking_cards_page():
     CVV_entry = customtkinter.CTkEntry(BankBorder_Frame, placeholder_text="Enter CVV")
     CVV_entry.grid(row=8, column=2, pady=10, sticky="ew")
 
+    #Stores bank entries in Banking_Card Table
     def store_bank_data():
         global account_id
 
@@ -2027,7 +2037,7 @@ def edit_password_entry(data_id):
         save_button = customtkinter.CTkButton(edit_window, text="Save", command=save_password_changes)
         save_button.grid(row=4, column=0, columnspan=2, pady=10)
 
-
+#Edits any banking card entry
 def edit_banking_entry(data_id):
     mycursor.execute("SELECT Card_Title, Card_Number, Expire_Date, CVV FROM Banking_Card WHERE data_id = %s",
                      (data_id,))
@@ -2075,7 +2085,7 @@ def edit_banking_entry(data_id):
         save_button = customtkinter.CTkButton(edit_window, text="Save", command=save_changes)
         save_button.grid(row=4, column=0, columnspan=2, pady=10)
 
-
+#Edits any notes entries
 def edit_notes_entry(data_id):
     mycursor.execute("SELECT Notes_title, Notes_body FROM Notes_Data WHERE data_id = %s", (data_id,))
     row = mycursor.fetchone()
@@ -2109,7 +2119,7 @@ def edit_notes_entry(data_id):
         save_button = customtkinter.CTkButton(edit_window, text="Save", command=save_note_changes)
         save_button.grid(row=2, column=0, columnspan=2, pady=10)
 
-
+#Edits any network entries
 def edit_network_entry(data_id):
     mycursor.execute("SELECT Network_Title, Network, IP_Address, Password FROM Network_Data WHERE data_id = %s",
                      (data_id,))
