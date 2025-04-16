@@ -297,7 +297,8 @@ class Login_Page(customtkinter.CTk):
         self.new_username_entry.delete(0, "end")
         self.email_entry.delete(0, "end")
         self.password_entry.delete(0, "end")
-
+#######################################################################################################
+# AI ASSISTED CODE - 2FA and qr code generation
     # Save account info (sign-up) and generate QR code popup for 2FA registration
     def save_account_info(self):
         username = self.new_username_entry.get()
