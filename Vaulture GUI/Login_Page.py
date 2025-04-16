@@ -412,7 +412,7 @@ class Login_Page(customtkinter.CTk):
                 port='25060',
                 database="Vaulturedb"
             )
-            self.mycursor = self.login_database.cursor()
+            self.mycursor = self.login_database.cursor(buffered=True)
             query = "SELECT AccountID, Password, TwoFA_Secret FROM Account WHERE Username = %s"
             self.mycursor.execute(query, (login_username,))
             result = self.mycursor.fetchone()
@@ -428,15 +428,15 @@ class Login_Page(customtkinter.CTk):
                         self.destroy()
                         try:
                             for proc in os.popen('tasklist').readlines():
-                                if "Dan.py" in proc:
+                                if "Main_Menu.py" in proc:
                                     pid = int(proc.split()[1])
                                     os.kill(pid, signal.SIGTERM)
-                            # Construct the absolute path to Dan.py based on the current file's directory
-                            dan_path = str(Path(__file__).parent / "Dan.py")
+                            # Construct the absolute path to Main_Menu.py based on the current file's directory
+                            dan_path = str(Path(__file__).parent / "Main_Menu.py")
                             subprocess.run([sys.executable, dan_path, str(account_id)], check=True)
                             return True
                         except subprocess.CalledProcessError as e:
-                            print(f"Error running Dan.py: {e}")
+                            print(f"Error running Main_Menu.py: {e}")
                             return False
                         except Exception as e:
                             print(f"Error managing subprocess: {e}")
