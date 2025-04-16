@@ -21,7 +21,6 @@ mycursor = login_database.cursor()
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
 
-
 class SettingsApp(customtkinter.CTkToplevel):
     def __init__(self, account_id, update_callback=None,
                  parent=None):  # This update_callback=None was used by ai to make it so it can be used in the main.py file to update the theme color in the main.py file
@@ -52,8 +51,7 @@ class SettingsApp(customtkinter.CTkToplevel):
     def _create_sidebar(self):
         self.sidebar = customtkinter.CTkFrame(self, fg_color="#23272A", width=200, corner_radius=10)
         self.sidebar.pack(side="left", fill="y", padx=10, pady=10)
-        title = customtkinter.CTkLabel(self.sidebar, text="Vaulture", font=("Segoe UI", 24, "bold"),
-                                       text_color="#FFFFFF", fg_color="#23272A")
+        title = customtkinter.CTkLabel(self.sidebar, text="Vaulture", font=("Segoe UI", 24, "bold"), text_color="#FFFFFF", fg_color="#23272A")
         title.pack(pady=20)
 
         buttons = [
@@ -64,9 +62,7 @@ class SettingsApp(customtkinter.CTkToplevel):
         ]
 
         for text, command in buttons:
-            button = customtkinter.CTkButton(self.sidebar, text=text, font=("Segoe UI", 18), fg_color="#2C2F33",
-                                             hover_color="#7289DA", text_color="#FFFFFF", command=command,
-                                             corner_radius=10, border_width=2, border_color="#7289DA")
+            button = customtkinter.CTkButton(self.sidebar, text=text, font=("Segoe UI", 18), fg_color="#2C2F33",  hover_color="#7289DA", text_color="#FFFFFF", command=command, corner_radius=10, border_width=2, border_color="#7289DA")
             button.pack(fill="x", padx=10, pady=10)
 
     # Sidebar Diff Shade
@@ -225,14 +221,12 @@ class IntroFrame(customtkinter.CTkFrame):
         self.configure(fg_color="#2C2F33", border_width=0, border_color="#7289DA")
         self.configure(fg_color=master.theme_color)
 
-        title = customtkinter.CTkLabel(self, text="Settings", text_color=master.text_color,
-                                       font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
+        title = customtkinter.CTkLabel(self, text="Settings", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
         title.pack(fill="x")
 
         contact_text = """Welcome to the settings page! """
 
-        label = customtkinter.CTkLabel(self, text=contact_text, text_color=master.text_color, justify="left",
-                                       font=("Segoe UI", 16), wraplength=600)
+        label = customtkinter.CTkLabel(self, text=contact_text, text_color=master.text_color, justify="left", font=("Segoe UI", 16), wraplength=600)
         label.pack(pady=20, padx=20)
 
 
@@ -243,8 +237,7 @@ class AccountFrame(customtkinter.CTkFrame):
         self.account_id = account_id
         self.configure(fg_color="#2C2F33", corner_radius=10)
 
-        title = customtkinter.CTkLabel(self, text="Account Information", text_color="white",
-                                       font=("Segoe UI", 28, "bold"), fg_color="#2C2F33")
+        title = customtkinter.CTkLabel(self, text="Account Information", text_color="white", font=("Segoe UI", 28, "bold"), fg_color="#2C2F33")
         title.pack(pady=10)
 
         self.text_widget = customtkinter.CTkTextbox(self, height=200, width=400, font=("Arial", 16))
@@ -252,20 +245,13 @@ class AccountFrame(customtkinter.CTkFrame):
 
         self.load_Account_Info()
 
-        Erase_button = customtkinter.CTkButton(self, text="Erase Account?", fg_color=master.theme_color,
-                                               hover_color="#FF6666", text_color=master.text_color,
-                                               command=self.confirm_erase, corner_radius=10, border_width=2,
-                                               border_color="#FF6666", width=60, height=70)
+        Erase_button = customtkinter.CTkButton(self, text="Erase Account?", fg_color=master.theme_color, hover_color="#FF6666", text_color=master.text_color, command=self.confirm_erase, corner_radius=10, border_width=2,  border_color="#FF6666", width=60, height=70)
         Erase_button.pack(pady=20)
 
-        logout_button = customtkinter.CTkButton(self, text="Logout", fg_color=master.theme_color, hover_color="#d4af37",
-                                                text_color=master.text_color, command=self.logout, corner_radius=10,
-                                                border_width=2, border_color="#7289DA")
+        logout_button = customtkinter.CTkButton(self, text="Logout", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.logout, corner_radius=10,  border_width=2, border_color="#7289DA")
         logout_button.pack(pady=20)
 
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37",
-                                              text_color=master.text_color, command=master.show_Intro_page,
-                                              corner_radius=10, border_width=2, border_color="#7289DA")
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37",  text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=20)
 
     def load_Account_Info(self):
@@ -281,6 +267,8 @@ class AccountFrame(customtkinter.CTkFrame):
                 display_password_text = f"{index + 1}. Username: {username} | Email: {email} | Password: {password}"
                 self.text_widget.insert("end", display_password_text)
 
+ ################################################################################################################
+ # made using ai
     def logout(self):
         try:
             # Launch login page
@@ -303,11 +291,11 @@ class AccountFrame(customtkinter.CTkFrame):
         # Close the main window (from Dan.py)
         try:
             if self.parent:
-                self.parent.quit()  # Quit the main event loop
-                self.parent.destroy()  # Destroy the main window
+                self.parent.quit()    # Quit the main event loop
+                self.parent.destroy() # Destroy the main window
         except Exception as e:
             print(f"Error closing parent window (Dan.py): {e}")
-
+ ################################################################################################################
     def confirm_erase(self):
         confirm_window = customtkinter.CTkToplevel(self)
         confirm_window.title("Confirm")
@@ -343,10 +331,6 @@ class AccountFrame(customtkinter.CTkFrame):
             mycursor.execute("DELETE FROM Banking_Card WHERE AccountID = %s", (self.account_id,))
             mycursor.execute("DELETE FROM Network_Data WHERE AccountID = %s", (self.account_id,))
             mycursor.execute("DELETE FROM Notes_Data WHERE AccountID = %s", (self.account_id,))
-            mycursor.execute("DELETE FROM Archive_Data_Password WHERE AccountID = %s", (self.account_id,))
-            mycursor.execute("DELETE FROM Archive_Banking_Card WHERE AccountID = %s", (self.account_id,))
-            mycursor.execute("DELETE FROM Archive_Network_Data WHERE AccountID = %s", (self.account_id,))
-            mycursor.execute("DELETE FROM Archive_Notes_Data WHERE AccountID = %s", (self.account_id,))
             login_database.commit()
 
             # Now, delete the account (parent row).
@@ -373,37 +357,26 @@ class ThemesFrame(customtkinter.CTkFrame):
         self.configure(fg_color="#2C2F33", border_width=0, border_color="#7289DA")
         self.configure(fg_color=master.theme_color)
 
-        title = customtkinter.CTkLabel(self, text="Themes", text_color=master.text_color, font=("Segoe UI", 28, "bold"),
-                                       fg_color=master.theme_color, height=60)
+        title = customtkinter.CTkLabel(self, text="Themes", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
         title.pack(fill="x")
 
-        self.color_button = customtkinter.CTkButton(self, text="Pick Theme Color", border_width=2,
-                                                    border_color="#7289DA", fg_color=master.theme_color,
-                                                    hover_color="#d4af37", text_color=master.text_color,
-                                                    command=self.pick_color)
+        self.color_button = customtkinter.CTkButton(self, text="Pick Theme Color", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color,  command=self.pick_color)
         self.color_button.pack(pady=10)
 
-        self.MainF_button = customtkinter.CTkButton(self, text="Change Main_Frame Color", border_width=2,
-                                                    border_color="#7289DA", fg_color=master.theme_color,
-                                                    hover_color="#d4af37", text_color=master.text_color,
-                                                    command=self.pick_mainframe_color)
+        self.MainF_button = customtkinter.CTkButton(self, text="Change Main_Frame Color", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.pick_mainframe_color)
         self.MainF_button.pack(pady=10)
 
-        self.Font_button = customtkinter.CTkButton(self, text="Change Font Color", border_width=2,
-                                                   border_color="#7289DA", fg_color=master.theme_color,
-                                                   hover_color="#d4af37", text_color=master.text_color,
+        self.Font_button = customtkinter.CTkButton(self, text="Change Font Color", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color,
                                                    command=self.pick_font_color)
         self.Font_button.pack(pady=10)
 
-        self.reset_button = customtkinter.CTkButton(self, text="Click For Default Theme", border_width=2,
-                                                    border_color="#7289DA", fg_color=master.theme_color,
-                                                    hover_color="#d4af37", text_color=master.text_color,
-                                                    command=self.reset_theme)
+        self.reset_button = customtkinter.CTkButton(self, text="Click For Default Theme", border_width=2, border_color="#7289DA", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=self.reset_theme)
         self.reset_button.pack(pady=10)
 
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37",
-                                              text_color=master.text_color, command=master.show_Intro_page,
-                                              corner_radius=10, border_width=2, border_color="#7289DA")
+        Default_Comment = customtkinter.CTkLabel(self, text="Click once for default themes, click another time for default font", text_color=master.text_color, font=("Segoe UI", 15, "bold"), fg_color=master.theme_color, height=60)
+        Default_Comment.pack(fill="x")
+
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=20)
 
     def pick_color(self):
@@ -428,9 +401,7 @@ class ThemesFrame(customtkinter.CTkFrame):
                 # Update current frame (right content area)
                 if self.master.current_frame:
                     for widget in self.master.current_frame.winfo_children():
-                        if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkEntry,
-                                               customtkinter.CTkSwitch, customtkinter.CTkTextbox,
-                                               customtkinter.CTkScrollableFrame)):
+                        if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkEntry, customtkinter.CTkSwitch, customtkinter.CTkTextbox, customtkinter.CTkScrollableFrame)):
                             widget.configure(text_color=self.master.text_color)
 
                 print(f"Font color changed and saved: {color_code}")
@@ -488,8 +459,7 @@ class ThemesFrame(customtkinter.CTkFrame):
                 # Update current frame
                 if self.master.current_frame:
                     for widget in self.master.current_frame.winfo_children():
-                        if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkEntry,
-                                               customtkinter.CTkSwitch, customtkinter.CTkTextbox)):
+                        if isinstance(widget, (customtkinter.CTkButton, customtkinter.CTkLabel, customtkinter.CTkEntry, customtkinter.CTkSwitch, customtkinter.CTkTextbox)):
                             widget.configure(font=self.master.current_font)
 
                 print(f"Font changed and saved: {font_choice}")
@@ -506,25 +476,21 @@ class HelpFrame(customtkinter.CTkFrame):
         self.configure(fg_color=master.theme_color)
 
         # Help Title
-        title = customtkinter.CTkLabel(self, text="Help", text_color=master.text_color, font=("Segoe UI", 28, "bold"),
-                                       fg_color=master.theme_color, height=60)
+        title = customtkinter.CTkLabel(self, text="Help", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
         title.pack(fill="x", pady=(10, 10))
 
         # Adding a border around the helpful tips message
         help_message = "Here are some helpful tips!"
 
         # "Here are some helpful tips!" message with a border
-        help_message_frame = customtkinter.CTkFrame(self, fg_color=master.theme_color, border_width=2,
-                                                    border_color="#7289DA", corner_radius=10)
+        help_message_frame = customtkinter.CTkFrame(self, fg_color=master.theme_color, border_width=2, border_color="#7289DA", corner_radius=10)
         help_message_frame.pack(padx=20, pady=(10, 20), fill="x")
 
-        help_message_label = customtkinter.CTkLabel(help_message_frame, text=help_message, text_color=master.text_color,
-                                                    font=("Segoe UI", 20, "bold"), fg_color=master.theme_color)
+        help_message_label = customtkinter.CTkLabel(help_message_frame, text=help_message, text_color=master.text_color, font=("Segoe UI", 20, "bold"), fg_color=master.theme_color)
         help_message_label.pack(pady=10, padx=20)
 
         # Adding a border around tips menu
-        text_frame = customtkinter.CTkFrame(self, fg_color="#2C2F33", border_width=2, border_color="#7289DA",
-                                            corner_radius=10)
+        text_frame = customtkinter.CTkFrame(self, fg_color="#2C2F33", border_width=2, border_color="#7289DA", corner_radius=10)
         text_frame.pack(padx=20, pady=(0, 50), fill="both", expand=True)
 
         scroll_frame = customtkinter.CTkScrollableFrame(text_frame, fg_color=master.theme_color)
@@ -545,14 +511,11 @@ class HelpFrame(customtkinter.CTkFrame):
         # Question will make bold answer will stay regular
         for question, answer in contact_text:
             # If question it will make bold
-            question_label = customtkinter.CTkLabel(text_frame, text=f"• {question}", text_color=master.text_color,
-                                                    font=("Segoe UI", 16, "bold"), fg_color=master.theme_color,
-                                                    anchor="w")
+            question_label = customtkinter.CTkLabel(text_frame, text=f"• {question}", text_color=master.text_color, font=("Segoe UI", 16, "bold"), fg_color=master.theme_color,  anchor="w")
             question_label.pack(pady=(10, 0), padx=20, fill="x")
 
             # If answer it will stay regular font
-            answer_label = customtkinter.CTkLabel(text_frame, text=answer, text_color=master.text_color,
-                                                  font=("Segoe UI", 16), fg_color=master.theme_color, anchor="w")
+            answer_label = customtkinter.CTkLabel(text_frame, text=answer, text_color=master.text_color, font=("Segoe UI", 16), fg_color=master.theme_color, anchor="w")
             answer_label.pack(pady=(5, 10), padx=40, fill="x")
 
             # Horizontal Lines
@@ -560,9 +523,7 @@ class HelpFrame(customtkinter.CTkFrame):
             separator.pack(pady=(10, 10), padx=20, fill="x")
 
         # Back Button
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37",
-                                              text_color=master.text_color, command=master.show_Intro_page,
-                                              corner_radius=10, border_width=2, border_color="#7289DA")
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=(20, 30))
 
 
@@ -573,8 +534,7 @@ class ContactFrame(customtkinter.CTkFrame):
         self.configure(fg_color=master.theme_color)
 
         # Title
-        title = customtkinter.CTkLabel(self, text="Contact Us", text_color=master.text_color,
-                                       font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
+        title = customtkinter.CTkLabel(self, text="Contact Us", text_color=master.text_color, font=("Segoe UI", 28, "bold"), fg_color=master.theme_color, height=60)
         title.pack(fill="x", pady=(10, 20))
 
         # Contact Icons
@@ -587,15 +547,11 @@ class ContactFrame(customtkinter.CTkFrame):
         ]
 
         for icon, label_text in icon_data:
-            contact_button = customtkinter.CTkButton(contact_icons_frame, text=f"{icon} {label_text}",
-                                                     font=("Segoe UI", 17, "bold"), fg_color=master.theme_color,
-                                                     hover_color="#d4af37", text_color=master.text_color,
-                                                     corner_radius=10, border_width=3, border_color="#7289DA")
+            contact_button = customtkinter.CTkButton(contact_icons_frame, text=f"{icon} {label_text}", font=("Segoe UI", 17, "bold"), fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color,  corner_radius=10, border_width=3, border_color="#7289DA")
             contact_button.pack(pady=5, fill="x", padx=20)
 
         # Email addresses added border to make it look neat
-        email_frame = customtkinter.CTkFrame(self, fg_color=master.theme_color, corner_radius=10, border_width=2,
-                                             border_color="#7289DA")
+        email_frame = customtkinter.CTkFrame(self, fg_color=master.theme_color, corner_radius=10, border_width=2, border_color="#7289DA")
         email_frame.pack(padx=20, pady=(0, 20), fill="x")
 
         email_list = [
@@ -606,16 +562,12 @@ class ContactFrame(customtkinter.CTkFrame):
         ]
 
         for email in email_list:
-            email_label = customtkinter.CTkLabel(email_frame, text=email, text_color=master.text_color,
-                                                 font=("Segoe UI", 14), fg_color=master.theme_color, height=40)
+            email_label = customtkinter.CTkLabel(email_frame, text=email, text_color=master.text_color, font=("Segoe UI", 14), fg_color=master.theme_color, height=40)
             email_label.pack(fill="x", padx=20, pady=5)
 
         # Back Button
-        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37",
-                                              text_color=master.text_color, command=master.show_Intro_page,
-                                              corner_radius=10, border_width=2, border_color="#7289DA")
+        back_button = customtkinter.CTkButton(self, text="Back", fg_color=master.theme_color, hover_color="#d4af37", text_color=master.text_color, command=master.show_Intro_page, corner_radius=10, border_width=2, border_color="#7289DA")
         back_button.pack(pady=(20, 30))
-
 
 # This update_callback=None was used by ai to make it so it can be used in the main.py file to update the theme color in the main.py file
 def opening_settings(account_id, update_callback=None, parent=None):

@@ -134,8 +134,6 @@ CREATE TABLE IF NOT EXISTS Archive_Notes_Data (
     FOREIGN KEY (AccountID) REFERENCES Account(AccountID)
 )
 """)
-
-
 login_database.commit()
 mycursor.close()
 login_database.close()
